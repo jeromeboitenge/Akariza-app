@@ -75,10 +75,18 @@ export default function EmployeesScreen({ navigation }: any) {
               <Paragraph style={styles.infoText}>{item.isActive ? 'Active' : 'Inactive'}</Paragraph>
             </View>
             
-            <View style={styles.infoRow}>
-              <Avatar.Icon size={24} icon="calendar" style={styles.infoIcon} />
-              <Paragraph style={styles.infoText}>Joined {new Date(item.createdAt).toLocaleDateString()}</Paragraph>
-            </View>
+            {item.createdAt && (
+              <View style={styles.infoRow}>
+                <Avatar.Icon size={24} icon="calendar" style={styles.infoIcon} />
+                <Paragraph style={styles.infoText}>
+                  Joined {new Date(item.createdAt).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                  })}
+                </Paragraph>
+              </View>
+            )}
           </View>
         </Card.Content>
       </Card>
