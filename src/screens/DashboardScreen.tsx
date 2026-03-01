@@ -392,7 +392,7 @@ export default function DashboardScreen({ navigation }: any) {
           <View style={styles.quickActionsGrid}>
             <QuickActionCard icon="store" label="Branches" color="#4CAF50" onPress={() => navigation.navigate('Branches')} />
             <QuickActionCard icon="account-group" label="Employees" color="#7B88F5" onPress={() => navigation.navigate('Employees')} />
-            <QuickActionCard icon="message" label="Messages" color="#9C27B0" onPress={() => navigation.navigate('Messages')} />
+            <QuickActionCard icon="message" label="Messages" color="#5C6BF2" onPress={() => navigation.navigate('Messages')} />
             <QuickActionCard icon="chart-box" label="Reports" color="#FF9800" onPress={() => navigation.navigate('Reports')} />
           </View>
         </Card.Content>

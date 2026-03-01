@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   typeChip: { marginTop: 8, alignSelf: 'flex-start' },
   row: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 8 },
   bold: { fontWeight: 'bold' },
-  points: { color: '#6200ee', fontWeight: 'bold', fontSize: 16 },
+  points: { color: '#5C6BF2', fontWeight: 'bold', fontSize: 16 },
   debt: { color: '#f44336', fontWeight: 'bold' },
   button: { marginVertical: 24, paddingVertical: 6 },
 });

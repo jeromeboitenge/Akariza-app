@@ -14,6 +14,7 @@ export default function MessagesScreen({ navigation }: any) {
     try {
       const data = await messagesApi.getAll();
       console.log('📨 Loaded messages:', data.length);
+      console.log('📨 Messages data:', JSON.stringify(data, null, 2));
       setMessages(data);
     } catch (error) {
       console.error('❌ Load messages error:', error);
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   sender: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
   time: { fontSize: 12, color: '#666', marginTop: 4 },
-  badge: { backgroundColor: '#6200ee' },
+  badge: { backgroundColor: '#5C6BF2' },
   fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { padding: 32, alignItems: 'center' },
 });

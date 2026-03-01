@@ -69,5 +69,5 @@ const styles = StyleSheet.create({
   item: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#eee' },
   flex: { flex: 1 },
   bold: { fontWeight: 'bold' },
-  total: { marginTop: 16, paddingTop: 16, borderTopWidth: 2, borderTopColor: '#6200ee' },
+  total: { marginTop: 16, paddingTop: 16, borderTopWidth: 2, borderTopColor: '#5C6BF2' },
 });
