@@ -22,6 +22,7 @@ import SuppliersScreen from '../screens/SuppliersScreen';
 import NewSupplierScreen from '../screens/NewSupplierScreen';
 import BranchesScreen from '../screens/BranchesScreen';
 import NewBranchScreen from '../screens/NewBranchScreen';
+import BranchUsersScreen from '../screens/BranchUsersScreen';
 import EmployeesScreen from '../screens/EmployeesScreen';
 import ExpensesScreen from '../screens/ExpensesScreen';
 import NewExpenseScreen from '../screens/NewExpenseScreen';
@@ -100,6 +101,7 @@ export default function MainNavigator() {
         <Stack.Screen name="NewSupplier" component={NewSupplierScreen} options={{ title: 'New Supplier' }} />
         <Stack.Screen name="Branches" component={BranchesScreen} options={{ title: 'Branches' }} />
         <Stack.Screen name="NewBranch" component={NewBranchScreen} options={{ title: 'New Branch' }} />
+        <Stack.Screen name="BranchUsers" component={BranchUsersScreen} options={{ title: 'Branch Employees' }} />
         <Stack.Screen name="Employees" component={EmployeesScreen} options={{ title: 'Employees' }} />
         <Stack.Screen name="Expenses" component={ExpensesScreen} options={{ title: 'Expenses' }} />
         <Stack.Screen name="NewExpense" component={NewExpenseScreen} options={{ title: 'New Expense' }} />

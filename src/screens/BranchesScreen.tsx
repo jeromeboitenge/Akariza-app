@@ -29,7 +29,7 @@ export default function BranchesScreen({ navigation }: any) {
   }, []);
 
   const renderBranch = ({ item }: { item: Branch }) => (
-    <Card style={styles.card}>
+    <Card style={styles.card} onPress={() => navigation.navigate('BranchUsers', { branchId: item.id, branchName: item.name })}>
       <Card.Content>
         <View style={styles.cardHeader}>
           <Avatar.Icon size={56} icon="store" style={[styles.avatar, { backgroundColor: item.isMainBranch ? '#4CAF50' : '#2196F3' }]} />
@@ -48,6 +48,13 @@ export default function BranchesScreen({ navigation }: any) {
           <Paragraph style={styles.infoText}>📍 {item.address}</Paragraph>
           <Paragraph style={styles.infoText}>📞 {item.phone}</Paragraph>
           {item.email && <Paragraph style={styles.infoText}>✉️ {item.email}</Paragraph>}
+          
+          <View style={styles.employeeCount}>
+            <Avatar.Icon size={32} icon="account-group" style={styles.employeeIcon} />
+            <Paragraph style={styles.employeeText}>
+              {item._count?.employees || 0} employee{item._count?.employees !== 1 ? 's' : ''}
+            </Paragraph>
+          </View>
         </View>
       </Card.Content>
     </Card>
@@ -92,5 +99,8 @@ const styles = StyleSheet.create({
   mainText: { color: '#FFFFFF', fontWeight: 'bold' },
   infoContainer: { backgroundColor: '#F5F7FA', padding: 12, borderRadius: 8 },
   infoText: { fontSize: 14, color: '#212121', marginBottom: 4 },
+  employeeCount: { flexDirection: 'row', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#E0E0E0' },
+  employeeIcon: { backgroundColor: '#E3F2FD', marginRight: 8 },
+  employeeText: { fontSize: 14, color: '#1976D2', fontWeight: '600' },
   fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
 });
