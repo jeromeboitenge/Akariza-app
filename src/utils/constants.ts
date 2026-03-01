@@ -1,7 +1,7 @@
 // Using local backend (change to your machine's IP for phone testing)
-export const API_URL = 'http://172.31.87.12:3000/api/v1';
+export const API_URL = 'https://akariza-backend.onrender.com/api/v1';
+// For local backend: http://172.31.87.12:3000/api/v1
 // For emulator use: http://10.0.2.2:3000/api/v1
-// For Render deployment: https://akariza-backend.onrender.com/api/v1
 
 export const SYNC_INTERVAL = 300000; // 5 minutes
 export const MAX_OFFLINE_RECORDS = 1000;
