@@ -166,6 +166,23 @@ export default function DashboardScreen({ navigation }: any) {
 
       <View style={styles.metricsContainer}>
         <MetricCard
+          icon="receipt"
+          value={stats?.todayTransactions || 0}
+          label="Transactions"
+          color={colors.success}
+          onPress={() => navigation.navigate('Sales')}
+        />
+        <MetricCard
+          icon="clipboard-check"
+          value={stats?.pendingTasks || 0}
+          label="Pending Tasks"
+          color={colors.warning}
+          onPress={() => navigation.navigate('Tasks')}
+        />
+      </View>
+
+      <View style={styles.metricsContainer}>
+        <MetricCard
           icon="account-group"
           value={stats?.totalEmployees || 0}
           label="Employees"
@@ -196,6 +213,25 @@ export default function DashboardScreen({ navigation }: any) {
           onPress={() => navigation.navigate('Products')}
         />
       </View>
+
+      {/* Top Product Card */}
+      {stats?.topProduct && (
+        <Card style={styles.sectionCard}>
+          <Card.Content>
+            <View style={styles.sectionHeader}>
+              <Avatar.Icon size={40} icon="star" style={{ backgroundColor: colors.warning }} />
+              <Title style={styles.sectionTitle}>Top Selling Product</Title>
+            </View>
+            <View style={styles.topProductRow}>
+              <View style={styles.flex}>
+                <Text style={styles.topProductName}>{stats.topProduct.name}</Text>
+                <Text style={styles.topProductSales}>{stats.topProduct.soldCount} units sold</Text>
+              </View>
+              <Text style={styles.topProductRevenue}>${stats.topProduct.revenue?.toFixed(0)}</Text>
+            </View>
+          </Card.Content>
+        </Card>
+      )}
 
       {/* Sales Chart */}
       {trends && trends.data && (
@@ -617,6 +653,11 @@ const styles = StyleSheet.create({
   statItem: { alignItems: 'center', flex: 1 },
   statItemValue: { fontSize: 24, fontWeight: 'bold', color: '#5C6BF2', marginBottom: 4 },
   statItemLabel: { fontSize: 13, color: '#757575', textAlign: 'center' },
+  
+  topProductRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12, padding: 12, backgroundColor: '#FFF8E1', borderRadius: 12 },
+  topProductName: { fontSize: 16, fontWeight: 'bold', color: '#424242', marginBottom: 4 },
+  topProductSales: { fontSize: 13, color: '#757575' },
+  topProductRevenue: { fontSize: 20, fontWeight: 'bold', color: colors.success },
   
   quickActionsGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },
   quickAction: { width: '50%', padding: 6 },
