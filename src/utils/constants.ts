@@ -24,7 +24,7 @@ export const STATUS_COLORS = {
   success: '#4CAF50',
   warning: '#FF9800',
   error: '#F44336',
-  info: '#2196F3',
+  info: '#5C6BF2',
   pending: '#FFC107',
 };
 

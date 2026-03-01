@@ -20,7 +20,7 @@ export const colors = {
   warningLight: '#FFB74D',
   
   // Info
-  info: '#2196F3',
+  info: '#5C6BF2',
   
   // Neutral
   background: '#F5F7FA',
@@ -33,5 +33,5 @@ export const colors = {
   paid: '#4CAF50',
   pending: '#FF9800',
   failed: '#F44336',
-  partial: '#2196F3',
+  partial: '#5C6BF2',
 };

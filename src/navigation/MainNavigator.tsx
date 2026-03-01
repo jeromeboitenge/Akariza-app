@@ -57,7 +57,7 @@ function MainTabs() {
           else if (route.name === 'More') iconName = focused ? 'menu' : 'menu-outline';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#1976D2',
+        tabBarActiveTintColor: '#5C6BF2',
         tabBarInactiveTintColor: '#757575',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',

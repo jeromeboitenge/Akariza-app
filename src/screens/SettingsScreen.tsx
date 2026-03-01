@@ -249,11 +249,11 @@ const styles = StyleSheet.create({
   
   profileCard: { margin: 16, marginBottom: 8, elevation: 4, borderRadius: 16, backgroundColor: '#5C6BF2' },
   profileHeader: { flexDirection: 'row', alignItems: 'center' },
-  profileAvatar: { backgroundColor: '#42A5F5', marginRight: 16 },
+  profileAvatar: { backgroundColor: '#7B88F5', marginRight: 16 },
   profileInfo: { flex: 1 },
   profileName: { fontSize: 22, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 4 },
   profileEmail: { fontSize: 14, color: '#E3F2FD', marginBottom: 8 },
-  roleChip: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#42A5F5', alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16 },
+  roleChip: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#7B88F5', alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16 },
   roleText: { color: '#FFFFFF', fontWeight: 'bold', marginLeft: 4, fontSize: 12 },
   
   card: { margin: 16, marginBottom: 8, elevation: 4, borderRadius: 16 },
