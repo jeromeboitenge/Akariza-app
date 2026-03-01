@@ -53,10 +53,10 @@ export default function EmployeesScreen({ navigation }: any) {
       <Card style={styles.card}>
         <Card.Content>
           <View style={styles.cardHeader}>
-            <Avatar.Text size={56} label={getInitials(item.name)} style={[styles.avatar, { backgroundColor: getRoleColor(item.role) }]} />
+            <Avatar.Text size={56} label={getInitials(item.name || item.email || 'U')} style={[styles.avatar, { backgroundColor: getRoleColor(item.role) }]} />
             <View style={styles.headerContent}>
-              <Title style={styles.employeeName}>{item.name}</Title>
-              <Paragraph style={styles.email}>{item.email}</Paragraph>
+              <Title style={styles.employeeName}>{item.name || 'No Name'}</Title>
+              <Paragraph style={styles.email}>{item.email || 'No Email'}</Paragraph>
               <Chip 
                 icon="shield-account" 
                 style={[styles.roleChip, { backgroundColor: `${getRoleColor(item.role)}20` }]} 
@@ -72,7 +72,7 @@ export default function EmployeesScreen({ navigation }: any) {
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <Avatar.Icon size={24} icon="phone" style={styles.infoIcon} />
-              <Paragraph style={styles.infoText}>{item.phone}</Paragraph>
+              <Paragraph style={styles.infoText}>{item.phone || 'No Phone'}</Paragraph>
             </View>
             
             {item.salary && (
@@ -85,7 +85,7 @@ export default function EmployeesScreen({ navigation }: any) {
             {item.branch && (
               <View style={styles.infoRow}>
                 <Avatar.Icon size={24} icon="store" style={styles.infoIcon} />
-                <Paragraph style={styles.infoText}>{item.branch.name}</Paragraph>
+                <Paragraph style={styles.infoText}>{item.branch.name || 'No Branch'}</Paragraph>
               </View>
             )}
           </View>
