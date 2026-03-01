@@ -8,13 +8,14 @@ export default function NewOrganizationScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
+  const [businessType, setBusinessType] = useState('');
   const [subscriptionPlan, setSubscriptionPlan] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!name || !email) {
-      Alert.alert('Error', 'Please fill required fields');
+    if (!name || !email || !phone || !address || !businessType) {
+      Alert.alert('Error', 'Please fill all required fields');
       return;
     }
 
@@ -23,15 +24,16 @@ export default function NewOrganizationScreen({ navigation }: any) {
       await organizationsApi.create({
         name,
         email,
-        phone: phone || undefined,
-        address: address || undefined,
+        phone,
+        address,
+        businessType,
         subscriptionPlan: subscriptionPlan || undefined,
         isActive,
       });
       Alert.alert('Success', 'Organization created successfully');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to create organization');
+      Alert.alert('Error', error.response?.data?.message || error.message || 'Failed to create organization');
     } finally {
       setLoading(false);
     }
@@ -52,6 +54,15 @@ export default function NewOrganizationScreen({ navigation }: any) {
           />
 
           <TextInput
+            label="Business Type *"
+            value={businessType}
+            onChangeText={setBusinessType}
+            mode="outlined"
+            placeholder="e.g., Retail, Wholesale, Restaurant"
+            style={styles.input}
+          />
+
+          <TextInput
             label="Email *"
             value={email}
             onChangeText={setEmail}
@@ -62,16 +73,17 @@ export default function NewOrganizationScreen({ navigation }: any) {
           />
 
           <TextInput
-            label="Phone"
+            label="Phone *"
             value={phone}
             onChangeText={setPhone}
             mode="outlined"
             keyboardType="phone-pad"
+            placeholder="+250788123456"
             style={styles.input}
           />
 
           <TextInput
-            label="Address"
+            label="Address *"
             value={address}
             onChangeText={setAddress}
             mode="outlined"
