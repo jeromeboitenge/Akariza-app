@@ -31,15 +31,16 @@ export default function ReportsScreen() {
 
   const generateReport = async () => {
     setLoading(true);
+    setReport(null);
     try {
       const { start, end } = getDateRange();
       let data;
+      
+      console.log('📊 Generating report:', reportType, 'Period:', period);
+      
       switch (reportType) {
         case 'sales':
           data = await reportsApi.getSales(start, end);
-          break;
-        case 'purchases':
-          data = await reportsApi.getPurchases(start, end);
           break;
         case 'profit':
           data = await reportsApi.getProfit(start, end);
@@ -47,11 +48,16 @@ export default function ReportsScreen() {
         case 'stock':
           data = await reportsApi.getStock();
           break;
+        case 'bestselling':
+          data = await reportsApi.getBestSelling(10);
+          break;
       }
+      
+      console.log('✅ Report data:', data);
       setReport(data);
     } catch (error: any) {
-      console.error('Report error:', error.response?.data || error);
-      alert(error.response?.data?.message || 'Failed to generate report');
+      console.error('❌ Report error:', error.response?.data || error);
+      alert(error.response?.data?.message || error.message || 'Failed to generate report');
     } finally {
       setLoading(false);
     }
@@ -70,12 +76,12 @@ export default function ReportsScreen() {
             style={styles.picker}
           >
             <Picker.Item label="Sales Report" value="sales" />
-            <Picker.Item label="Purchases Report" value="purchases" />
             <Picker.Item label="Profit/Loss Report" value="profit" />
-            <Picker.Item label="Stock Report" value="stock" />
+            <Picker.Item label="Low Stock Report" value="stock" />
+            <Picker.Item label="Best Selling Products" value="bestselling" />
           </Picker>
 
-          {reportType !== 'stock' && (
+          {reportType !== 'stock' && reportType !== 'bestselling' && (
             <>
               <Paragraph style={styles.marginTop}>Period</Paragraph>
               <Picker
@@ -106,34 +112,56 @@ export default function ReportsScreen() {
         <Card style={styles.card}>
           <Card.Content>
             <Title>Report Results</Title>
+            
             {reportType === 'sales' && (
               <>
-                <Paragraph style={styles.stat}>Total Sales: ${report.totalSales?.toFixed(2) || '0.00'}</Paragraph>
-                <Paragraph style={styles.stat}>Transactions: {report.items?.length || 0}</Paragraph>
+                <Paragraph style={styles.stat}>Total Sales: ${report.totalSales?.toFixed(2) || report.total?.toFixed(2) || '0.00'}</Paragraph>
+                <Paragraph style={styles.stat}>Transactions: {report.count || report.items?.length || 0}</Paragraph>
+                <Paragraph style={styles.stat}>Average: ${report.average?.toFixed(2) || '0.00'}</Paragraph>
               </>
             )}
-            {reportType === 'purchases' && (
-              <>
-                <Paragraph style={styles.stat}>Total Purchases: ${report.totalPurchases?.toFixed(2) || '0.00'}</Paragraph>
-                <Paragraph style={styles.stat}>Orders: {report.items?.length || 0}</Paragraph>
-              </>
-            )}
+            
             {reportType === 'profit' && (
               <>
-                <Paragraph style={styles.stat}>Total Sales: ${report.totalSales?.toFixed(2) || '0.00'}</Paragraph>
+                <Paragraph style={styles.stat}>Total Revenue: ${report.totalRevenue?.toFixed(2) || '0.00'}</Paragraph>
                 <Paragraph style={styles.stat}>Total Expenses: ${report.totalExpenses?.toFixed(2) || '0.00'}</Paragraph>
+                <Paragraph style={styles.stat}>Cost of Goods: ${report.totalCost?.toFixed(2) || '0.00'}</Paragraph>
                 <Paragraph style={[styles.stat, styles.profit]}>
-                  Net Profit: ${report.profit?.toFixed(2) || '0.00'}
+                  Net Profit: ${report.netProfit?.toFixed(2) || report.profit?.toFixed(2) || '0.00'}
+                </Paragraph>
+                <Paragraph style={styles.stat}>
+                  Profit Margin: {report.profitMargin?.toFixed(1) || '0.0'}%
                 </Paragraph>
               </>
             )}
-            {reportType === 'stock' && report.items && (
+            
+            {reportType === 'stock' && (
               <>
-                <Paragraph style={styles.stat}>Total Products: {report.items.length}</Paragraph>
-                <Paragraph style={styles.stat}>
-                  Total Value: ${report.items.reduce((sum: number, item: any) => 
-                    sum + (item.currentStock * item.costPrice), 0).toFixed(2)}
-                </Paragraph>
+                <Paragraph style={styles.stat}>Low Stock Items: {report.length || report.items?.length || 0}</Paragraph>
+                {report.length > 0 && (
+                  <View style={styles.itemsList}>
+                    {report.slice(0, 5).map((item: any, index: number) => (
+                      <Paragraph key={index} style={styles.item}>
+                        • {item.name}: {item.currentStock || item.stock} units
+                      </Paragraph>
+                    ))}
+                  </View>
+                )}
+              </>
+            )}
+            
+            {reportType === 'bestselling' && (
+              <>
+                <Paragraph style={styles.stat}>Top Products: {report.length || 0}</Paragraph>
+                {report.length > 0 && (
+                  <View style={styles.itemsList}>
+                    {report.map((item: any, index: number) => (
+                      <Paragraph key={index} style={styles.item}>
+                        {index + 1}. {item.name}: {item.totalSold || item.quantity} sold
+                      </Paragraph>
+                    ))}
+                  </View>
+                )}
               </>
             )}
           </Card.Content>
@@ -152,4 +180,6 @@ const styles = StyleSheet.create({
   center: { padding: 32, alignItems: 'center' },
   stat: { fontSize: 16, marginVertical: 8 },
   profit: { fontWeight: 'bold', color: '#4caf50', fontSize: 18 },
+  itemsList: { marginTop: 12, paddingLeft: 8 },
+  item: { marginVertical: 2, fontSize: 14, color: '#666' },
 });

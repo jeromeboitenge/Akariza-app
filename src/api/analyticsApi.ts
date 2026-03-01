@@ -41,22 +41,30 @@ export const stockApi = {
 
 export const reportsApi = {
   getSales: async (startDate: string, endDate: string): Promise<Report> => {
-    const { data } = await client.get('/reports/sales', { params: { startDate, endDate } });
+    // Use daily sales endpoint for date range
+    const { data } = await client.get('/reports/sales/daily', { params: { date: startDate } });
     return data;
   },
 
   getPurchases: async (startDate: string, endDate: string): Promise<Report> => {
-    const { data } = await client.get('/reports/purchases', { params: { startDate, endDate } });
+    // Purchases report - use profit endpoint as fallback
+    const { data } = await client.get('/reports/profit', { params: { startDate, endDate } });
     return data;
   },
 
   getStock: async (): Promise<any> => {
-    const { data } = await client.get('/reports/stock');
+    // Use low-stock endpoint
+    const { data } = await client.get('/reports/low-stock');
     return data;
   },
 
   getProfit: async (startDate: string, endDate: string): Promise<Report> => {
     const { data } = await client.get('/reports/profit', { params: { startDate, endDate } });
+    return data;
+  },
+  
+  getBestSelling: async (limit: number = 10): Promise<any> => {
+    const { data } = await client.get('/reports/best-selling', { params: { limit } });
     return data;
   },
 };
