@@ -49,7 +49,7 @@ export default function EmployeesScreen({ navigation }: any) {
   };
 
   const renderEmployee = ({ item }: { item: any }) => (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('EditUser', { userId: item.id, userData: item })}>
       <Card style={styles.card}>
         <Card.Content>
           <View style={styles.cardHeader}>
