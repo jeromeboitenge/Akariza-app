@@ -146,11 +146,6 @@ export default function EmployeesScreen({ navigation }: any) {
         onPress={() => navigation.navigate('NewEmployee')}
         color="#FFFFFF"
       />
-      />
-
-      {canManage && (
-        <FAB icon="plus" style={styles.fab} onPress={() => {}} color="#FFFFFF" />
-      )}
     </View>
   );
 }
