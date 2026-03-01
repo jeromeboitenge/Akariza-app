@@ -166,6 +166,22 @@ export default function DashboardScreen({ navigation }: any) {
 
       <View style={styles.metricsContainer}>
         <MetricCard
+          icon="account-group"
+          value={stats?.totalEmployees || 0}
+          label="Employees"
+          color={colors.primary}
+          onPress={() => navigation.navigate('Employees')}
+        />
+        <MetricCard
+          icon="store"
+          value={stats?.totalBranches || 1}
+          label="My Branches"
+          color={colors.info}
+        />
+      </View>
+
+      <View style={styles.metricsContainer}>
+        <MetricCard
           icon="package-variant"
           value={stats?.totalProducts || 0}
           label="Products"
