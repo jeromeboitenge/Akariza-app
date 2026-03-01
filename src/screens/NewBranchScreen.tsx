@@ -29,7 +29,6 @@ export default function NewBranchScreen({ route, navigation }: any) {
         email: email || undefined,
         isMainBranch,
         isActive: true,
-        organizationId: orgId,
       };
       
       console.log('Creating branch with:', payload);
