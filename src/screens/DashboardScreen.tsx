@@ -224,15 +224,63 @@ export default function DashboardScreen({ navigation }: any) {
 
   const renderBossDashboard = () => (
     <>
-      {/* Executive Summary */}
+      {/* Organization Overview */}
+      <Card style={styles.sectionCard}>
+        <Card.Content>
+          <View style={styles.sectionHeader}>
+            <Avatar.Icon size={40} icon="domain" style={{ backgroundColor: colors.primary }} />
+            <Title style={styles.sectionTitle}>Organization Overview</Title>
+          </View>
+          
+          <View style={styles.metricsGrid}>
+            <View style={styles.statBox}>
+              <LinearGradient colors={['#4CAF50', '#388E3C']} style={styles.statGradient}>
+                <Avatar.Icon size={48} icon="store" color="#FFF" style={styles.statIcon} />
+                <Title style={styles.statValue}>{stats?.totalBranches || 0}</Title>
+                <Text style={styles.statLabel}>Branches</Text>
+              </LinearGradient>
+            </View>
+            
+            <View style={styles.statBox}>
+              <LinearGradient colors={['#2196F3', '#1976D2']} style={styles.statGradient}>
+                <Avatar.Icon size={48} icon="account-group" color="#FFF" style={styles.statIcon} />
+                <Title style={styles.statValue}>{stats?.totalEmployees || 0}</Title>
+                <Text style={styles.statLabel}>Employees</Text>
+              </LinearGradient>
+            </View>
+            
+            <View style={styles.statBox}>
+              <LinearGradient colors={['#FF9800', '#F57C00']} style={styles.statGradient}>
+                <Avatar.Icon size={48} icon="account-multiple" color="#FFF" style={styles.statIcon} />
+                <Title style={styles.statValue}>{stats?.totalCustomers || 0}</Title>
+                <Text style={styles.statLabel}>Customers</Text>
+              </LinearGradient>
+            </View>
+            
+            <View style={styles.statBox}>
+              <LinearGradient colors={['#9C27B0', '#7B1FA2']} style={styles.statGradient}>
+                <Avatar.Icon size={48} icon="package-variant" color="#FFF" style={styles.statIcon} />
+                <Title style={styles.statValue}>{stats?.totalProducts || 0}</Title>
+                <Text style={styles.statLabel}>Products</Text>
+              </LinearGradient>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
+
+      {/* Financial Summary */}
       <Card style={styles.executiveCard}>
         <LinearGradient colors={['#1976D2', '#1565C0']} style={styles.executiveGradient}>
-          <Text style={styles.executiveLabel}>Total Revenue</Text>
+          <Text style={styles.executiveLabel}>Total Revenue (Today)</Text>
           <Title style={styles.executiveValue}>${(stats?.todaySales || 0).toFixed(2)}</Title>
           <View style={styles.executiveRow}>
             <View style={styles.executiveStat}>
               <Text style={styles.executiveStatLabel}>Profit</Text>
               <Text style={styles.executiveStatValue}>${(stats?.todayProfit || 0).toFixed(2)}</Text>
+            </View>
+            <View style={styles.executiveStat}>
+              <Text style={styles.executiveStatLabel}>Transactions</Text>
+              <Text style={styles.executiveStatValue}>{stats?.todayTransactions || 0}</Text>
             </View>
             <View style={styles.executiveStat}>
               <Text style={styles.executiveStatLabel}>Margin</Text>
@@ -244,16 +292,37 @@ export default function DashboardScreen({ navigation }: any) {
         </LinearGradient>
       </Card>
 
-      {/* KPI Grid */}
-      <View style={styles.metricsContainer}>
-        <MetricCard icon="receipt" value={stats?.todayTransactions || 0} label="Transactions" color={colors.success} trend={12} />
-        <MetricCard icon="account-group" value={stats?.totalCustomers || 0} label="Customers" color={colors.info} />
-      </View>
-
-      <View style={styles.metricsContainer}>
-        <MetricCard icon="package-variant" value={stats?.totalProducts || 0} label="Products" color={colors.warning} />
-        <MetricCard icon="alert-circle" value={stats?.lowStockCount || 0} label="Alerts" color={colors.error} />
-      </View>
+      {/* All-Time Stats */}
+      <Card style={styles.sectionCard}>
+        <Card.Content>
+          <View style={styles.sectionHeader}>
+            <Avatar.Icon size={40} icon="chart-line" style={{ backgroundColor: colors.success }} />
+            <Title style={styles.sectionTitle}>All-Time Performance</Title>
+          </View>
+          
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.statItemValue}>${(stats?.totalRevenue || 0).toFixed(0)}</Text>
+              <Text style={styles.statItemLabel}>Total Revenue</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statItemValue}>{stats?.totalSales || 0}</Text>
+              <Text style={styles.statItemLabel}>Total Sales</Text>
+            </View>
+          </View>
+          
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.statItemValue}>${(stats?.totalPurchases || 0).toFixed(0)}</Text>
+              <Text style={styles.statItemLabel}>Purchases</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statItemValue}>${(stats?.totalExpenses || 0).toFixed(0)}</Text>
+              <Text style={styles.statItemLabel}>Expenses</Text>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
 
       {/* Performance Chart */}
       {trends && trends.data && (
@@ -261,10 +330,9 @@ export default function DashboardScreen({ navigation }: any) {
           <Card.Content>
             <View style={styles.sectionHeader}>
               <View>
-                <Title style={styles.sectionTitle}>Business Performance</Title>
-                <Text style={styles.chartSubtitle}>Weekly sales overview</Text>
+                <Title style={styles.sectionTitle}>Sales Trend</Title>
+                <Text style={styles.chartSubtitle}>Last 7 days performance</Text>
               </View>
-              <IconButton icon="filter-variant" size={24} />
             </View>
             <LineChart
               data={{
@@ -289,7 +357,7 @@ export default function DashboardScreen({ navigation }: any) {
         </Card>
       )}
 
-      {/* Alerts & Insights */}
+      {/* Alerts */}
       {stats && stats.lowStockCount > 0 && (
         <Card style={styles.alertCard}>
           <Card.Content>
@@ -307,23 +375,19 @@ export default function DashboardScreen({ navigation }: any) {
         </Card>
       )}
 
-      {/* Quick Insights */}
+      {/* Quick Actions */}
       <Card style={styles.sectionCard}>
         <Card.Content>
-          <Title style={styles.sectionTitle}>Quick Insights</Title>
-          <View style={styles.insightRow}>
-            <Avatar.Icon size={40} icon="trending-up" style={{ backgroundColor: colors.success }} />
-            <View style={styles.insightContent}>
-              <Text style={styles.insightTitle}>Sales up 15%</Text>
-              <Text style={styles.insightSubtitle}>Compared to last week</Text>
-            </View>
+          <View style={styles.sectionHeader}>
+            <Avatar.Icon size={40} icon="lightning-bolt" style={{ backgroundColor: colors.error }} />
+            <Title style={styles.sectionTitle}>Quick Actions</Title>
           </View>
-          <View style={styles.insightRow}>
-            <Avatar.Icon size={40} icon="account-multiple" style={{ backgroundColor: colors.info }} />
-            <View style={styles.insightContent}>
-              <Text style={styles.insightTitle}>5 new customers</Text>
-              <Text style={styles.insightSubtitle}>This week</Text>
-            </View>
+          
+          <View style={styles.quickActionsGrid}>
+            <QuickActionCard icon="store" label="Branches" color="#4CAF50" onPress={() => navigation.navigate('Branches')} />
+            <QuickActionCard icon="account-group" label="Employees" color="#2196F3" onPress={() => navigation.navigate('Employees')} />
+            <QuickActionCard icon="message" label="Messages" color="#9C27B0" onPress={() => navigation.navigate('Messages')} />
+            <QuickActionCard icon="chart-box" label="Reports" color="#FF9800" onPress={() => navigation.navigate('Reports')} />
           </View>
         </Card.Content>
       </Card>
@@ -526,6 +590,11 @@ const styles = StyleSheet.create({
   statIcon: { backgroundColor: 'rgba(255,255,255,0.2)', marginBottom: 8 },
   statValue: { fontSize: 28, fontWeight: 'bold', color: '#FFF', marginBottom: 4 },
   statLabel: { fontSize: 12, color: '#FFF', opacity: 0.9, textAlign: 'center' },
+  
+  statsRow: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 8 },
+  statItem: { alignItems: 'center', flex: 1 },
+  statItemValue: { fontSize: 24, fontWeight: 'bold', color: '#1976D2', marginBottom: 4 },
+  statItemLabel: { fontSize: 13, color: '#757575', textAlign: 'center' },
   
   quickActionsGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },
   quickAction: { width: '50%', padding: 6 },
