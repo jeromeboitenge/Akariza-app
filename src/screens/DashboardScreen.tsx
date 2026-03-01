@@ -332,19 +332,122 @@ export default function DashboardScreen({ navigation }: any) {
 
   const renderAdminDashboard = () => (
     <>
-      <View style={styles.metricsContainer}>
-        <MetricCard icon="domain" value={stats?.totalProducts || 0} label="Organizations" color={colors.primary} />
-        <MetricCard icon="account-multiple" value={stats?.totalCustomers || 0} label="Users" color={colors.info} />
-      </View>
-
+      {/* Platform Overview */}
       <Card style={styles.sectionCard}>
         <Card.Content>
-          <Title style={styles.sectionTitle}>System Management</Title>
+          <View style={styles.sectionHeader}>
+            <Avatar.Icon size={40} icon="view-dashboard" style={{ backgroundColor: colors.primary }} />
+            <Title style={styles.sectionTitle}>Platform Overview</Title>
+          </View>
+          
+          <View style={styles.metricsGrid}>
+            <View style={styles.statBox}>
+              <LinearGradient colors={['#1976D2', '#1565C0']} style={styles.statGradient}>
+                <Avatar.Icon size={48} icon="domain" color="#FFF" style={styles.statIcon} />
+                <Title style={styles.statValue}>{stats?.totalProducts || 0}</Title>
+                <Text style={styles.statLabel}>Organizations</Text>
+              </LinearGradient>
+            </View>
+            
+            <View style={styles.statBox}>
+              <LinearGradient colors={['#4CAF50', '#388E3C']} style={styles.statGradient}>
+                <Avatar.Icon size={48} icon="account-multiple" color="#FFF" style={styles.statIcon} />
+                <Title style={styles.statValue}>{stats?.totalCustomers || 0}</Title>
+                <Text style={styles.statLabel}>Total Users</Text>
+              </LinearGradient>
+            </View>
+            
+            <View style={styles.statBox}>
+              <LinearGradient colors={['#FF9800', '#F57C00']} style={styles.statGradient}>
+                <Avatar.Icon size={48} icon="store" color="#FFF" style={styles.statIcon} />
+                <Title style={styles.statValue}>{stats?.lowStockCount || 0}</Title>
+                <Text style={styles.statLabel}>Active Branches</Text>
+              </LinearGradient>
+            </View>
+            
+            <View style={styles.statBox}>
+              <LinearGradient colors={['#9C27B0', '#7B1FA2']} style={styles.statGradient}>
+                <Avatar.Icon size={48} icon="cash-multiple" color="#FFF" style={styles.statIcon} />
+                <Title style={styles.statValue}>${stats?.totalRevenue?.toFixed(0) || '0'}</Title>
+                <Text style={styles.statLabel}>Total Revenue</Text>
+              </LinearGradient>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
+
+      {/* System Management */}
+      <Card style={styles.sectionCard}>
+        <Card.Content>
+          <View style={styles.sectionHeader}>
+            <Avatar.Icon size={40} icon="cog" style={{ backgroundColor: colors.warning }} />
+            <Title style={styles.sectionTitle}>System Management</Title>
+          </View>
+          
           <View style={styles.quickActionsGrid}>
-            <QuickActionCard icon="domain" label="Organizations" color={colors.primary} onPress={() => navigation.navigate('AdminOrganizations')} />
-            <QuickActionCard icon="account-group" label="Users" color={colors.info} onPress={() => navigation.navigate('AdminUsers')} />
-            <QuickActionCard icon="chart-box" label="Analytics" color={colors.warning} onPress={() => navigation.navigate('AdminAnalytics')} />
-            <QuickActionCard icon="cog" label="Settings" color={colors.textSecondary} onPress={() => navigation.navigate('AdminSettings')} />
+            <QuickActionCard 
+              icon="domain" 
+              label="Organizations" 
+              color="#1976D2" 
+              onPress={() => navigation.navigate('Organizations')} 
+            />
+            <QuickActionCard 
+              icon="account-group" 
+              label="All Users" 
+              color="#4CAF50" 
+              onPress={() => navigation.navigate('AdminUsers')} 
+            />
+            <QuickActionCard 
+              icon="chart-line" 
+              label="Analytics" 
+              color="#FF9800" 
+              onPress={() => navigation.navigate('AdminAnalytics')} 
+            />
+            <QuickActionCard 
+              icon="database" 
+              label="Database" 
+              color="#9C27B0" 
+              onPress={() => {}} 
+            />
+          </View>
+        </Card.Content>
+      </Card>
+
+      {/* Quick Actions */}
+      <Card style={styles.sectionCard}>
+        <Card.Content>
+          <View style={styles.sectionHeader}>
+            <Avatar.Icon size={40} icon="lightning-bolt" style={{ backgroundColor: colors.error }} />
+            <Title style={styles.sectionTitle}>Quick Actions</Title>
+          </View>
+          
+          <View style={styles.actionsList}>
+            <TouchableOpacity style={styles.actionItem} onPress={() => navigation.navigate('NewOrganization')}>
+              <Avatar.Icon size={40} icon="plus-circle" style={{ backgroundColor: colors.success }} />
+              <View style={styles.actionContent}>
+                <Text style={styles.actionTitle}>Add Organization</Text>
+                <Text style={styles.actionSubtitle}>Create new organization</Text>
+              </View>
+              <IconButton icon="chevron-right" size={24} />
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.actionItem} onPress={() => navigation.navigate('AdminSettings')}>
+              <Avatar.Icon size={40} icon="cog-outline" style={{ backgroundColor: colors.info }} />
+              <View style={styles.actionContent}>
+                <Text style={styles.actionTitle}>System Settings</Text>
+                <Text style={styles.actionSubtitle}>Configure platform settings</Text>
+              </View>
+              <IconButton icon="chevron-right" size={24} />
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.actionItem} onPress={() => navigation.navigate('Reports')}>
+              <Avatar.Icon size={40} icon="file-chart" style={{ backgroundColor: colors.warning }} />
+              <View style={styles.actionContent}>
+                <Text style={styles.actionTitle}>System Reports</Text>
+                <Text style={styles.actionSubtitle}>View platform analytics</Text>
+              </View>
+              <IconButton icon="chevron-right" size={24} />
+            </TouchableOpacity>
           </View>
         </Card.Content>
       </Card>
@@ -414,13 +517,26 @@ const styles = StyleSheet.create({
   metricLabel: { fontSize: 12, color: '#FFFFFF', opacity: 0.95 },
   
   sectionCard: { marginHorizontal: 16, marginBottom: 12, elevation: 3, borderRadius: 16 },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1976D2' },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1976D2', marginLeft: 12 },
+  
+  metricsGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },
+  statBox: { width: '50%', padding: 6 },
+  statGradient: { padding: 16, borderRadius: 12, alignItems: 'center', elevation: 2 },
+  statIcon: { backgroundColor: 'rgba(255,255,255,0.2)', marginBottom: 8 },
+  statValue: { fontSize: 28, fontWeight: 'bold', color: '#FFF', marginBottom: 4 },
+  statLabel: { fontSize: 12, color: '#FFF', opacity: 0.9, textAlign: 'center' },
   
   quickActionsGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },
   quickAction: { width: '50%', padding: 6 },
   quickActionSurface: { padding: 16, borderRadius: 12, alignItems: 'center', elevation: 2 },
   quickActionLabel: { marginTop: 8, fontSize: 13, fontWeight: '600', color: '#424242', textAlign: 'center' },
+  
+  actionsList: { gap: 8 },
+  actionItem: { flexDirection: 'row', alignItems: 'center', padding: 12, backgroundColor: '#F5F5F5', borderRadius: 12 },
+  actionContent: { flex: 1, marginLeft: 12 },
+  actionTitle: { fontSize: 15, fontWeight: '600', color: '#424242', marginBottom: 2 },
+  actionSubtitle: { fontSize: 13, color: '#757575' },
   
   chartCard: { marginHorizontal: 16, marginBottom: 12, elevation: 3, borderRadius: 16 },
   chartPeriod: { fontSize: 12, color: '#757575' },
