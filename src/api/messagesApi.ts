@@ -7,7 +7,12 @@ export const messagesApi = {
     return data;
   },
 
-  send: async (message: { receiverId?: string; message: string }): Promise<Message> => {
+  send: async (message: { 
+    receiverId?: string; 
+    branchId?: string; 
+    toOrganization?: boolean; 
+    message: string 
+  }): Promise<Message> => {
     const { data } = await client.post('/messages', message);
     return data;
   },

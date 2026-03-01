@@ -33,6 +33,7 @@ import PromotionsScreen from '../screens/PromotionsScreen';
 import NewPromotionScreen from '../screens/NewPromotionScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import MessagesScreen from '../screens/MessagesScreen';
+import ComposeMessageScreen from '../screens/ComposeMessageScreen';
 import ChatScreen from '../screens/ChatScreen';
 import ReportsScreen from '../screens/ReportsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -113,6 +114,7 @@ export default function MainNavigator() {
         <Stack.Screen name="NewPromotion" component={NewPromotionScreen} options={{ title: 'New Promotion' }} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notifications' }} />
         <Stack.Screen name="Messages" component={MessagesScreen} options={{ title: 'Messages' }} />
+        <Stack.Screen name="ComposeMessage" component={ComposeMessageScreen} options={{ title: 'New Message' }} />
         <Stack.Screen name="Chat" component={ChatScreen} options={({ route }: any) => ({ title: route.params?.userName || 'Chat' })} />
         <Stack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports & Analytics' }} />
       </Stack.Navigator>

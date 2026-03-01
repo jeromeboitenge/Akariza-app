@@ -60,6 +60,21 @@ export default function MessagesScreen({ navigation }: any) {
         data={messages}
         renderItem={renderMessage}
         keyExtractor={(item) => item.id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadMessages(); }} />
+        }
+      />
+      
+      <FAB
+        icon="pencil"
+        style={styles.fab}
+        onPress={() => navigation.navigate('ComposeMessage')}
+        color="#FFFFFF"
+      />
+    </View>
+  );
+        renderItem={renderMessage}
+        keyExtractor={(item) => item.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadMessages(); }} />}
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -80,6 +95,6 @@ const styles = StyleSheet.create({
   sender: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
   time: { fontSize: 12, color: '#666', marginTop: 4 },
   badge: { backgroundColor: '#6200ee' },
-  fab: { position: 'absolute', right: 16, bottom: 16 },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
   empty: { padding: 32, alignItems: 'center' },
 });
