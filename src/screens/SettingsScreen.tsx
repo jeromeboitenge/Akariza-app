@@ -117,6 +117,13 @@ export default function SettingsScreen({ navigation }: any) {
               color="#2196F3"
             />
             <MenuItem
+              icon="account-plus"
+              title="Add Employee"
+              subtitle="Add new manager or cashier"
+              onPress={() => navigation.navigate('NewEmployee')}
+              color="#4CAF50"
+            />
+            <MenuItem
               icon="cash-minus"
               title="Expenses"
               subtitle="Track business expenses"
