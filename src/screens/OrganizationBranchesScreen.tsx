@@ -33,7 +33,7 @@ export default function OrganizationBranchesScreen({ route, navigation }: any) {
           <Avatar.Icon 
             size={56} 
             icon="store" 
-            style={[styles.avatar, { backgroundColor: item.isMainBranch ? '#4CAF50' : '#2196F3' }]} 
+            style={[styles.avatar, { backgroundColor: item.isMainBranch ? '#4CAF50' : '#7B88F5' }]} 
           />
           <View style={styles.headerContent}>
             <Title style={styles.branchName}>{item.name}</Title>
@@ -82,7 +82,7 @@ export default function OrganizationBranchesScreen({ route, navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -94,7 +94,7 @@ export default function OrganizationBranchesScreen({ route, navigation }: any) {
         renderItem={renderBranch}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadBranches(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadBranches(); }} colors={['#5C6BF2']} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -124,11 +124,11 @@ const styles = StyleSheet.create({
   divider: { marginVertical: 12 },
   infoContainer: { backgroundColor: '#F5F7FA', padding: 12, borderRadius: 8, marginBottom: 12 },
   infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  infoIcon: { backgroundColor: '#1976D2', width: 20, height: 20, marginRight: 8 },
+  infoIcon: { backgroundColor: '#5C6BF2', width: 20, height: 20, marginRight: 8 },
   infoText: { fontSize: 13, color: '#212121', flex: 1 },
   statsRow: { flexDirection: 'row', gap: 8 },
   statChip: { backgroundColor: '#E3F2FD' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { alignItems: 'center', padding: 48 },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },
   emptyText: { color: '#757575', marginTop: 8 },

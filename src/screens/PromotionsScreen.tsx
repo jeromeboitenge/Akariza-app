@@ -106,7 +106,7 @@ export default function PromotionsScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -124,7 +124,7 @@ export default function PromotionsScreen({ navigation }: any) {
         renderItem={renderPromotion}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadPromotions(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadPromotions(); }} colors={['#5C6BF2']} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
   discountValue: { fontSize: 28, fontWeight: 'bold', color: '#4CAF50' },
   dateContainer: { marginBottom: 12 },
   dateRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  dateIcon: { backgroundColor: '#1976D2', width: 20, height: 20, marginRight: 8 },
+  dateIcon: { backgroundColor: '#5C6BF2', width: 20, height: 20, marginRight: 8 },
   dateText: { fontSize: 13, color: '#212121' },
   minPurchaseChip: { backgroundColor: '#FFF3E0', alignSelf: 'flex-start' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { alignItems: 'center', padding: 32 },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },
 });

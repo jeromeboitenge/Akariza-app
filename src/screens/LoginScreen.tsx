@@ -171,7 +171,7 @@ export default function LoginScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1976D2' },
+  container: { flex: 1, backgroundColor: '#5C6BF2' },
   header: { paddingTop: 80, paddingBottom: 40, alignItems: 'center' },
   title: { fontSize: 48, fontWeight: 'bold', color: '#fff', marginBottom: 8 },
   subtitle: { fontSize: 18, color: '#E3F2FD' },

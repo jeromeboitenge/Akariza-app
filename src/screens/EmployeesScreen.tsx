@@ -40,7 +40,7 @@ export default function EmployeesScreen({ navigation }: any) {
       'MANAGER': '#FF9800',
       'CASHIER': '#4CAF50',
     };
-    return colors[role] || '#1976D2';
+    return colors[role] || '#5C6BF2';
   };
 
   const getInitials = (name: string) => {
@@ -96,7 +96,7 @@ export default function EmployeesScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -109,7 +109,7 @@ export default function EmployeesScreen({ navigation }: any) {
           onChangeText={setSearch}
           value={search}
           style={styles.search}
-          iconColor="#1976D2"
+          iconColor="#5C6BF2"
         />
         <View style={styles.statsRow}>
           <Chip icon="account-group" style={styles.statChip}>
@@ -129,7 +129,7 @@ export default function EmployeesScreen({ navigation }: any) {
         renderItem={renderEmployee}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadEmployees(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadEmployees(); }} colors={['#5C6BF2']} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -166,10 +166,10 @@ const styles = StyleSheet.create({
   divider: { marginVertical: 12 },
   infoContainer: { backgroundColor: '#F5F7FA', padding: 12, borderRadius: 8 },
   infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  infoIcon: { backgroundColor: '#1976D2', width: 24, height: 24, marginRight: 12 },
+  infoIcon: { backgroundColor: '#5C6BF2', width: 24, height: 24, marginRight: 12 },
   infoText: { fontSize: 14, color: '#212121', flex: 1 },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { alignItems: 'center', padding: 32 },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },
 });

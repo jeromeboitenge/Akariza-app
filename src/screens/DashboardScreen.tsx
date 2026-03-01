@@ -51,7 +51,7 @@ export default function DashboardScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -197,9 +197,9 @@ export default function DashboardScreen({ navigation }: any) {
               width={screenWidth - 64}
               height={200}
               chartConfig={{
-                backgroundColor: '#1976D2',
-                backgroundGradientFrom: '#1976D2',
-                backgroundGradientTo: '#1565C0',
+                backgroundColor: '#5C6BF2',
+                backgroundGradientFrom: '#5C6BF2',
+                backgroundGradientTo: '#4A5AD6',
                 decimalPlaces: 0,
                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                 labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -248,7 +248,7 @@ export default function DashboardScreen({ navigation }: any) {
             </View>
             
             <View style={styles.statBox}>
-              <LinearGradient colors={['#2196F3', '#1976D2']} style={styles.statGradient}>
+              <LinearGradient colors={['#7B88F5', '#5C6BF2']} style={styles.statGradient}>
                 <Avatar.Icon size={48} icon="account-group" color="#FFF" style={styles.statIcon} />
                 <Title style={styles.statValue}>{stats?.totalEmployees || 0}</Title>
                 <Text style={styles.statLabel}>Employees</Text>
@@ -276,7 +276,7 @@ export default function DashboardScreen({ navigation }: any) {
 
       {/* Financial Summary */}
       <Card style={styles.executiveCard}>
-        <LinearGradient colors={['#1976D2', '#1565C0']} style={styles.executiveGradient}>
+        <LinearGradient colors={['#5C6BF2', '#4A5AD6']} style={styles.executiveGradient}>
           <Text style={styles.executiveLabel}>Total Revenue (Today)</Text>
           <Title style={styles.executiveValue}>${(stats?.todaySales || 0).toFixed(2)}</Title>
           <View style={styles.executiveRow}>
@@ -348,9 +348,9 @@ export default function DashboardScreen({ navigation }: any) {
               width={screenWidth - 64}
               height={220}
               chartConfig={{
-                backgroundColor: '#1976D2',
-                backgroundGradientFrom: '#1976D2',
-                backgroundGradientTo: '#1565C0',
+                backgroundColor: '#5C6BF2',
+                backgroundGradientFrom: '#5C6BF2',
+                backgroundGradientTo: '#4A5AD6',
                 decimalPlaces: 0,
                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                 labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -391,7 +391,7 @@ export default function DashboardScreen({ navigation }: any) {
           
           <View style={styles.quickActionsGrid}>
             <QuickActionCard icon="store" label="Branches" color="#4CAF50" onPress={() => navigation.navigate('Branches')} />
-            <QuickActionCard icon="account-group" label="Employees" color="#2196F3" onPress={() => navigation.navigate('Employees')} />
+            <QuickActionCard icon="account-group" label="Employees" color="#7B88F5" onPress={() => navigation.navigate('Employees')} />
             <QuickActionCard icon="message" label="Messages" color="#9C27B0" onPress={() => navigation.navigate('Messages')} />
             <QuickActionCard icon="chart-box" label="Reports" color="#FF9800" onPress={() => navigation.navigate('Reports')} />
           </View>
@@ -412,7 +412,7 @@ export default function DashboardScreen({ navigation }: any) {
           
           <View style={styles.metricsGrid}>
             <View style={styles.statBox}>
-              <LinearGradient colors={['#1976D2', '#1565C0']} style={styles.statGradient}>
+              <LinearGradient colors={['#5C6BF2', '#4A5AD6']} style={styles.statGradient}>
                 <Avatar.Icon size={48} icon="domain" color="#FFF" style={styles.statIcon} />
                 <Title style={styles.statValue}>{stats?.totalProducts || 0}</Title>
                 <Text style={styles.statLabel}>Organizations</Text>
@@ -458,7 +458,7 @@ export default function DashboardScreen({ navigation }: any) {
             <QuickActionCard 
               icon="domain" 
               label="Organizations" 
-              color="#1976D2" 
+              color="#5C6BF2" 
               onPress={() => navigation.navigate('Organizations')} 
             />
             <QuickActionCard 
@@ -527,11 +527,11 @@ export default function DashboardScreen({ navigation }: any) {
   return (
     <ScrollView
       style={styles.container}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#1976D2']} />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#5C6BF2']} />}
       showsVerticalScrollIndicator={false}
     >
       {/* Header */}
-      <LinearGradient colors={['#1976D2', '#1565C0', '#0D47A1']} style={styles.header}>
+      <LinearGradient colors={['#5C6BF2', '#4A5AD6', '#4A5AD6']} style={styles.header}>
         <View style={styles.headerContent}>
           <View>
             <Text style={styles.greeting}>{getGreeting()}</Text>
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
   
   sectionCard: { marginHorizontal: 16, marginBottom: 12, elevation: 3, borderRadius: 16 },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1976D2', marginLeft: 12 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#5C6BF2', marginLeft: 12 },
   
   metricsGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },
   statBox: { width: '50%', padding: 6 },
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
   
   statsRow: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 8 },
   statItem: { alignItems: 'center', flex: 1 },
-  statItemValue: { fontSize: 24, fontWeight: 'bold', color: '#1976D2', marginBottom: 4 },
+  statItemValue: { fontSize: 24, fontWeight: 'bold', color: '#5C6BF2', marginBottom: 4 },
   statItemLabel: { fontSize: 13, color: '#757575', textAlign: 'center' },
   
   quickActionsGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },

@@ -86,7 +86,7 @@ export default function SuppliersScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -99,7 +99,7 @@ export default function SuppliersScreen({ navigation }: any) {
           onChangeText={setSearch}
           value={search}
           style={styles.search}
-          iconColor="#1976D2"
+          iconColor="#5C6BF2"
         />
         <Chip icon="truck" style={styles.statChip}>
           {filteredSuppliers.length} Suppliers
@@ -111,7 +111,7 @@ export default function SuppliersScreen({ navigation }: any) {
         renderItem={renderSupplier}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadSuppliers(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadSuppliers(); }} colors={['#5C6BF2']} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -149,9 +149,9 @@ const styles = StyleSheet.create({
   ratingContainer: { flexDirection: 'row', alignItems: 'center' },
   ratingIcon: { width: 32, height: 32, marginRight: 8 },
   ratingValue: { fontSize: 20, fontWeight: 'bold' },
-  creditValue: { fontSize: 20, fontWeight: 'bold', color: '#1976D2' },
+  creditValue: { fontSize: 20, fontWeight: 'bold', color: '#5C6BF2' },
   termsChip: { backgroundColor: '#E8F5E9', alignSelf: 'flex-start' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { alignItems: 'center', padding: 32 },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },
 });

@@ -50,11 +50,11 @@ export default function NotificationsScreen({ navigation }: any) {
     const colors: any = {
       'LOW_STOCK': '#F44336',
       'SALE': '#4CAF50',
-      'PURCHASE': '#2196F3',
+      'PURCHASE': '#7B88F5',
       'TASK': '#FF9800',
       'SYSTEM': '#9C27B0',
     };
-    return colors[type] || '#1976D2';
+    return colors[type] || '#5C6BF2';
   };
 
   const renderNotification = ({ item }: { item: Notification }) => (
@@ -88,7 +88,7 @@ export default function NotificationsScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -108,7 +108,7 @@ export default function NotificationsScreen({ navigation }: any) {
         renderItem={renderNotification}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadNotifications(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadNotifications(); }} colors={['#5C6BF2']} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -125,10 +125,10 @@ export default function NotificationsScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  unreadBanner: { backgroundColor: '#1976D2', padding: 12, alignItems: 'center' },
+  unreadBanner: { backgroundColor: '#5C6BF2', padding: 12, alignItems: 'center' },
   unreadText: { color: '#FFFFFF', fontWeight: 'bold' },
   card: { marginHorizontal: 16, marginVertical: 8, elevation: 2, borderRadius: 16 },
-  unreadCard: { elevation: 4, borderLeftWidth: 4, borderLeftColor: '#1976D2' },
+  unreadCard: { elevation: 4, borderLeftWidth: 4, borderLeftColor: '#5C6BF2' },
   cardHeader: { flexDirection: 'row', alignItems: 'flex-start' },
   avatar: { marginRight: 12 },
   headerContent: { flex: 1 },

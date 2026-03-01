@@ -1,9 +1,9 @@
 // Color palette for the app
 export const colors = {
   // Primary colors
-  primary: '#1976D2',
-  primaryDark: '#1565C0',
-  primaryLight: '#42A5F5',
+  primary: '#5C6BF2',
+  primaryDark: '#4A5AD6',
+  primaryLight: '#7B88F5',
   
   // Success (Green)
   success: '#4CAF50',

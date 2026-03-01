@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   card: { margin: 16, elevation: 4, borderRadius: 16 },
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#9C27B0' },
-  sectionTitle: { fontSize: 16, fontWeight: 'bold', marginTop: 16, marginBottom: 8, color: '#1976D2' },
+  sectionTitle: { fontSize: 16, fontWeight: 'bold', marginTop: 16, marginBottom: 8, color: '#5C6BF2' },
   input: { marginBottom: 12 },
   switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 16 },
   switchLabel: { fontSize: 16 },

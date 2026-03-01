@@ -17,7 +17,7 @@ export default function SettingsScreen({ navigation }: any) {
     clearData();
   };
 
-  const MenuItem = ({ icon, title, subtitle, onPress, color = '#1976D2' }: any) => (
+  const MenuItem = ({ icon, title, subtitle, onPress, color = '#5C6BF2' }: any) => (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.menuItem}>
         <Avatar.Icon size={48} icon={icon} style={[styles.menuIcon, { backgroundColor: `${color}20` }]} color={color} />
@@ -81,7 +81,7 @@ export default function SettingsScreen({ navigation }: any) {
                 title="Purchases"
                 subtitle="View all purchases"
                 onPress={() => navigation.navigate('Purchases')}
-                color="#2196F3"
+                color="#7B88F5"
               />
               <MenuItem
                 icon="truck"
@@ -114,7 +114,7 @@ export default function SettingsScreen({ navigation }: any) {
               title="Employees"
               subtitle="Manage staff members"
               onPress={() => navigation.navigate('Employees')}
-              color="#2196F3"
+              color="#7B88F5"
             />
             <MenuItem
               icon="account-plus"
@@ -166,7 +166,7 @@ export default function SettingsScreen({ navigation }: any) {
             title="Messages"
             subtitle="Team communication"
             onPress={() => navigation.navigate('Messages')}
-            color="#2196F3"
+            color="#7B88F5"
           />
           <MenuItem
             icon="bell"
@@ -205,21 +205,21 @@ export default function SettingsScreen({ navigation }: any) {
           <List.Item
             title="Sync Data"
             description="Sync offline data with server"
-            left={(props) => <List.Icon {...props} icon="sync" color="#1976D2" />}
+            left={(props) => <List.Icon {...props} icon="sync" color="#5C6BF2" />}
             onPress={() => {}}
           />
           <Divider />
           <List.Item
             title="Clear Cache"
             description="Clear local cached data"
-            left={(props) => <List.Icon {...props} icon="delete" color="#1976D2" />}
+            left={(props) => <List.Icon {...props} icon="delete" color="#5C6BF2" />}
             onPress={clearData}
           />
           <Divider />
           <List.Item
             title="About"
             description="Version 1.0.0"
-            left={(props) => <List.Icon {...props} icon="information" color="#1976D2" />}
+            left={(props) => <List.Icon {...props} icon="information" color="#5C6BF2" />}
           />
         </Card.Content>
       </Card>
@@ -247,7 +247,7 @@ export default function SettingsScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   
-  profileCard: { margin: 16, marginBottom: 8, elevation: 4, borderRadius: 16, backgroundColor: '#1976D2' },
+  profileCard: { margin: 16, marginBottom: 8, elevation: 4, borderRadius: 16, backgroundColor: '#5C6BF2' },
   profileHeader: { flexDirection: 'row', alignItems: 'center' },
   profileAvatar: { backgroundColor: '#42A5F5', marginRight: 16 },
   profileInfo: { flex: 1 },
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   roleText: { color: '#FFFFFF', fontWeight: 'bold', marginLeft: 4, fontSize: 12 },
   
   card: { margin: 16, marginBottom: 8, elevation: 4, borderRadius: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1976D2', marginBottom: 8 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#5C6BF2', marginBottom: 8 },
   divider: { marginBottom: 12 },
   
   menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },

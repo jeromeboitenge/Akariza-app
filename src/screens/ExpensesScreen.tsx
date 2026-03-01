@@ -34,11 +34,11 @@ export default function ExpensesScreen({ navigation }: any) {
       'RENT': '#9C27B0',
       'UTILITIES': '#FF9800',
       'SALARIES': '#4CAF50',
-      'SUPPLIES': '#2196F3',
+      'SUPPLIES': '#7B88F5',
       'MARKETING': '#E91E63',
       'OTHER': '#757575',
     };
-    return colors[category] || '#1976D2';
+    return colors[category] || '#5C6BF2';
   };
 
   const renderExpense = ({ item }: { item: Expense }) => (
@@ -77,7 +77,7 @@ export default function ExpensesScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -99,7 +99,7 @@ export default function ExpensesScreen({ navigation }: any) {
         renderItem={renderExpense}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadExpenses(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadExpenses(); }} colors={['#5C6BF2']} />
         }
       />
 
@@ -127,5 +127,5 @@ const styles = StyleSheet.create({
   divider: { marginVertical: 12 },
   description: { fontSize: 14, color: '#212121', marginBottom: 12 },
   paymentChip: { backgroundColor: '#E3F2FD', alignSelf: 'flex-start' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
 });

@@ -107,7 +107,7 @@ export default function ChatScreen({ route }: any) {
         <IconButton
           icon="send"
           size={28}
-          iconColor="#1976D2"
+          iconColor="#5C6BF2"
           onPress={handleSend}
           disabled={loading || !newMessage.trim()}
           style={styles.sendButton}
@@ -123,9 +123,9 @@ const styles = StyleSheet.create({
   messageContainer: { flexDirection: 'row', marginBottom: 12, alignItems: 'flex-end' },
   myMessage: { justifyContent: 'flex-end' },
   theirMessage: { justifyContent: 'flex-start' },
-  avatar: { backgroundColor: '#1976D2', marginRight: 8 },
+  avatar: { backgroundColor: '#5C6BF2', marginRight: 8 },
   messageCard: { maxWidth: '75%', elevation: 2, borderRadius: 16 },
-  myMessageCard: { backgroundColor: '#1976D2', borderBottomRightRadius: 4 },
+  myMessageCard: { backgroundColor: '#5C6BF2', borderBottomRightRadius: 4 },
   theirMessageCard: { backgroundColor: '#FFFFFF', borderBottomLeftRadius: 4 },
   messageContent: { padding: 8 },
   messageText: { fontSize: 15, color: '#212121' },

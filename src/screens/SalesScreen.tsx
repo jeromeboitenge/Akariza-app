@@ -46,7 +46,7 @@ export default function SalesScreen({ navigation }: any) {
     switch (status?.toUpperCase()) {
       case 'PAID': return '#4CAF50';
       case 'PENDING': return '#FF9800';
-      case 'PARTIAL': return '#2196F3';
+      case 'PARTIAL': return '#7B88F5';
       default: return '#757575';
     }
   };
@@ -102,14 +102,14 @@ export default function SalesScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#1976D2', '#1565C0']} style={styles.header}>
+      <LinearGradient colors={['#5C6BF2', '#4A5AD6']} style={styles.header}>
         <View style={styles.statsRow}>
           <Surface style={styles.statCard}>
             <Text style={styles.statValue}>${todayRevenue.toFixed(0)}</Text>
@@ -131,7 +131,7 @@ export default function SalesScreen({ navigation }: any) {
         onChangeText={setSearch}
         value={search}
         style={styles.search}
-        iconColor="#1976D2"
+        iconColor="#5C6BF2"
       />
 
       <FlatList
@@ -142,7 +142,7 @@ export default function SalesScreen({ navigation }: any) {
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={() => { setRefreshing(true); loadSales(); }}
-            colors={['#1976D2']}
+            colors={['#5C6BF2']}
           />
         }
         ListEmptyComponent={
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   header: { paddingVertical: 20, paddingHorizontal: 16 },
   statsRow: { flexDirection: 'row', justifyContent: 'space-between' },
   statCard: { flex: 1, padding: 12, marginHorizontal: 4, borderRadius: 12, alignItems: 'center', elevation: 2 },
-  statValue: { fontSize: 20, fontWeight: 'bold', color: '#1976D2' },
+  statValue: { fontSize: 20, fontWeight: 'bold', color: '#5C6BF2' },
   statLabel: { fontSize: 11, color: '#757575', marginTop: 4 },
   search: { margin: 16, elevation: 2 },
   card: { marginHorizontal: 16, marginVertical: 6, elevation: 3, borderRadius: 12 },
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   saleNumberRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   icon: { backgroundColor: '#E3F2FD', marginRight: 12 },
   saleInfo: { flex: 1 },
-  saleNumber: { fontSize: 16, fontWeight: 'bold', color: '#1976D2' },
+  saleNumber: { fontSize: 16, fontWeight: 'bold', color: '#5C6BF2' },
   date: { fontSize: 12, color: '#757575', marginTop: 2 },
   customerRow: { flexDirection: 'row', alignItems: 'center', marginLeft: 52 },
   customerIcon: { backgroundColor: '#F5F5F5', marginRight: 8 },

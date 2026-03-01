@@ -137,7 +137,7 @@ export default function NewSupplierScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   card: { margin: 16, elevation: 4, borderRadius: 16 },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#1976D2' },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#5C6BF2' },
   input: { marginBottom: 12 },
-  button: { marginTop: 16, backgroundColor: '#1976D2' },
+  button: { marginTop: 16, backgroundColor: '#5C6BF2' },
 });

@@ -31,7 +31,7 @@ export default function TasksScreen({ navigation }: any) {
   const getStatusColor = (status: string) => {
     const colors: any = {
       'PENDING': '#FF9800',
-      'IN_PROGRESS': '#2196F3',
+      'IN_PROGRESS': '#7B88F5',
       'COMPLETED': '#4CAF50',
       'CANCELLED': '#F44336',
     };
@@ -111,7 +111,7 @@ export default function TasksScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -137,7 +137,7 @@ export default function TasksScreen({ navigation }: any) {
         renderItem={renderTask}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadTasks(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadTasks(); }} colors={['#5C6BF2']} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -168,12 +168,12 @@ const styles = StyleSheet.create({
   chipsRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   chip: {},
   dateRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  dateIcon: { backgroundColor: '#1976D2', width: 20, height: 20, marginRight: 8 },
+  dateIcon: { backgroundColor: '#5C6BF2', width: 20, height: 20, marginRight: 8 },
   dateText: { fontSize: 13, color: '#212121' },
   assignedRow: { flexDirection: 'row', alignItems: 'center' },
   assignedIcon: { backgroundColor: '#4CAF50', width: 20, height: 20, marginRight: 8 },
   assignedText: { fontSize: 13, color: '#212121' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { alignItems: 'center', padding: 32 },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },
 });

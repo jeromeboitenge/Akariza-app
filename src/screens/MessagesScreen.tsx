@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
   sender: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
   time: { fontSize: 12, color: '#666', marginTop: 4 },
   badge: { backgroundColor: '#6200ee' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { padding: 32, alignItems: 'center' },
 });

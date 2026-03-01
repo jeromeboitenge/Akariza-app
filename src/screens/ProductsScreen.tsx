@@ -39,7 +39,7 @@ export default function ProductsScreen({ navigation }: any) {
   const getStockStatus = (product: Product) => {
     if (product.currentStock === 0) return { label: 'Out of Stock', color: '#F44336', icon: 'alert-circle' };
     if (product.currentStock <= product.minStockLevel) return { label: 'Low Stock', color: '#FF9800', icon: 'alert' };
-    if (product.currentStock >= product.maxStockLevel) return { label: 'Overstocked', color: '#2196F3', icon: 'information' };
+    if (product.currentStock >= product.maxStockLevel) return { label: 'Overstocked', color: '#7B88F5', icon: 'information' };
     return { label: 'In Stock', color: '#4CAF50', icon: 'check-circle' };
   };
 
@@ -98,7 +98,7 @@ export default function ProductsScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
         <Paragraph style={styles.loadingText}>Loading products...</Paragraph>
       </View>
     );
@@ -112,7 +112,7 @@ export default function ProductsScreen({ navigation }: any) {
           onChangeText={setSearch}
           value={search}
           style={styles.search}
-          iconColor="#1976D2"
+          iconColor="#5C6BF2"
         />
         <View style={styles.statsRow}>
           <Chip icon="package-variant" style={styles.statChip}>
@@ -132,7 +132,7 @@ export default function ProductsScreen({ navigation }: any) {
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={() => { setRefreshing(true); loadProducts(); }}
-            colors={['#1976D2']}
+            colors={['#5C6BF2']}
           />
         }
         ListEmptyComponent={
@@ -184,10 +184,10 @@ const styles = StyleSheet.create({
   priceRow: { flexDirection: 'row', marginBottom: 12 },
   priceItem: { flex: 1 },
   priceLabel: { fontSize: 12, color: '#757575', marginBottom: 4 },
-  sellingPrice: { fontSize: 24, fontWeight: 'bold', color: '#1976D2' },
+  sellingPrice: { fontSize: 24, fontWeight: 'bold', color: '#5C6BF2' },
   profitMargin: { fontSize: 24, fontWeight: 'bold', color: '#4CAF50' },
   stockStatusChip: { alignSelf: 'flex-start' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { alignItems: 'center', padding: 32 },
   emptyContainer: { flex: 1, justifyContent: 'center' },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },

@@ -37,7 +37,7 @@ export default function CustomersScreen({ navigation }: any) {
     switch (type) {
       case 'VIP': return '#9C27B0';
       case 'WHOLESALE': return '#FF9800';
-      default: return '#2196F3';
+      default: return '#7B88F5';
     }
   };
 
@@ -102,7 +102,7 @@ export default function CustomersScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
         <Paragraph style={styles.loadingText}>Loading customers...</Paragraph>
       </View>
     );
@@ -116,7 +116,7 @@ export default function CustomersScreen({ navigation }: any) {
           onChangeText={setSearch}
           value={search}
           style={styles.search}
-          iconColor="#1976D2"
+          iconColor="#5C6BF2"
         />
         <View style={styles.statsRow}>
           <Chip icon="account-group" style={styles.statChip}>
@@ -136,7 +136,7 @@ export default function CustomersScreen({ navigation }: any) {
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={() => { setRefreshing(true); loadCustomers(); }}
-            colors={['#1976D2']}
+            colors={['#5C6BF2']}
           />
         }
         ListEmptyComponent={
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 11, color: '#757575', marginBottom: 4 },
   statValue: { fontSize: 16, fontWeight: 'bold', color: '#212121' },
   debtValue: { color: '#F44336' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },
   emptyTitle: { fontSize: 20, fontWeight: 'bold', color: '#212121', marginBottom: 8 },

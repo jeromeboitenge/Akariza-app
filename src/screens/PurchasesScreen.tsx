@@ -44,7 +44,7 @@ export default function PurchasesScreen({ navigation }: any) {
     switch (status?.toUpperCase()) {
       case 'PAID': return '#4CAF50';
       case 'PENDING': return '#FF9800';
-      case 'PARTIAL': return '#2196F3';
+      case 'PARTIAL': return '#7B88F5';
       default: return '#757575';
     }
   };
@@ -102,7 +102,7 @@ export default function PurchasesScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }

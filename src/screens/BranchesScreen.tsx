@@ -32,7 +32,7 @@ export default function BranchesScreen({ navigation }: any) {
     <Card style={styles.card} onPress={() => navigation.navigate('BranchUsers', { branchId: item.id, branchName: item.name })}>
       <Card.Content>
         <View style={styles.cardHeader}>
-          <Avatar.Icon size={56} icon="store" style={[styles.avatar, { backgroundColor: item.isMainBranch ? '#4CAF50' : '#2196F3' }]} />
+          <Avatar.Icon size={56} icon="store" style={[styles.avatar, { backgroundColor: item.isMainBranch ? '#4CAF50' : '#7B88F5' }]} />
           <View style={styles.headerContent}>
             <Title style={styles.branchName}>{item.name}</Title>
             <Paragraph style={styles.code}>Code: {item.code}</Paragraph>
@@ -63,7 +63,7 @@ export default function BranchesScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -75,7 +75,7 @@ export default function BranchesScreen({ navigation }: any) {
         renderItem={renderBranch}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadBranches(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadBranches(); }} colors={['#5C6BF2']} />
         }
       />
 
@@ -101,6 +101,6 @@ const styles = StyleSheet.create({
   infoText: { fontSize: 14, color: '#212121', marginBottom: 4 },
   employeeCount: { flexDirection: 'row', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#E0E0E0' },
   employeeIcon: { backgroundColor: '#E3F2FD', marginRight: 8 },
-  employeeText: { fontSize: 14, color: '#1976D2', fontWeight: '600' },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  employeeText: { fontSize: 14, color: '#5C6BF2', fontWeight: '600' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
 });

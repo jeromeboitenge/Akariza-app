@@ -138,7 +138,7 @@ export default function OrganizationsScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1976D2" />
+        <ActivityIndicator size="large" color="#5C6BF2" />
       </View>
     );
   }
@@ -151,7 +151,7 @@ export default function OrganizationsScreen({ navigation }: any) {
           onChangeText={setSearch}
           value={search}
           style={styles.search}
-          iconColor="#1976D2"
+          iconColor="#5C6BF2"
         />
         <View style={styles.statsRow}>
           <Chip icon="domain" style={styles.statChip}>
@@ -168,7 +168,7 @@ export default function OrganizationsScreen({ navigation }: any) {
         renderItem={renderOrganization}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadOrganizations(); }} colors={['#1976D2']} />
+          <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadOrganizations(); }} colors={['#5C6BF2']} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -204,16 +204,16 @@ const styles = StyleSheet.create({
   divider: { marginVertical: 12 },
   statsContainer: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 8 },
   statItem: { alignItems: 'center' },
-  statIcon: { backgroundColor: '#1976D2', width: 32, height: 32, marginBottom: 4 },
+  statIcon: { backgroundColor: '#5C6BF2', width: 32, height: 32, marginBottom: 4 },
   statLabel: { fontSize: 11, color: '#757575', marginBottom: 2 },
-  statValue: { fontSize: 20, fontWeight: 'bold', color: '#1976D2' },
+  statValue: { fontSize: 20, fontWeight: 'bold', color: '#5C6BF2' },
   infoContainer: { backgroundColor: '#F5F7FA', padding: 12, borderRadius: 8, marginBottom: 12 },
   infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  infoIcon: { backgroundColor: '#1976D2', width: 20, height: 20, marginRight: 8 },
+  infoIcon: { backgroundColor: '#5C6BF2', width: 20, height: 20, marginRight: 8 },
   infoText: { fontSize: 13, color: '#212121', flex: 1 },
   actions: { flexDirection: 'row', gap: 8 },
   actionButton: { flex: 1 },
-  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#5C6BF2' },
   empty: { alignItems: 'center', padding: 32 },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },
 });
