@@ -64,9 +64,14 @@ export default function ChatScreen({ route }: any) {
             <Paragraph style={[styles.messageText, isFromMe && styles.myMessageText]}>
               {item.message || item.content}
             </Paragraph>
-            <Paragraph style={[styles.messageTime, isFromMe && styles.myMessageTime]}>
-              {safeFormatDate(item.createdAt, 'HH:mm')}
-            </Paragraph>
+            <View style={styles.messageFooter}>
+              <Paragraph style={[styles.messageTime, isFromMe && styles.myMessageTime]}>
+                {safeFormatDate(item.createdAt, 'HH:mm')}
+              </Paragraph>
+              {isFromMe && (
+                <Paragraph style={styles.secureIcon}>🔒</Paragraph>
+              )}
+            </View>
           </Card.Content>
         </Card>
       </View>
@@ -125,8 +130,10 @@ const styles = StyleSheet.create({
   messageContent: { padding: 8 },
   messageText: { fontSize: 15, color: '#212121' },
   myMessageText: { color: '#FFFFFF' },
-  messageTime: { fontSize: 11, color: '#757575', marginTop: 4, textAlign: 'right' },
+  messageFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: 4 },
+  messageTime: { fontSize: 11, color: '#757575' },
   myMessageTime: { color: '#E3F2FD' },
+  secureIcon: { fontSize: 10, marginLeft: 4, opacity: 0.7 },
   inputContainer: { flexDirection: 'row', padding: 12, backgroundColor: '#FFFFFF', alignItems: 'center', elevation: 8 },
   input: { flex: 1, marginRight: 8, maxHeight: 100 },
   sendButton: { margin: 0 },

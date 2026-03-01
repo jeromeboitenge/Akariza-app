@@ -129,6 +129,13 @@ export default function ComposeMessageScreen({ navigation }: any) {
             placeholder="Type your message here..."
           />
 
+          <View style={styles.disclaimer}>
+            <Text style={styles.disclaimerIcon}>🔒</Text>
+            <Text style={styles.disclaimerText}>
+              Non-Repudiation: Messages cannot be deleted or edited. They serve as legal evidence.
+            </Text>
+          </View>
+
           <Button
             mode="contained"
             onPress={handleSend}
@@ -155,5 +162,20 @@ const styles = StyleSheet.create({
   pickerLabel: { fontSize: 14, color: colors.textSecondary, marginTop: 8 },
   picker: { height: 50 },
   input: { marginTop: 16 },
+  disclaimer: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: '#FFF3E0', 
+    padding: 12, 
+    borderRadius: 8, 
+    marginTop: 12 
+  },
+  disclaimerIcon: { fontSize: 20, marginRight: 8 },
+  disclaimerText: { 
+    flex: 1, 
+    fontSize: 12, 
+    color: '#E65100', 
+    lineHeight: 18 
+  },
   button: { marginTop: 16, backgroundColor: colors.primary },
 });
