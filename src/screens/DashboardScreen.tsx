@@ -6,6 +6,7 @@ import { analyticsApi } from '../api';
 import { DashboardStats } from '../types';
 import { useAuthStore } from '../store/authStore';
 import { LinearGradient } from 'expo-linear-gradient';
+import { colors } from '../theme/colors';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -62,7 +63,7 @@ export default function DashboardScreen({ navigation }: any) {
         <View style={styles.metricHeader}>
           <Avatar.Icon size={48} icon={icon} style={styles.metricIcon} color="#FFF" />
           {trend && (
-            <View style={[styles.trendBadge, { backgroundColor: trend > 0 ? '#4CAF50' : '#F44336' }]}>
+            <View style={[styles.trendBadge, { backgroundColor: trend > 0 ? colors.success : colors.error }]}>
               <Text style={styles.trendText}>{trend > 0 ? '+' : ''}{trend}%</Text>
             </View>
           )}
@@ -90,14 +91,14 @@ export default function DashboardScreen({ navigation }: any) {
           icon="cash-register"
           value={`$${stats?.todaySales?.toFixed(2) || '0.00'}`}
           label="Today's Sales"
-          color="#4CAF50"
+          color={colors.success}
           trend={12}
         />
         <MetricCard
           icon="receipt"
           value={stats?.todayTransactions || 0}
           label="Transactions"
-          color="#2196F3"
+          color={colors.info}
           trend={8}
         />
       </View>
@@ -109,10 +110,10 @@ export default function DashboardScreen({ navigation }: any) {
             <Title style={styles.sectionTitle}>Quick Actions</Title>
           </View>
           <View style={styles.quickActionsGrid}>
-            <QuickActionCard icon="cart-plus" label="New Sale" color="#4CAF50" onPress={() => navigation.navigate('NewSale')} />
-            <QuickActionCard icon="account-plus" label="Add Customer" color="#2196F3" onPress={() => navigation.navigate('NewCustomer')} />
-            <QuickActionCard icon="package-variant" label="Products" color="#FF9800" onPress={() => navigation.navigate('Products')} />
-            <QuickActionCard icon="account-group" label="Customers" color="#9C27B0" onPress={() => navigation.navigate('Customers')} />
+            <QuickActionCard icon="cart-plus" label="New Sale" color={colors.success} onPress={() => navigation.navigate('NewSale')} />
+            <QuickActionCard icon="account-plus" label="Add Customer" color={colors.info} onPress={() => navigation.navigate('NewCustomer')} />
+            <QuickActionCard icon="package-variant" label="Products" color={colors.warning} onPress={() => navigation.navigate('Products')} />
+            <QuickActionCard icon="account-group" label="Customers" color={colors.primary} onPress={() => navigation.navigate('Customers')} />
           </View>
         </Card.Content>
       </Card>
@@ -144,7 +145,7 @@ export default function DashboardScreen({ navigation }: any) {
           icon="cash-multiple"
           value={`$${stats?.todaySales?.toFixed(0) || '0'}`}
           label="Today's Sales"
-          color="#4CAF50"
+          color={colors.success}
           trend={15}
           onPress={() => navigation.navigate('Sales')}
         />
@@ -152,7 +153,7 @@ export default function DashboardScreen({ navigation }: any) {
           icon="trending-up"
           value={`$${stats?.todayProfit?.toFixed(0) || '0'}`}
           label="Profit"
-          color="#2196F3"
+          color={colors.info}
           trend={10}
         />
       </View>
@@ -162,14 +163,14 @@ export default function DashboardScreen({ navigation }: any) {
           icon="package-variant"
           value={stats?.totalProducts || 0}
           label="Products"
-          color="#FF9800"
+          color={colors.warning}
           onPress={() => navigation.navigate('Products')}
         />
         <MetricCard
           icon="alert-circle"
           value={stats?.lowStockCount || 0}
           label="Low Stock"
-          color="#F44336"
+          color={colors.error}
           onPress={() => navigation.navigate('Products')}
         />
       </View>
@@ -211,10 +212,10 @@ export default function DashboardScreen({ navigation }: any) {
         <Card.Content>
           <Title style={styles.sectionTitle}>Management</Title>
           <View style={styles.quickActionsGrid}>
-            <QuickActionCard icon="package-variant" label="Products" color="#FF9800" onPress={() => navigation.navigate('Products')} />
-            <QuickActionCard icon="truck" label="Suppliers" color="#9C27B0" onPress={() => navigation.navigate('Suppliers')} />
-            <QuickActionCard icon="cash-minus" label="Expenses" color="#F44336" onPress={() => navigation.navigate('Expenses')} />
-            <QuickActionCard icon="chart-bar" label="Reports" color="#2196F3" onPress={() => navigation.navigate('Reports')} />
+            <QuickActionCard icon="package-variant" label="Products" color={colors.warning} onPress={() => navigation.navigate('Products')} />
+            <QuickActionCard icon="truck" label="Suppliers" color={colors.primary} onPress={() => navigation.navigate('Suppliers')} />
+            <QuickActionCard icon="cash-minus" label="Expenses" color={colors.error} onPress={() => navigation.navigate('Expenses')} />
+            <QuickActionCard icon="chart-bar" label="Reports" color={colors.info} onPress={() => navigation.navigate('Reports')} />
           </View>
         </Card.Content>
       </Card>
@@ -245,13 +246,13 @@ export default function DashboardScreen({ navigation }: any) {
 
       {/* KPI Grid */}
       <View style={styles.metricsContainer}>
-        <MetricCard icon="receipt" value={stats?.todayTransactions || 0} label="Transactions" color="#4CAF50" trend={12} />
-        <MetricCard icon="account-group" value={stats?.totalCustomers || 0} label="Customers" color="#2196F3" />
+        <MetricCard icon="receipt" value={stats?.todayTransactions || 0} label="Transactions" color={colors.success} trend={12} />
+        <MetricCard icon="account-group" value={stats?.totalCustomers || 0} label="Customers" color={colors.info} />
       </View>
 
       <View style={styles.metricsContainer}>
-        <MetricCard icon="package-variant" value={stats?.totalProducts || 0} label="Products" color="#FF9800" />
-        <MetricCard icon="alert-circle" value={stats?.lowStockCount || 0} label="Alerts" color="#F44336" />
+        <MetricCard icon="package-variant" value={stats?.totalProducts || 0} label="Products" color={colors.warning} />
+        <MetricCard icon="alert-circle" value={stats?.lowStockCount || 0} label="Alerts" color={colors.error} />
       </View>
 
       {/* Performance Chart */}
@@ -311,14 +312,14 @@ export default function DashboardScreen({ navigation }: any) {
         <Card.Content>
           <Title style={styles.sectionTitle}>Quick Insights</Title>
           <View style={styles.insightRow}>
-            <Avatar.Icon size={40} icon="trending-up" style={{ backgroundColor: '#4CAF50' }} />
+            <Avatar.Icon size={40} icon="trending-up" style={{ backgroundColor: colors.success }} />
             <View style={styles.insightContent}>
               <Text style={styles.insightTitle}>Sales up 15%</Text>
               <Text style={styles.insightSubtitle}>Compared to last week</Text>
             </View>
           </View>
           <View style={styles.insightRow}>
-            <Avatar.Icon size={40} icon="account-multiple" style={{ backgroundColor: '#2196F3' }} />
+            <Avatar.Icon size={40} icon="account-multiple" style={{ backgroundColor: colors.info }} />
             <View style={styles.insightContent}>
               <Text style={styles.insightTitle}>5 new customers</Text>
               <Text style={styles.insightSubtitle}>This week</Text>
@@ -332,18 +333,18 @@ export default function DashboardScreen({ navigation }: any) {
   const renderAdminDashboard = () => (
     <>
       <View style={styles.metricsContainer}>
-        <MetricCard icon="domain" value={stats?.totalProducts || 0} label="Organizations" color="#9C27B0" />
-        <MetricCard icon="account-multiple" value={stats?.totalCustomers || 0} label="Users" color="#2196F3" />
+        <MetricCard icon="domain" value={stats?.totalProducts || 0} label="Organizations" color={colors.primary} />
+        <MetricCard icon="account-multiple" value={stats?.totalCustomers || 0} label="Users" color={colors.info} />
       </View>
 
       <Card style={styles.sectionCard}>
         <Card.Content>
           <Title style={styles.sectionTitle}>System Management</Title>
           <View style={styles.quickActionsGrid}>
-            <QuickActionCard icon="domain" label="Organizations" color="#9C27B0" onPress={() => navigation.navigate('AdminOrganizations')} />
-            <QuickActionCard icon="account-group" label="Users" color="#2196F3" onPress={() => navigation.navigate('AdminUsers')} />
-            <QuickActionCard icon="chart-box" label="Analytics" color="#FF9800" onPress={() => navigation.navigate('AdminAnalytics')} />
-            <QuickActionCard icon="cog" label="Settings" color="#757575" onPress={() => navigation.navigate('AdminSettings')} />
+            <QuickActionCard icon="domain" label="Organizations" color={colors.primary} onPress={() => navigation.navigate('AdminOrganizations')} />
+            <QuickActionCard icon="account-group" label="Users" color={colors.info} onPress={() => navigation.navigate('AdminUsers')} />
+            <QuickActionCard icon="chart-box" label="Analytics" color={colors.warning} onPress={() => navigation.navigate('AdminAnalytics')} />
+            <QuickActionCard icon="cog" label="Settings" color={colors.textSecondary} onPress={() => navigation.navigate('AdminSettings')} />
           </View>
         </Card.Content>
       </Card>
