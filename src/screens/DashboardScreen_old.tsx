@@ -93,7 +93,7 @@ export default function DashboardScreen({ navigation }: any) {
       </View>
       <View style={styles.metricsGrid}>
         {renderMetricCard('account-group', `${stats?.totalCustomers || 0}`, 'Customers', '#2196F3', () => navigation.navigate('Customers'))}
-        {renderMetricCard('package-variant', `${stats?.totalProducts || 0}`, 'Products', '#9C27B0', () => navigation.navigate('Products'))}
+        {renderMetricCard('package-variant', `${stats?.totalProducts || 0}`, 'Products', '#5C6BF2', () => navigation.navigate('Products'))}
       </View>
 
       <Card style={styles.actionCard}>
@@ -180,7 +180,7 @@ export default function DashboardScreen({ navigation }: any) {
       </View>
       <View style={styles.metricsGrid}>
         {renderMetricCard('receipt', `${stats?.todayTransactions || 0}`, 'Transactions', '#FF9800')}
-        {renderMetricCard('package-variant', `${stats?.totalProducts || 0}`, 'Products', '#9C27B0')}
+        {renderMetricCard('package-variant', `${stats?.totalProducts || 0}`, 'Products', '#5C6BF2')}
       </View>
       <View style={styles.metricsGrid}>
         {renderMetricCard('account-group', `${stats?.totalCustomers || 0}`, 'Customers', '#00BCD4')}
@@ -260,7 +260,7 @@ export default function DashboardScreen({ navigation }: any) {
       </View>
       <View style={styles.metricsGrid}>
         {renderMetricCard('cash-multiple', `$${stats?.todaySales?.toFixed(2) || '0.00'}`, 'Platform Revenue', '#FF9800')}
-        {renderMetricCard('chart-line', `${stats?.todayTransactions || 0}`, 'Active Orgs', '#9C27B0')}
+        {renderMetricCard('chart-line', `${stats?.todayTransactions || 0}`, 'Active Orgs', '#5C6BF2')}
       </View>
 
       <Card style={styles.actionCard}>

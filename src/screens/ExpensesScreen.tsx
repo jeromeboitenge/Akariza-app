@@ -31,11 +31,11 @@ export default function ExpensesScreen({ navigation }: any) {
 
   const getCategoryColor = (category: string) => {
     const colors: any = {
-      'RENT': '#9C27B0',
+      'RENT': '#5C6BF2',
       'UTILITIES': '#FF9800',
       'SALARIES': '#4CAF50',
       'SUPPLIES': '#7B88F5',
-      'MARKETING': '#E91E63',
+      'MARKETING': '#F44336',
       'OTHER': '#757575',
     };
     return colors[category] || '#5C6BF2';

@@ -35,7 +35,7 @@ export default function CustomersScreen({ navigation }: any) {
 
   const getCustomerTypeColor = (type: string) => {
     switch (type) {
-      case 'VIP': return '#9C27B0';
+      case 'VIP': return '#5C6BF2';
       case 'WHOLESALE': return '#FF9800';
       default: return '#7B88F5';
     }

@@ -1,35 +1,28 @@
-// Color palette for the app
+// Simplified 4-color palette
 export const colors = {
-  // Primary colors
+  // Primary Blue - Main brand color
   primary: '#5C6BF2',
   primaryDark: '#4A5AD6',
   primaryLight: '#7B88F5',
   
-  // Success (Green)
+  // Success Green - Positive actions, success states
   success: '#4CAF50',
-  successLight: '#81C784',
-  successDark: '#388E3C',
   
-  // Error (Red)
+  // Error Red - Errors, alerts, critical actions
   error: '#F44336',
-  errorLight: '#E57373',
-  errorDark: '#D32F2F',
   
-  // Warning
+  // Warning Orange - Warnings, pending states
   warning: '#FF9800',
-  warningLight: '#FFB74D',
   
-  // Info
-  info: '#5C6BF2',
-  
-  // Neutral
+  // Neutral colors
   background: '#F5F7FA',
   surface: '#FFFFFF',
   text: '#212121',
   textSecondary: '#757575',
   border: '#E0E0E0',
   
-  // Status
+  // Aliases for consistency
+  info: '#5C6BF2',
   paid: '#4CAF50',
   pending: '#FF9800',
   failed: '#F44336',

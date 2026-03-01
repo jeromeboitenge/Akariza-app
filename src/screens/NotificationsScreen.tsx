@@ -52,7 +52,7 @@ export default function NotificationsScreen({ navigation }: any) {
       'SALE': '#4CAF50',
       'PURCHASE': '#7B88F5',
       'TASK': '#FF9800',
-      'SYSTEM': '#9C27B0',
+      'SYSTEM': '#5C6BF2',
     };
     return colors[type] || '#5C6BF2';
   };

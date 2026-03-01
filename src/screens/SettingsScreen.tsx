@@ -64,7 +64,7 @@ export default function SettingsScreen({ navigation }: any) {
             title="Sales History"
             subtitle="View all sales transactions"
             onPress={() => navigation.navigate('Sales')}
-            color="#9C27B0"
+            color="#5C6BF2"
           />
           
           {canManage && (
@@ -152,14 +152,14 @@ export default function SettingsScreen({ navigation }: any) {
             title="Promotions"
             subtitle="Manage discounts & offers"
             onPress={() => navigation.navigate('Promotions')}
-            color="#E91E63"
+            color="#F44336"
           />
           <MenuItem
             icon="clipboard-text"
             title="Tasks"
             subtitle="Track team tasks"
             onPress={() => navigation.navigate('Tasks')}
-            color="#9C27B0"
+            color="#5C6BF2"
           />
           <MenuItem
             icon="message"
@@ -190,7 +190,7 @@ export default function SettingsScreen({ navigation }: any) {
               title="Organizations"
               subtitle="Manage all organizations"
               onPress={() => navigation.navigate('Organizations')}
-              color="#9C27B0"
+              color="#5C6BF2"
             />
           </Card.Content>
         </Card>

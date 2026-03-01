@@ -146,10 +146,10 @@ export default function NewTaskScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   card: { margin: 16, elevation: 4, borderRadius: 16 },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#9C27B0' },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#5C6BF2' },
   sectionTitle: { fontSize: 16, marginTop: 8, marginBottom: 8 },
   input: { marginBottom: 12 },
   chipContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
   chip: { marginRight: 8, marginBottom: 8 },
-  button: { marginTop: 16, backgroundColor: '#9C27B0' },
+  button: { marginTop: 16, backgroundColor: '#5C6BF2' },
 });

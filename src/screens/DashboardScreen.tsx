@@ -292,7 +292,7 @@ export default function DashboardScreen({ navigation }: any) {
           
           <View style={styles.metricsGrid}>
             <View style={styles.statBox}>
-              <LinearGradient colors={['#4CAF50', '#388E3C']} style={styles.statGradient}>
+              <LinearGradient colors={['#4CAF50', '#4CAF50']} style={styles.statGradient}>
                 <Avatar.Icon size={48} icon="store" color="#FFF" style={styles.statIcon} />
                 <Title style={styles.statValue}>{stats?.totalBranches || 0}</Title>
                 <Text style={styles.statLabel}>Branches</Text>
@@ -316,7 +316,7 @@ export default function DashboardScreen({ navigation }: any) {
             </View>
             
             <View style={styles.statBox}>
-              <LinearGradient colors={['#9C27B0', '#7B1FA2']} style={styles.statGradient}>
+              <LinearGradient colors={['#5C6BF2', '#4A5AD6']} style={styles.statGradient}>
                 <Avatar.Icon size={48} icon="package-variant" color="#FFF" style={styles.statIcon} />
                 <Title style={styles.statValue}>{stats?.totalProducts || 0}</Title>
                 <Text style={styles.statLabel}>Products</Text>
@@ -472,7 +472,7 @@ export default function DashboardScreen({ navigation }: any) {
             </View>
             
             <View style={styles.statBox}>
-              <LinearGradient colors={['#4CAF50', '#388E3C']} style={styles.statGradient}>
+              <LinearGradient colors={['#4CAF50', '#4CAF50']} style={styles.statGradient}>
                 <Avatar.Icon size={48} icon="account-multiple" color="#FFF" style={styles.statIcon} />
                 <Title style={styles.statValue}>{stats?.totalCustomers || 0}</Title>
                 <Text style={styles.statLabel}>Total Users</Text>
@@ -488,7 +488,7 @@ export default function DashboardScreen({ navigation }: any) {
             </View>
             
             <View style={styles.statBox}>
-              <LinearGradient colors={['#9C27B0', '#7B1FA2']} style={styles.statGradient}>
+              <LinearGradient colors={['#5C6BF2', '#4A5AD6']} style={styles.statGradient}>
                 <Avatar.Icon size={48} icon="cash-multiple" color="#FFF" style={styles.statIcon} />
                 <Title style={styles.statValue}>${stats?.totalRevenue?.toFixed(0) || '0'}</Title>
                 <Text style={styles.statLabel}>Total Revenue</Text>
@@ -528,7 +528,7 @@ export default function DashboardScreen({ navigation }: any) {
             <QuickActionCard 
               icon="database" 
               label="Database" 
-              color="#9C27B0" 
+              color="#5C6BF2" 
               onPress={() => {}} 
             />
           </View>

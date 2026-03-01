@@ -136,10 +136,10 @@ export default function NewPromotionScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   card: { margin: 16, elevation: 4, borderRadius: 16 },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#E91E63' },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#F44336' },
   sectionTitle: { fontSize: 16, marginTop: 8, marginBottom: 8 },
   input: { marginBottom: 12 },
   chipContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
   chip: { marginRight: 8, marginBottom: 8 },
-  button: { marginTop: 16, backgroundColor: '#E91E63' },
+  button: { marginTop: 16, backgroundColor: '#F44336' },
 });
