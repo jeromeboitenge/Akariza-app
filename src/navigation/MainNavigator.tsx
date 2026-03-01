@@ -24,6 +24,7 @@ import BranchesScreen from '../screens/BranchesScreen';
 import NewBranchScreen from '../screens/NewBranchScreen';
 import BranchUsersScreen from '../screens/BranchUsersScreen';
 import EmployeesScreen from '../screens/EmployeesScreen';
+import NewEmployeeScreen from '../screens/NewEmployeeScreen';
 import ExpensesScreen from '../screens/ExpensesScreen';
 import NewExpenseScreen from '../screens/NewExpenseScreen';
 import TasksScreen from '../screens/TasksScreen';
@@ -103,6 +104,7 @@ export default function MainNavigator() {
         <Stack.Screen name="NewBranch" component={NewBranchScreen} options={{ title: 'New Branch' }} />
         <Stack.Screen name="BranchUsers" component={BranchUsersScreen} options={{ title: 'Branch Employees' }} />
         <Stack.Screen name="Employees" component={EmployeesScreen} options={{ title: 'Employees' }} />
+        <Stack.Screen name="NewEmployee" component={NewEmployeeScreen} options={{ title: 'Add Employee' }} />
         <Stack.Screen name="Expenses" component={ExpensesScreen} options={{ title: 'Expenses' }} />
         <Stack.Screen name="NewExpense" component={NewExpenseScreen} options={{ title: 'New Expense' }} />
         <Stack.Screen name="Tasks" component={TasksScreen} options={{ title: 'Tasks' }} />

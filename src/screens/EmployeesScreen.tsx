@@ -140,6 +140,14 @@ export default function EmployeesScreen({ navigation }: any) {
         }
       />
 
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => navigation.navigate('NewEmployee')}
+        color="#FFFFFF"
+      />
+      />
+
       {canManage && (
         <FAB icon="plus" style={styles.fab} onPress={() => {}} color="#FFFFFF" />
       )}
@@ -168,5 +176,6 @@ const styles = StyleSheet.create({
   infoText: { fontSize: 14, color: '#212121', flex: 1 },
   fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
   empty: { alignItems: 'center', padding: 32 },
+  fab: { position: 'absolute', right: 16, bottom: 16, backgroundColor: '#1976D2' },
   emptyIcon: { backgroundColor: '#E3F2FD', marginBottom: 16 },
 });

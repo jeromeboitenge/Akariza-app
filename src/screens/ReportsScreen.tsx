@@ -49,8 +49,9 @@ export default function ReportsScreen() {
           break;
       }
       setReport(data);
-    } catch (error) {
-      console.error('Report error:', error);
+    } catch (error: any) {
+      console.error('Report error:', error.response?.data || error);
+      alert(error.response?.data?.message || 'Failed to generate report');
     } finally {
       setLoading(false);
     }
