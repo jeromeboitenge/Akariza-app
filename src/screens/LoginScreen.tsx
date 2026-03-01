@@ -1,20 +1,37 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, Platform, ImageBackground } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { TextInput, Button, Title, Paragraph, Snackbar, Card } from 'react-native-paper';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../store/authStore';
 
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otpCode, setOtpCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading, error, clearError } = useAuthStore();
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const { login, verifyOtp, isLoading, error, clearError } = useAuthStore();
 
   const handleLogin = async () => {
     if (!email || !password) return;
     try {
-      await login(email, password);
+      const result = await login(email, password);
+      if (result.requiresOtp) {
+        setShowOtpInput(true);
+      }
     } catch (err) {}
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otpCode) return;
+    try {
+      await verifyOtp(otpCode);
+    } catch (err) {}
+  };
+
+  const handleBackToLogin = () => {
+    setShowOtpInput(false);
+    setOtpCode('');
+    clearError();
   };
 
   return (
@@ -30,45 +47,87 @@ export default function LoginScreen({ navigation }: any) {
       >
         <Card style={styles.card}>
           <Card.Content>
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              mode="outlined"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              style={styles.input}
-              disabled={isLoading}
-              left={<TextInput.Icon icon="email" />}
-            />
+            {!showOtpInput ? (
+              <>
+                <TextInput
+                  label="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  mode="outlined"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  style={styles.input}
+                  disabled={isLoading}
+                  left={<TextInput.Icon icon="email" />}
+                />
 
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              mode="outlined"
-              secureTextEntry={!showPassword}
-              right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
-              left={<TextInput.Icon icon="lock" />}
-              style={styles.input}
-              disabled={isLoading}
-            />
+                <TextInput
+                  label="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  mode="outlined"
+                  secureTextEntry={!showPassword}
+                  right={<TextInput.Icon icon={showPassword ? 'eye-off' : 'eye'} onPress={() => setShowPassword(!showPassword)} />}
+                  left={<TextInput.Icon icon="lock" />}
+                  style={styles.input}
+                  disabled={isLoading}
+                />
 
-            <Button
-              mode="contained"
-              onPress={handleLogin}
-              loading={isLoading}
-              disabled={isLoading || !email || !password}
-              style={styles.button}
-              contentStyle={styles.buttonContent}
-            >
-              Sign In
-            </Button>
+                <Button
+                  mode="contained"
+                  onPress={handleLogin}
+                  loading={isLoading}
+                  disabled={isLoading || !email || !password}
+                  style={styles.button}
+                  contentStyle={styles.buttonContent}
+                >
+                  Sign In
+                </Button>
 
-            <Paragraph style={styles.hint}>
-              ADMIN: jeromeboitenge@gmail.com / Jerome@2026{'\n'}
-              BOSS: boitenge311@gmail.com / Boitenge@2026
-            </Paragraph>
+                <Paragraph style={styles.hint}>
+                  ADMIN: jeromeboitenge@gmail.com / Jerome@2026{'\n'}
+                  BOSS: boitenge311@gmail.com / Boitenge@2026
+                </Paragraph>
+              </>
+            ) : (
+              <>
+                <Paragraph style={styles.otpInfo}>
+                  Enter the 6-digit OTP code sent to {email}
+                </Paragraph>
+
+                <TextInput
+                  label="OTP Code"
+                  value={otpCode}
+                  onChangeText={setOtpCode}
+                  mode="outlined"
+                  keyboardType="number-pad"
+                  maxLength={6}
+                  style={styles.input}
+                  disabled={isLoading}
+                  left={<TextInput.Icon icon="shield-key" />}
+                />
+
+                <Button
+                  mode="contained"
+                  onPress={handleVerifyOtp}
+                  loading={isLoading}
+                  disabled={isLoading || otpCode.length !== 6}
+                  style={styles.button}
+                  contentStyle={styles.buttonContent}
+                >
+                  Verify OTP
+                </Button>
+
+                <Button
+                  mode="text"
+                  onPress={handleBackToLogin}
+                  disabled={isLoading}
+                  style={styles.backButton}
+                >
+                  Back to Login
+                </Button>
+              </>
+            )}
           </Card.Content>
         </Card>
       </KeyboardAvoidingView>
@@ -96,4 +155,6 @@ const styles = StyleSheet.create({
   button: { marginTop: 24, borderRadius: 8 },
   buttonContent: { paddingVertical: 8 },
   hint: { marginTop: 24, textAlign: 'center', color: '#757575', fontSize: 13 },
+  otpInfo: { marginBottom: 24, textAlign: 'center', color: '#424242', fontSize: 15 },
+  backButton: { marginTop: 16 },
 });
