@@ -37,7 +37,17 @@ export default function NewEmployeeScreen({ navigation }: any) {
 
   const handleSubmit = async () => {
     if (!fullName || !email || !password || !phone || !branchId) {
-      Alert.alert('Error', 'Please fill all required fields');
+      Alert.alert('Missing Information', 'Please fill all required fields:\n• Full Name\n• Email\n• Password\n• Phone\n• Branch');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Invalid Password', 'Password must be at least 6 characters long');
+      return;
+    }
+
+    if (!email.includes('@')) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address');
       return;
     }
 
@@ -54,10 +64,11 @@ export default function NewEmployeeScreen({ navigation }: any) {
       
       logApiRequest('users/create', payload);
       const { data } = await client.post('/users', payload);
-      Alert.alert('Success', 'User created successfully');
+      Alert.alert('✅ Success', `User "${fullName}" created successfully as ${role}`);
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', handleApiError(error, 'User creation'));
+      const errorMessage = handleApiError(error, 'User creation');
+      Alert.alert('❌ Failed to Create User', errorMessage);
     } finally {
       setLoading(false);
     }

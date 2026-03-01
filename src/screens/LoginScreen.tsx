@@ -12,20 +12,46 @@ export default function LoginScreen({ navigation }: any) {
   const { login, verifyOtp, isLoading, error, clearError } = useAuthStore();
 
   const handleLogin = async () => {
-    if (!email || !password) return;
+    if (!email || !password) {
+      setError('Please enter both email and password');
+      return;
+    }
+    
+    if (!email.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    
     try {
       const result = await login(email, password);
       if (result.requiresOtp) {
         setShowOtpInput(true);
       }
-    } catch (err) {}
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || err.message || 'Login failed';
+      setError(errorMsg);
+      console.error('❌ Login error:', errorMsg);
+    }
   };
 
   const handleVerifyOtp = async () => {
-    if (!otpCode) return;
+    if (!otpCode) {
+      setError('Please enter the OTP code');
+      return;
+    }
+    
+    if (otpCode.length !== 6) {
+      setError('OTP code must be 6 digits');
+      return;
+    }
+    
     try {
       await verifyOtp(otpCode);
-    } catch (err) {}
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || err.message || 'Invalid OTP code';
+      setError(errorMsg);
+      console.error('❌ OTP verification error:', errorMsg);
+    }
   };
 
   const handleBackToLogin = () => {
