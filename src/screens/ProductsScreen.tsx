@@ -31,9 +31,9 @@ export default function ProductsScreen({ navigation }: any) {
   }, []);
 
   const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.sku.toLowerCase().includes(search.toLowerCase()) ||
-    p.category.toLowerCase().includes(search.toLowerCase())
+    (p.name?.toLowerCase() || '').includes(search.toLowerCase()) ||
+    (p.sku?.toLowerCase() || '').includes(search.toLowerCase()) ||
+    (p.category?.toLowerCase() || '').includes(search.toLowerCase())
   );
 
   const getStockStatus = (product: Product) => {

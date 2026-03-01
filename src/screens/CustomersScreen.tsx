@@ -28,9 +28,9 @@ export default function CustomersScreen({ navigation }: any) {
   }, []);
 
   const filteredCustomers = customers.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.phone.includes(search) ||
-    c.email?.toLowerCase().includes(search.toLowerCase())
+    (c.name?.toLowerCase() || '').includes(search.toLowerCase()) ||
+    (c.phone || '').includes(search) ||
+    (c.email?.toLowerCase() || '').includes(search.toLowerCase())
   );
 
   const getCustomerTypeColor = (type: string) => {
