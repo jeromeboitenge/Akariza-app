@@ -27,7 +27,7 @@ export default function NewOrganizationScreen({ navigation }: any) {
 
     setLoading(true);
     try {
-      await organizationsApi.create({
+      const payload = {
         name,
         email,
         phone,
@@ -38,13 +38,17 @@ export default function NewOrganizationScreen({ navigation }: any) {
           password: bossPassword,
           fullName: bossFullName,
         },
-        subscriptionPlan: subscriptionPlan || undefined,
-        isActive,
-      });
+      };
+      
+      console.log('Creating organization with:', payload);
+      
+      await organizationsApi.create(payload);
       Alert.alert('Success', 'Organization created successfully');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.message || error.message || 'Failed to create organization');
+      console.error('Organization creation error:', error.response?.data);
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to create organization';
+      Alert.alert('Error', Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
     } finally {
       setLoading(false);
     }
