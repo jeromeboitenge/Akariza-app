@@ -63,6 +63,11 @@ export default function MessagesScreen({ navigation }: any) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadMessages(); }} />
         }
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Paragraph>No messages</Paragraph>
+          </View>
+        }
       />
       
       <FAB
@@ -70,17 +75,6 @@ export default function MessagesScreen({ navigation }: any) {
         style={styles.fab}
         onPress={() => navigation.navigate('ComposeMessage')}
         color="#FFFFFF"
-      />
-    </View>
-  );
-        renderItem={renderMessage}
-        keyExtractor={(item) => item.id}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadMessages(); }} />}
-        ListEmptyComponent={
-          <View style={styles.empty}>
-            <Paragraph>No messages</Paragraph>
-          </View>
-        }
       />
     </View>
   );
