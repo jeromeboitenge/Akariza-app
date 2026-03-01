@@ -12,7 +12,7 @@ export const organizationsApi = {
     return data;
   },
 
-  create: async (org: Partial<Organization>): Promise<Organization> => {
+  create: async (org: any): Promise<Organization> => {
     const { data } = await client.post('/organizations', org);
     return data;
   },

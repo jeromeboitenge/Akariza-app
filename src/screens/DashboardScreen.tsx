@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, RefreshControl, Dimensions, TouchableOpacity } from 'react-native';
 import { Card, Title, Paragraph, ActivityIndicator, Avatar, Surface, Text, IconButton } from 'react-native-paper';
-import { LineChart, BarChart, PieChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-chart-kit';
 import { analyticsApi } from '../api';
 import { DashboardStats } from '../types';
 import { useAuthStore } from '../store/authStore';
@@ -265,7 +265,7 @@ export default function DashboardScreen({ navigation }: any) {
               </View>
               <IconButton icon="filter-variant" size={24} />
             </View>
-            <BarChart
+            <LineChart
               data={{
                 labels: trends.labels || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 datasets: [{ data: trends.data || [0, 0, 0, 0, 0, 0, 0] }],
@@ -273,16 +273,16 @@ export default function DashboardScreen({ navigation }: any) {
               width={screenWidth - 64}
               height={220}
               chartConfig={{
-                backgroundColor: '#fff',
-                backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#fff',
+                backgroundColor: '#1976D2',
+                backgroundGradientFrom: '#1976D2',
+                backgroundGradientTo: '#1565C0',
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(25, 118, 210, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                propsForBackgroundLines: { strokeDasharray: '', stroke: '#E0E0E0' },
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                propsForDots: { r: '5', strokeWidth: '2', stroke: '#fff' },
               }}
+              bezier
               style={styles.chart}
-              showValuesOnTopOfBars
             />
           </Card.Content>
         </Card>
