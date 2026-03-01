@@ -21,7 +21,7 @@ export default function NewBranchScreen({ route, navigation }: any) {
 
     setLoading(true);
     try {
-      await branchesApi.create({
+      const payload = {
         name,
         code,
         address,
@@ -30,11 +30,17 @@ export default function NewBranchScreen({ route, navigation }: any) {
         isMainBranch,
         isActive: true,
         organizationId: orgId,
-      });
+      };
+      
+      console.log('Creating branch with:', payload);
+      
+      await branchesApi.create(payload);
       Alert.alert('Success', 'Branch created successfully');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to create branch');
+      console.error('Branch creation error:', error.response?.data);
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to create branch';
+      Alert.alert('Error', Array.isArray(errorMsg) ? errorMsg.join('\n') : errorMsg);
     } finally {
       setLoading(false);
     }
