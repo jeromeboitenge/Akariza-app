@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, RefreshControl, TouchableOpacity } from 'react-native';
 import { Card, Title, Paragraph, FAB, Searchbar, Chip, ActivityIndicator, Avatar, Divider } from 'react-native-paper';
-import { employeesApi } from '../api';
-import { Employee } from '../types';
+import { usersApi } from '../api';
 import { useAuthStore } from '../store/authStore';
 
 export default function EmployeesScreen({ navigation }: any) {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -15,10 +14,11 @@ export default function EmployeesScreen({ navigation }: any) {
 
   const loadEmployees = async () => {
     try {
-      const data = await employeesApi.getAll();
+      const data = await usersApi.getAll();
+      console.log('👥 Loaded users:', data.length);
       setEmployees(data);
     } catch (error) {
-      console.error('Load employees error:', error);
+      console.error('❌ Load employees error:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -30,9 +30,8 @@ export default function EmployeesScreen({ navigation }: any) {
   }, []);
 
   const filteredEmployees = employees.filter((e) =>
-    e.name.toLowerCase().includes(search.toLowerCase()) ||
-    e.email.toLowerCase().includes(search.toLowerCase()) ||
-    e.phone.includes(search)
+    (e.fullName || '').toLowerCase().includes(search.toLowerCase()) ||
+    (e.email || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const getRoleColor = (role: string) => {
@@ -45,17 +44,18 @@ export default function EmployeesScreen({ navigation }: any) {
   };
 
   const getInitials = (name: string) => {
+    if (!name) return 'U';
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
-  const renderEmployee = ({ item }: { item: Employee }) => (
+  const renderEmployee = ({ item }: { item: any }) => (
     <TouchableOpacity>
       <Card style={styles.card}>
         <Card.Content>
           <View style={styles.cardHeader}>
-            <Avatar.Text size={56} label={getInitials(item.name || item.email || 'U')} style={[styles.avatar, { backgroundColor: getRoleColor(item.role) }]} />
+            <Avatar.Text size={56} label={getInitials(item.fullName || item.email || 'U')} style={[styles.avatar, { backgroundColor: getRoleColor(item.role) }]} />
             <View style={styles.headerContent}>
-              <Title style={styles.employeeName}>{item.name || 'No Name'}</Title>
+              <Title style={styles.employeeName}>{item.fullName || 'No Name'}</Title>
               <Paragraph style={styles.email}>{item.email || 'No Email'}</Paragraph>
               <Chip 
                 icon="shield-account" 
@@ -71,23 +71,14 @@ export default function EmployeesScreen({ navigation }: any) {
 
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
-              <Avatar.Icon size={24} icon="phone" style={styles.infoIcon} />
-              <Paragraph style={styles.infoText}>{item.phone || 'No Phone'}</Paragraph>
+              <Avatar.Icon size={24} icon="check-circle" style={styles.infoIcon} />
+              <Paragraph style={styles.infoText}>{item.isActive ? 'Active' : 'Inactive'}</Paragraph>
             </View>
             
-            {item.salary && (
-              <View style={styles.infoRow}>
-                <Avatar.Icon size={24} icon="cash" style={styles.infoIcon} />
-                <Paragraph style={styles.infoText}>${item.salary.toFixed(2)}/month</Paragraph>
-              </View>
-            )}
-
-            {item.branch && (
-              <View style={styles.infoRow}>
-                <Avatar.Icon size={24} icon="store" style={styles.infoIcon} />
-                <Paragraph style={styles.infoText}>{item.branch.name || 'No Branch'}</Paragraph>
-              </View>
-            )}
+            <View style={styles.infoRow}>
+              <Avatar.Icon size={24} icon="calendar" style={styles.infoIcon} />
+              <Paragraph style={styles.infoText}>Joined {new Date(item.createdAt).toLocaleDateString()}</Paragraph>
+            </View>
           </View>
         </Card.Content>
       </Card>

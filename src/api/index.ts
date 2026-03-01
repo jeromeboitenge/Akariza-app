@@ -7,6 +7,7 @@ export { suppliersApi } from './suppliersApi';
 export { expensesApi } from './expensesApi';
 export { branchesApi } from './branchesApi';
 export { employeesApi } from './employeesApi';
+export { usersApi } from './usersApi';
 export { tasksApi } from './tasksApi';
 export { messagesApi } from './messagesApi';
 export { notificationsApi } from './notificationsApi';
