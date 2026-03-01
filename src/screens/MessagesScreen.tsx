@@ -12,10 +12,11 @@ export default function MessagesScreen({ navigation }: any) {
 
   const loadMessages = async () => {
     try {
-      const data = await messagesApi.getOrgChat();
+      const data = await messagesApi.getAll();
+      console.log('📨 Loaded messages:', data.length);
       setMessages(data);
     } catch (error) {
-      console.error('Load messages error:', error);
+      console.error('❌ Load messages error:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);

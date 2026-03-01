@@ -13,22 +13,30 @@ export const messagesApi = {
     toOrganization?: boolean; 
     message: string 
   }): Promise<Message> => {
-    const { data } = await client.post('/messages', message);
+    // Transform to backend format
+    let payload: any = { message: message.message };
+    
+    if (message.receiverId) {
+      payload.targetType = 'USER';
+      payload.receiverId = message.receiverId;
+    } else if (message.branchId) {
+      payload.targetType = 'BRANCH';
+      payload.receiverBranchId = message.branchId;
+    } else if (message.toOrganization) {
+      payload.targetType = 'ALL_BRANCHES';
+    }
+    
+    const { data } = await client.post('/messages', payload);
     return data;
   },
 
   getUnread: async (): Promise<number> => {
-    const { data } = await client.get('/messages/unread');
-    return data.count;
+    const { data } = await client.get('/messages/unread-count');
+    return data;
   },
 
   markAsRead: async (id: string): Promise<void> => {
     await client.patch(`/messages/${id}/read`);
-  },
-
-  getOrgChat: async (): Promise<Message[]> => {
-    const { data } = await client.get('/messages/org-chat');
-    return data;
   },
 
   getConversation: async (userId: string): Promise<Message[]> => {
