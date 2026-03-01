@@ -4,6 +4,7 @@ import { TextInput, Button, Title, Snackbar } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { customersApi } from '../api';
 import { useDataStore } from '../store/dataStore';
+import { handleApiError, logApiRequest } from '../utils/apiHelpers';
 
 export default function NewCustomerScreen({ navigation }: any) {
   const [name, setName] = useState('');
@@ -23,19 +24,22 @@ export default function NewCustomerScreen({ navigation }: any) {
 
     setLoading(true);
     try {
-      const customer = await customersApi.create({
+      const payload = {
         name,
         phone,
         email: email || undefined,
         address: address || undefined,
         customerType,
-      });
+      };
+      
+      logApiRequest('customers/create', payload);
+      const customer = await customersApi.create(payload);
       addCustomer(customer);
       Alert.alert('Success', 'Customer created successfully', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create customer');
+      setError(handleApiError(err, 'Customer creation'));
     } finally {
       setLoading(false);
     }

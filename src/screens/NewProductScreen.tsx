@@ -3,6 +3,7 @@ import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Title, Paragraph, Switch, Snackbar } from 'react-native-paper';
 import { productsApi } from '../api';
 import { useDataStore } from '../store/dataStore';
+import { handleApiError, logApiRequest } from '../utils/apiHelpers';
 
 export default function NewProductScreen({ navigation }: any) {
   const [name, setName] = useState('');
@@ -26,7 +27,7 @@ export default function NewProductScreen({ navigation }: any) {
 
     setLoading(true);
     try {
-      const product = await productsApi.create({
+      const payload = {
         name,
         sku,
         category,
@@ -36,13 +37,16 @@ export default function NewProductScreen({ navigation }: any) {
         currentStock: parseFloat(currentStock),
         minStockLevel: parseFloat(minStockLevel),
         hasExpiry,
-      });
+      };
+      
+      logApiRequest('products/create', payload);
+      const product = await productsApi.create(payload);
       addProduct(product);
       Alert.alert('Success', 'Product created successfully', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create product');
+      setError(handleApiError(err, 'Product creation'));
     } finally {
       setLoading(false);
     }
