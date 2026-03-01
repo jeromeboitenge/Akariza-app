@@ -2,17 +2,23 @@ import React, { useEffect } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import AppNavigator from './src/navigation/AppNavigator';
-import { initDatabase } from './src/database';
+import { useAuthStore } from './src/store/authStore';
+import { theme } from './src/theme';
+import { ErrorBoundary } from './src/components';
 
 export default function App() {
+  const loadUser = useAuthStore((state) => state.loadUser);
+
   useEffect(() => {
-    initDatabase().catch(console.error);
+    loadUser();
   }, []);
 
   return (
-    <PaperProvider>
-      <AppNavigator />
-      <StatusBar style="auto" />
-    </PaperProvider>
+    <ErrorBoundary>
+      <PaperProvider theme={theme}>
+        <StatusBar style="light" backgroundColor="#1976D2" />
+        <AppNavigator />
+      </PaperProvider>
+    </ErrorBoundary>
   );
 }

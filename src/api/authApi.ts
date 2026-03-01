@@ -1,18 +1,18 @@
-import apiClient from './client';
+import client from './client';
+import { AuthResponse } from '../types';
 
 export const authApi = {
-  login: async (email: string, password: string) => {
-    const response = await apiClient.post('/auth/login', { email, password });
-    return response.data;
+  login: async (email: string, password: string): Promise<AuthResponse> => {
+    const { data } = await client.post('/auth/login', { email, password });
+    return data;
   },
 
-  refreshToken: async (refreshToken: string) => {
-    const response = await apiClient.post('/auth/refresh', { refreshToken });
-    return response.data;
+  logout: async (): Promise<void> => {
+    await client.post('/auth/logout');
   },
 
-  logout: async () => {
-    const response = await apiClient.post('/auth/logout');
-    return response.data;
-  }
+  refresh: async (refreshToken: string): Promise<{ accessToken: string }> => {
+    const { data } = await client.post('/auth/refresh', { refreshToken });
+    return data;
+  },
 };

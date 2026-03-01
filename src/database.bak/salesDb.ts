@@ -8,7 +8,7 @@ export const salesDb = {
         tx.executeSql(
           `INSERT INTO sales (id, organizationId, saleNumber, totalAmount, paymentMethod, customerName, createdBy, createdAt, syncStatus)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [sale.id, sale.organizationId, sale.saleNumber, sale.totalAmount, sale.paymentMethod, sale.customerName, '', sale.createdAt, 'PENDING']
+          [sale.id, sale.organizationId || '', sale.saleNumber, sale.totalAmount, sale.paymentMethod, sale.customerName || '', '', sale.createdAt, 'PENDING']
         );
 
         items.forEach(item => {

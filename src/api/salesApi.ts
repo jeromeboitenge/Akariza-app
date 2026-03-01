@@ -1,15 +1,24 @@
-import apiClient from './client';
+import client from './client';
+import { Sale } from '../types';
 
 export const salesApi = {
-  createSale: async (saleData: any) => {
-    return apiClient.post('/sales', saleData);
+  getAll: async (): Promise<Sale[]> => {
+    const { data } = await client.get('/sales');
+    return data;
   },
 
-  getSales: async () => {
-    return apiClient.get('/sales');
+  getById: async (id: string): Promise<Sale> => {
+    const { data } = await client.get(`/sales/${id}`);
+    return data;
   },
 
-  getMySales: async () => {
-    return apiClient.get('/sales/my-sales');
-  }
+  create: async (sale: any): Promise<Sale> => {
+    const { data } = await client.post('/sales', sale);
+    return data;
+  },
+
+  getMySales: async (): Promise<Sale[]> => {
+    const { data } = await client.get('/sales/my-sales');
+    return data;
+  },
 };
