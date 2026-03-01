@@ -46,7 +46,7 @@ export default function AdminSettingsScreen({ navigation }: any) {
           <Title style={styles.cardTitle}>Profile</Title>
           <View style={styles.profileInfo}>
             <Paragraph style={styles.profileLabel}>Name:</Paragraph>
-            <Paragraph style={styles.profileValue}>{user?.name}</Paragraph>
+            <Paragraph style={styles.profileValue}>{user?.fullName}</Paragraph>
           </View>
           <View style={styles.profileInfo}>
             <Paragraph style={styles.profileLabel}>Email:</Paragraph>

@@ -27,7 +27,10 @@ export default function MessagesScreen({ navigation }: any) {
   }, []);
 
   const renderMessage = ({ item }: { item: Message }) => (
-    <Card style={styles.card}>
+    <Card 
+      style={styles.card}
+      onPress={() => navigation.navigate('Chat', { userId: item.senderId, userName: item.sender?.fullName })}
+    >
       <Card.Content>
         <View style={styles.row}>
           <View style={styles.flex}>
@@ -63,12 +66,6 @@ export default function MessagesScreen({ navigation }: any) {
             <Paragraph>No messages</Paragraph>
           </View>
         }
-      />
-
-      <FAB
-        icon="message-plus"
-        style={styles.fab}
-        onPress={() => navigation.navigate('NewMessage')}
       />
     </View>
   );

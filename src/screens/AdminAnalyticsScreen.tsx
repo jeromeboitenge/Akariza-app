@@ -5,6 +5,7 @@ import { salesApi, productsApi, customersApi, analyticsApi } from '../api';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import { adminTheme } from '../theme/adminTheme';
 import { safeFormatDate } from '../utils/formatters';
+import { format } from 'date-fns';
 
 const { width } = Dimensions.get('window');
 
