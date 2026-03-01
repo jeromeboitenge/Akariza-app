@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, RefreshControl, Dimensions, TouchableOpacity } from 'react-native';
-import { Card, Title, Paragraph, Button, ActivityIndicator, Chip, Avatar, Divider, Surface, Text } from 'react-native-paper';
-import { LineChart } from 'react-native-chart-kit';
+import { Card, Title, Paragraph, ActivityIndicator, Avatar, Surface, Text, IconButton } from 'react-native-paper';
+import { LineChart, BarChart, PieChart } from 'react-native-chart-kit';
 import { analyticsApi } from '../api';
 import { DashboardStats } from '../types';
 import { useAuthStore } from '../store/authStore';
@@ -49,62 +49,88 @@ export default function DashboardScreen({ navigation }: any) {
     );
   }
 
-  const chartConfig = {
-    backgroundColor: '#1976D2',
-    backgroundGradientFrom: '#1976D2',
-    backgroundGradientTo: '#42A5F5',
-    decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: { borderRadius: 16 },
-    propsForDots: { r: '6', strokeWidth: '2', stroke: '#fff' },
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
   };
 
-  const renderHeader = () => (
-    <LinearGradient colors={['#1976D2', '#1565C0', '#0D47A1']} style={styles.headerGradient}>
-      <View style={styles.headerContent}>
-        <View style={styles.headerTop}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.greeting}>Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'}</Text>
-            <Title style={styles.userName}>{user?.fullName}</Title>
-            <Chip icon="shield-account" textStyle={styles.roleText} style={styles.roleChip}>{user?.role}</Chip>
-          </View>
-          <Avatar.Text size={64} label={user?.fullName?.charAt(0) || 'A'} style={styles.avatar} labelStyle={styles.avatarLabel} />
-        </View>
-      </View>
-    </LinearGradient>
-  );
-
-  const renderMetricCard = (icon: string, value: string, label: string, color: string, onPress?: () => void) => (
-    <TouchableOpacity style={styles.metricCard} onPress={onPress} activeOpacity={0.7}>
+  const MetricCard = ({ icon, value, label, color, trend, onPress }: any) => (
+    <TouchableOpacity style={styles.metricCard} onPress={onPress} activeOpacity={0.8}>
       <LinearGradient colors={[color, color + 'DD']} style={styles.metricGradient}>
-        <Avatar.Icon size={44} icon={icon} style={styles.metricIcon} color="#FFF" />
+        <View style={styles.metricHeader}>
+          <Avatar.Icon size={48} icon={icon} style={styles.metricIcon} color="#FFF" />
+          {trend && (
+            <View style={[styles.trendBadge, { backgroundColor: trend > 0 ? '#4CAF50' : '#F44336' }]}>
+              <Text style={styles.trendText}>{trend > 0 ? '+' : ''}{trend}%</Text>
+            </View>
+          )}
+        </View>
         <Title style={styles.metricValue}>{value}</Title>
         <Paragraph style={styles.metricLabel}>{label}</Paragraph>
       </LinearGradient>
     </TouchableOpacity>
   );
 
+  const QuickActionCard = ({ icon, label, color, onPress }: any) => (
+    <TouchableOpacity style={styles.quickAction} onPress={onPress} activeOpacity={0.7}>
+      <Surface style={[styles.quickActionSurface, { backgroundColor: color + '15' }]}>
+        <Avatar.Icon size={40} icon={icon} style={{ backgroundColor: color }} color="#FFF" />
+        <Text style={styles.quickActionLabel}>{label}</Text>
+      </Surface>
+    </TouchableOpacity>
+  );
+
   const renderCashierDashboard = () => (
     <>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('cash-register', `$${stats?.todaySales?.toFixed(2) || '0.00'}`, "Today's Sales", '#4CAF50')}
-        {renderMetricCard('receipt', `${stats?.todayTransactions || 0}`, 'Transactions', '#FF9800')}
-      </View>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('account-group', `${stats?.totalCustomers || 0}`, 'Customers', '#2196F3', () => navigation.navigate('Customers'))}
-        {renderMetricCard('package-variant', `${stats?.totalProducts || 0}`, 'Products', '#9C27B0', () => navigation.navigate('Products'))}
+      {/* Key Metrics */}
+      <View style={styles.metricsContainer}>
+        <MetricCard
+          icon="cash-register"
+          value={`$${stats?.todaySales?.toFixed(2) || '0.00'}`}
+          label="Today's Sales"
+          color="#4CAF50"
+          trend={12}
+        />
+        <MetricCard
+          icon="receipt"
+          value={stats?.todayTransactions || 0}
+          label="Transactions"
+          color="#2196F3"
+          trend={8}
+        />
       </View>
 
-      <Card style={styles.actionCard}>
+      {/* Quick Actions */}
+      <Card style={styles.sectionCard}>
         <Card.Content>
-          <Title style={styles.cardTitle}>Quick Actions</Title>
-          <Button mode="contained" icon="cart-plus" onPress={() => navigation.navigate('NewSale')} style={styles.primaryButton}>
-            New Sale
-          </Button>
-          <Button mode="outlined" icon="account-plus" onPress={() => navigation.navigate('NewCustomer')} style={styles.secondaryButton}>
-            Add Customer
-          </Button>
+          <View style={styles.sectionHeader}>
+            <Title style={styles.sectionTitle}>Quick Actions</Title>
+          </View>
+          <View style={styles.quickActionsGrid}>
+            <QuickActionCard icon="cart-plus" label="New Sale" color="#4CAF50" onPress={() => navigation.navigate('NewSale')} />
+            <QuickActionCard icon="account-plus" label="Add Customer" color="#2196F3" onPress={() => navigation.navigate('NewCustomer')} />
+            <QuickActionCard icon="package-variant" label="Products" color="#FF9800" onPress={() => navigation.navigate('Products')} />
+            <QuickActionCard icon="account-group" label="Customers" color="#9C27B0" onPress={() => navigation.navigate('Customers')} />
+          </View>
+        </Card.Content>
+      </Card>
+
+      {/* Recent Activity */}
+      <Card style={styles.sectionCard}>
+        <Card.Content>
+          <View style={styles.sectionHeader}>
+            <Title style={styles.sectionTitle}>Recent Activity</Title>
+            <IconButton icon="chevron-right" size={24} onPress={() => navigation.navigate('Sales')} />
+          </View>
+          <View style={styles.activityItem}>
+            <Avatar.Icon size={40} icon="receipt" style={styles.activityIcon} />
+            <View style={styles.activityContent}>
+              <Text style={styles.activityTitle}>Last sale: $45.00</Text>
+              <Text style={styles.activityTime}>5 minutes ago</Text>
+            </View>
+          </View>
         </Card.Content>
       </Card>
     </>
@@ -112,19 +138,50 @@ export default function DashboardScreen({ navigation }: any) {
 
   const renderManagerDashboard = () => (
     <>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('cash-multiple', `$${stats?.todaySales?.toFixed(2) || '0.00'}`, "Today's Sales", '#4CAF50')}
-        {renderMetricCard('trending-up', `$${stats?.todayProfit?.toFixed(2) || '0.00'}`, "Today's Profit", '#2196F3')}
-      </View>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('receipt', `${stats?.todayTransactions || 0}`, 'Transactions', '#FF9800')}
-        {renderMetricCard('alert-circle', `${stats?.lowStockCount || 0}`, 'Low Stock', '#F44336')}
+      {/* Key Metrics Grid */}
+      <View style={styles.metricsContainer}>
+        <MetricCard
+          icon="cash-multiple"
+          value={`$${stats?.todaySales?.toFixed(0) || '0'}`}
+          label="Today's Sales"
+          color="#4CAF50"
+          trend={15}
+          onPress={() => navigation.navigate('Sales')}
+        />
+        <MetricCard
+          icon="trending-up"
+          value={`$${stats?.todayProfit?.toFixed(0) || '0'}`}
+          label="Profit"
+          color="#2196F3"
+          trend={10}
+        />
       </View>
 
+      <View style={styles.metricsContainer}>
+        <MetricCard
+          icon="package-variant"
+          value={stats?.totalProducts || 0}
+          label="Products"
+          color="#FF9800"
+          onPress={() => navigation.navigate('Products')}
+        />
+        <MetricCard
+          icon="alert-circle"
+          value={stats?.lowStockCount || 0}
+          label="Low Stock"
+          color="#F44336"
+          onPress={() => navigation.navigate('Products')}
+        />
+      </View>
+
+      {/* Sales Chart */}
       {trends && trends.data && (
         <Card style={styles.chartCard}>
           <Card.Content>
-            <Title style={styles.cardTitle}>Sales Trend (7 Days)</Title>
+            <View style={styles.sectionHeader}>
+              <Title style={styles.sectionTitle}>Sales Trend</Title>
+              <Text style={styles.chartPeriod}>Last 7 Days</Text>
+            </View>
             <LineChart
               data={{
                 labels: trends.labels || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -135,11 +192,12 @@ export default function DashboardScreen({ navigation }: any) {
               chartConfig={{
                 backgroundColor: '#1976D2',
                 backgroundGradientFrom: '#1976D2',
-                backgroundGradientTo: '#42A5F5',
+                backgroundGradientTo: '#1565C0',
                 decimalPlaces: 0,
                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                 labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                propsForDots: { r: '4', strokeWidth: '2', stroke: '#fff' },
+                propsForDots: { r: '5', strokeWidth: '2', stroke: '#fff' },
+                propsForBackgroundLines: { strokeWidth: 0 },
               }}
               bezier
               style={styles.chart}
@@ -148,24 +206,15 @@ export default function DashboardScreen({ navigation }: any) {
         </Card>
       )}
 
-      <Card style={styles.actionCard}>
+      {/* Quick Actions */}
+      <Card style={styles.sectionCard}>
         <Card.Content>
-          <Title style={styles.cardTitle}>Management</Title>
-          <View style={styles.buttonRow}>
-            <Button mode="contained" icon="package-variant" onPress={() => navigation.navigate('Products')} style={styles.halfButton}>
-              Products
-            </Button>
-            <Button mode="contained" icon="truck" onPress={() => navigation.navigate('Suppliers')} style={styles.halfButton}>
-              Suppliers
-            </Button>
-          </View>
-          <View style={styles.buttonRow}>
-            <Button mode="outlined" icon="cash-minus" onPress={() => navigation.navigate('Expenses')} style={styles.halfButton}>
-              Expenses
-            </Button>
-            <Button mode="outlined" icon="chart-bar" onPress={() => navigation.navigate('Reports')} style={styles.halfButton}>
-              Reports
-            </Button>
+          <Title style={styles.sectionTitle}>Management</Title>
+          <View style={styles.quickActionsGrid}>
+            <QuickActionCard icon="package-variant" label="Products" color="#FF9800" onPress={() => navigation.navigate('Products')} />
+            <QuickActionCard icon="truck" label="Suppliers" color="#9C27B0" onPress={() => navigation.navigate('Suppliers')} />
+            <QuickActionCard icon="cash-minus" label="Expenses" color="#F44336" onPress={() => navigation.navigate('Expenses')} />
+            <QuickActionCard icon="chart-bar" label="Reports" color="#2196F3" onPress={() => navigation.navigate('Reports')} />
           </View>
         </Card.Content>
       </Card>
@@ -174,24 +223,49 @@ export default function DashboardScreen({ navigation }: any) {
 
   const renderBossDashboard = () => (
     <>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('cash-multiple', `$${stats?.todaySales?.toFixed(2) || '0.00'}`, "Today's Sales", '#4CAF50')}
-        {renderMetricCard('trending-up', `$${stats?.todayProfit?.toFixed(2) || '0.00'}`, "Today's Profit", '#2196F3')}
-      </View>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('receipt', `${stats?.todayTransactions || 0}`, 'Transactions', '#FF9800')}
-        {renderMetricCard('package-variant', `${stats?.totalProducts || 0}`, 'Products', '#9C27B0')}
-      </View>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('account-group', `${stats?.totalCustomers || 0}`, 'Customers', '#00BCD4')}
-        {renderMetricCard('alert-circle', `${stats?.lowStockCount || 0}`, 'Low Stock', '#F44336')}
+      {/* Executive Summary */}
+      <Card style={styles.executiveCard}>
+        <LinearGradient colors={['#1976D2', '#1565C0']} style={styles.executiveGradient}>
+          <Text style={styles.executiveLabel}>Total Revenue</Text>
+          <Title style={styles.executiveValue}>${(stats?.todaySales || 0).toFixed(2)}</Title>
+          <View style={styles.executiveRow}>
+            <View style={styles.executiveStat}>
+              <Text style={styles.executiveStatLabel}>Profit</Text>
+              <Text style={styles.executiveStatValue}>${(stats?.todayProfit || 0).toFixed(2)}</Text>
+            </View>
+            <View style={styles.executiveStat}>
+              <Text style={styles.executiveStatLabel}>Margin</Text>
+              <Text style={styles.executiveStatValue}>
+                {stats?.todaySales ? ((stats.todayProfit / stats.todaySales) * 100).toFixed(1) : 0}%
+              </Text>
+            </View>
+          </View>
+        </LinearGradient>
+      </Card>
+
+      {/* KPI Grid */}
+      <View style={styles.metricsContainer}>
+        <MetricCard icon="receipt" value={stats?.todayTransactions || 0} label="Transactions" color="#4CAF50" trend={12} />
+        <MetricCard icon="account-group" value={stats?.totalCustomers || 0} label="Customers" color="#2196F3" />
       </View>
 
+      <View style={styles.metricsContainer}>
+        <MetricCard icon="package-variant" value={stats?.totalProducts || 0} label="Products" color="#FF9800" />
+        <MetricCard icon="alert-circle" value={stats?.lowStockCount || 0} label="Alerts" color="#F44336" />
+      </View>
+
+      {/* Performance Chart */}
       {trends && trends.data && (
         <Card style={styles.chartCard}>
           <Card.Content>
-            <Title style={styles.cardTitle}>Sales Performance</Title>
-            <LineChart
+            <View style={styles.sectionHeader}>
+              <View>
+                <Title style={styles.sectionTitle}>Business Performance</Title>
+                <Text style={styles.chartSubtitle}>Weekly sales overview</Text>
+              </View>
+              <IconButton icon="filter-variant" size={24} />
+            </View>
+            <BarChart
               data={{
                 labels: trends.labels || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 datasets: [{ data: trends.data || [0, 0, 0, 0, 0, 0, 0] }],
@@ -199,54 +273,57 @@ export default function DashboardScreen({ navigation }: any) {
               width={screenWidth - 64}
               height={220}
               chartConfig={{
-                backgroundColor: '#1976D2',
-                backgroundGradientFrom: '#1976D2',
-                backgroundGradientTo: '#42A5F5',
+                backgroundColor: '#fff',
+                backgroundGradientFrom: '#fff',
+                backgroundGradientTo: '#fff',
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                propsForDots: { r: '5', strokeWidth: '2', stroke: '#fff' },
+                color: (opacity = 1) => `rgba(25, 118, 210, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                propsForBackgroundLines: { strokeDasharray: '', stroke: '#E0E0E0' },
               }}
-              bezier
               style={styles.chart}
+              showValuesOnTopOfBars
             />
           </Card.Content>
         </Card>
       )}
 
+      {/* Alerts & Insights */}
       {stats && stats.lowStockCount > 0 && (
         <Card style={styles.alertCard}>
           <Card.Content>
-            <View style={styles.alertRow}>
-              <Avatar.Icon size={48} icon="alert" color="#FF6F00" style={styles.alertIcon} />
-              <View style={styles.alertContent}>
+            <View style={styles.alertContent}>
+              <Avatar.Icon size={48} icon="alert-circle" style={styles.alertIcon} color="#FF6F00" />
+              <View style={styles.alertText}>
                 <Title style={styles.alertTitle}>Stock Alert</Title>
-                <Paragraph style={styles.alertText}>{stats.lowStockCount} products need reordering</Paragraph>
+                <Paragraph style={styles.alertDescription}>
+                  {stats.lowStockCount} products need reordering
+                </Paragraph>
               </View>
+              <IconButton icon="chevron-right" size={24} onPress={() => navigation.navigate('Products')} />
             </View>
-            <Button mode="contained" onPress={() => navigation.navigate('Products')} style={styles.alertButton}>
-              View Products
-            </Button>
           </Card.Content>
         </Card>
       )}
 
-      <Card style={styles.actionCard}>
+      {/* Quick Insights */}
+      <Card style={styles.sectionCard}>
         <Card.Content>
-          <Title style={styles.cardTitle}>Business Overview</Title>
-          <View style={styles.statsGrid}>
-            <Surface style={styles.statItem}>
-              <Text style={styles.statValue}>{stats?.pendingTasks || 0}</Text>
-              <Text style={styles.statLabel}>Pending Tasks</Text>
-            </Surface>
-            <Surface style={styles.statItem}>
-              <Text style={styles.statValue}>{stats?.unreadMessages || 0}</Text>
-              <Text style={styles.statLabel}>Messages</Text>
-            </Surface>
+          <Title style={styles.sectionTitle}>Quick Insights</Title>
+          <View style={styles.insightRow}>
+            <Avatar.Icon size={40} icon="trending-up" style={{ backgroundColor: '#4CAF50' }} />
+            <View style={styles.insightContent}>
+              <Text style={styles.insightTitle}>Sales up 15%</Text>
+              <Text style={styles.insightSubtitle}>Compared to last week</Text>
+            </View>
           </View>
-          <Button mode="contained" icon="chart-line" onPress={() => navigation.navigate('Reports')} style={styles.primaryButton}>
-            View Full Reports
-          </Button>
+          <View style={styles.insightRow}>
+            <Avatar.Icon size={40} icon="account-multiple" style={{ backgroundColor: '#2196F3' }} />
+            <View style={styles.insightContent}>
+              <Text style={styles.insightTitle}>5 new customers</Text>
+              <Text style={styles.insightSubtitle}>This week</Text>
+            </View>
+          </View>
         </Card.Content>
       </Card>
     </>
@@ -254,27 +331,20 @@ export default function DashboardScreen({ navigation }: any) {
 
   const renderAdminDashboard = () => (
     <>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('domain', `${stats?.totalProducts || 0}`, 'Organizations', '#4CAF50')}
-        {renderMetricCard('account-multiple', `${stats?.totalCustomers || 0}`, 'Total Users', '#2196F3')}
-      </View>
-      <View style={styles.metricsGrid}>
-        {renderMetricCard('cash-multiple', `$${stats?.todaySales?.toFixed(2) || '0.00'}`, 'Platform Revenue', '#FF9800')}
-        {renderMetricCard('chart-line', `${stats?.todayTransactions || 0}`, 'Active Orgs', '#9C27B0')}
+      <View style={styles.metricsContainer}>
+        <MetricCard icon="domain" value={stats?.totalProducts || 0} label="Organizations" color="#9C27B0" />
+        <MetricCard icon="account-multiple" value={stats?.totalCustomers || 0} label="Users" color="#2196F3" />
       </View>
 
-      <Card style={styles.actionCard}>
+      <Card style={styles.sectionCard}>
         <Card.Content>
-          <Title style={styles.cardTitle}>System Management</Title>
-          <Button mode="contained" icon="domain" onPress={() => navigation.navigate('AdminOrganizations')} style={styles.primaryButton}>
-            Manage Organizations
-          </Button>
-          <Button mode="outlined" icon="account-group" onPress={() => navigation.navigate('AdminUsers')} style={styles.secondaryButton}>
-            Manage Users
-          </Button>
-          <Button mode="outlined" icon="chart-box" onPress={() => navigation.navigate('AdminAnalytics')} style={styles.secondaryButton}>
-            System Analytics
-          </Button>
+          <Title style={styles.sectionTitle}>System Management</Title>
+          <View style={styles.quickActionsGrid}>
+            <QuickActionCard icon="domain" label="Organizations" color="#9C27B0" onPress={() => navigation.navigate('AdminOrganizations')} />
+            <QuickActionCard icon="account-group" label="Users" color="#2196F3" onPress={() => navigation.navigate('AdminUsers')} />
+            <QuickActionCard icon="chart-box" label="Analytics" color="#FF9800" onPress={() => navigation.navigate('AdminAnalytics')} />
+            <QuickActionCard icon="cog" label="Settings" color="#757575" onPress={() => navigation.navigate('AdminSettings')} />
+          </View>
         </Card.Content>
       </Card>
     </>
@@ -284,10 +354,26 @@ export default function DashboardScreen({ navigation }: any) {
     <ScrollView
       style={styles.container}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#1976D2']} />}
+      showsVerticalScrollIndicator={false}
     >
-      {renderHeader()}
-
-      {renderHeader()}
+      {/* Header */}
+      <LinearGradient colors={['#1976D2', '#1565C0', '#0D47A1']} style={styles.header}>
+        <View style={styles.headerContent}>
+          <View>
+            <Text style={styles.greeting}>{getGreeting()}</Text>
+            <Title style={styles.userName}>{user?.fullName}</Title>
+            <Surface style={styles.roleBadge}>
+              <Text style={styles.roleText}>{user?.role}</Text>
+            </Surface>
+          </View>
+          <Avatar.Text 
+            size={56} 
+            label={user?.fullName?.charAt(0) || 'A'} 
+            style={styles.avatar}
+            labelStyle={styles.avatarLabel}
+          />
+        </View>
+      </LinearGradient>
 
       <View style={styles.content}>
         {user?.role === 'CASHIER' && renderCashierDashboard()}
@@ -305,48 +391,67 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F7FA' },
   
-  headerGradient: { paddingTop: 48, paddingBottom: 32, paddingHorizontal: 20, borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
-  headerContent: { marginTop: 8 },
-  headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  headerLeft: { flex: 1 },
+  header: { paddingTop: 48, paddingBottom: 24, paddingHorizontal: 20 },
+  headerContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   greeting: { fontSize: 14, color: '#E3F2FD', marginBottom: 4, fontWeight: '500' },
-  userName: { fontSize: 26, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 12 },
-  roleChip: { backgroundColor: 'rgba(255,255,255,0.25)', alignSelf: 'flex-start' },
-  roleText: { color: '#FFFFFF', fontWeight: '600' },
-  avatar: { backgroundColor: 'rgba(255,255,255,0.2)', elevation: 4 },
+  userName: { fontSize: 28, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 8 },
+  roleBadge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.2)' },
+  roleText: { color: '#FFFFFF', fontSize: 12, fontWeight: '600' },
+  avatar: { backgroundColor: 'rgba(255,255,255,0.25)', elevation: 4 },
   avatarLabel: { fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' },
   
   content: { paddingTop: 16 },
   
-  metricsGrid: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 12 },
+  metricsContainer: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 12 },
   metricCard: { flex: 1, marginHorizontal: 4, borderRadius: 16, elevation: 4, overflow: 'hidden' },
-  metricGradient: { padding: 16, alignItems: 'center' },
-  metricIcon: { backgroundColor: 'rgba(255,255,255,0.25)', marginBottom: 12 },
+  metricGradient: { padding: 16 },
+  metricHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },
+  metricIcon: { backgroundColor: 'rgba(255,255,255,0.25)' },
+  trendBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 },
+  trendText: { color: '#FFF', fontSize: 11, fontWeight: 'bold' },
   metricValue: { fontSize: 24, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 4 },
-  metricLabel: { fontSize: 12, color: '#FFFFFF', opacity: 0.95, textAlign: 'center' },
+  metricLabel: { fontSize: 12, color: '#FFFFFF', opacity: 0.95 },
   
-  chartCard: { margin: 16, marginBottom: 12, elevation: 4, borderRadius: 16, backgroundColor: '#FFFFFF' },
-  cardTitle: { fontSize: 18, fontWeight: 'bold', color: '#1976D2', marginBottom: 12 },
+  sectionCard: { marginHorizontal: 16, marginBottom: 12, elevation: 3, borderRadius: 16 },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1976D2' },
+  
+  quickActionsGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },
+  quickAction: { width: '50%', padding: 6 },
+  quickActionSurface: { padding: 16, borderRadius: 12, alignItems: 'center', elevation: 2 },
+  quickActionLabel: { marginTop: 8, fontSize: 13, fontWeight: '600', color: '#424242', textAlign: 'center' },
+  
+  chartCard: { marginHorizontal: 16, marginBottom: 12, elevation: 3, borderRadius: 16 },
+  chartPeriod: { fontSize: 12, color: '#757575' },
+  chartSubtitle: { fontSize: 12, color: '#757575', marginTop: 2 },
   chart: { marginVertical: 8, borderRadius: 16 },
   
-  alertCard: { margin: 16, marginBottom: 12, elevation: 4, borderRadius: 16, backgroundColor: '#FFF3E0', borderLeftWidth: 4, borderLeftColor: '#FF9800' },
-  alertRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-  alertIcon: { backgroundColor: '#FFE0B2', marginRight: 16 },
-  alertContent: { flex: 1 },
+  executiveCard: { marginHorizontal: 16, marginBottom: 12, borderRadius: 16, elevation: 4, overflow: 'hidden' },
+  executiveGradient: { padding: 24 },
+  executiveLabel: { fontSize: 14, color: '#E3F2FD', marginBottom: 8 },
+  executiveValue: { fontSize: 36, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 16 },
+  executiveRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  executiveStat: { alignItems: 'center' },
+  executiveStatLabel: { fontSize: 12, color: '#E3F2FD', marginBottom: 4 },
+  executiveStatValue: { fontSize: 20, fontWeight: 'bold', color: '#FFFFFF' },
+  
+  alertCard: { marginHorizontal: 16, marginBottom: 12, elevation: 3, borderRadius: 16, backgroundColor: '#FFF3E0' },
+  alertContent: { flexDirection: 'row', alignItems: 'center' },
+  alertIcon: { backgroundColor: '#FFE0B2', marginRight: 12 },
+  alertText: { flex: 1 },
   alertTitle: { fontSize: 16, fontWeight: 'bold', color: '#E65100', marginBottom: 4 },
-  alertText: { fontSize: 14, color: '#F57C00' },
-  alertButton: { borderRadius: 8, backgroundColor: '#FF9800' },
+  alertDescription: { fontSize: 14, color: '#F57C00' },
   
-  actionCard: { margin: 16, marginBottom: 12, elevation: 4, borderRadius: 16, backgroundColor: '#FFFFFF' },
-  primaryButton: { marginBottom: 12, borderRadius: 8, backgroundColor: '#1976D2' },
-  secondaryButton: { marginBottom: 12, borderRadius: 8, borderColor: '#1976D2' },
-  buttonRow: { flexDirection: 'row', marginBottom: 12 },
-  halfButton: { flex: 1, marginHorizontal: 4, borderRadius: 8 },
+  activityItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8 },
+  activityIcon: { backgroundColor: '#E3F2FD', marginRight: 12 },
+  activityContent: { flex: 1 },
+  activityTitle: { fontSize: 14, fontWeight: '600', color: '#424242', marginBottom: 2 },
+  activityTime: { fontSize: 12, color: '#757575' },
   
-  statsGrid: { flexDirection: 'row', marginBottom: 16 },
-  statItem: { flex: 1, padding: 16, marginHorizontal: 4, borderRadius: 12, backgroundColor: '#E3F2FD', alignItems: 'center', elevation: 2 },
-  statValue: { fontSize: 28, fontWeight: 'bold', color: '#1976D2', marginBottom: 4 },
-  statLabel: { fontSize: 12, color: '#1565C0', textAlign: 'center' },
+  insightRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#F5F5F5' },
+  insightContent: { flex: 1, marginLeft: 12 },
+  insightTitle: { fontSize: 15, fontWeight: '600', color: '#424242', marginBottom: 2 },
+  insightSubtitle: { fontSize: 13, color: '#757575' },
   
   footer: { height: 24 },
 });
