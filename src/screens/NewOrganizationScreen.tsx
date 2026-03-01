@@ -11,10 +11,16 @@ export default function NewOrganizationScreen({ navigation }: any) {
   const [businessType, setBusinessType] = useState('');
   const [subscriptionPlan, setSubscriptionPlan] = useState('');
   const [isActive, setIsActive] = useState(true);
+  
+  // Boss data
+  const [bossEmail, setBossEmail] = useState('');
+  const [bossPassword, setBossPassword] = useState('');
+  const [bossFullName, setBossFullName] = useState('');
+  
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!name || !email || !phone || !address || !businessType) {
+    if (!name || !email || !phone || !address || !businessType || !bossEmail || !bossPassword || !bossFullName) {
       Alert.alert('Error', 'Please fill all required fields');
       return;
     }
@@ -27,6 +33,11 @@ export default function NewOrganizationScreen({ navigation }: any) {
         phone,
         address,
         businessType,
+        bossData: {
+          email: bossEmail,
+          password: bossPassword,
+          fullName: bossFullName,
+        },
         subscriptionPlan: subscriptionPlan || undefined,
         isActive,
       });
@@ -92,6 +103,38 @@ export default function NewOrganizationScreen({ navigation }: any) {
             style={styles.input}
           />
 
+          <Title style={styles.sectionTitle}>Boss Account Details</Title>
+
+          <TextInput
+            label="Boss Full Name *"
+            value={bossFullName}
+            onChangeText={setBossFullName}
+            mode="outlined"
+            placeholder="John Doe"
+            style={styles.input}
+          />
+
+          <TextInput
+            label="Boss Email *"
+            value={bossEmail}
+            onChangeText={setBossEmail}
+            mode="outlined"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholder="boss@company.com"
+            style={styles.input}
+          />
+
+          <TextInput
+            label="Boss Password *"
+            value={bossPassword}
+            onChangeText={setBossPassword}
+            mode="outlined"
+            secureTextEntry
+            placeholder="Minimum 6 characters"
+            style={styles.input}
+          />
+
           <TextInput
             label="Subscription Plan"
             value={subscriptionPlan}
@@ -125,6 +168,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F7FA' },
   card: { margin: 16, elevation: 4, borderRadius: 16 },
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#9C27B0' },
+  sectionTitle: { fontSize: 16, fontWeight: 'bold', marginTop: 16, marginBottom: 8, color: '#1976D2' },
   input: { marginBottom: 12 },
   switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 16 },
   switchLabel: { fontSize: 16 },
