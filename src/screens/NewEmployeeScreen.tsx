@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Card, Title } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
-import { employeesApi, branchesApi } from '../api';
+import { branchesApi } from '../api';
 import { Branch } from '../types';
 import { handleApiError, logApiRequest } from '../utils/apiHelpers';
 import { colors } from '../theme/colors';
+import client from '../api/client';
 
 export default function NewEmployeeScreen({ navigation }: any) {
   const [fullName, setFullName] = useState('');
@@ -14,10 +15,6 @@ export default function NewEmployeeScreen({ navigation }: any) {
   const [phone, setPhone] = useState('');
   const [role, setRole] = useState('CASHIER');
   const [branchId, setBranchId] = useState('');
-  const [employeeCode, setEmployeeCode] = useState('');
-  const [department, setDepartment] = useState('');
-  const [position, setPosition] = useState('');
-  const [salary, setSalary] = useState('');
   
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(false);
@@ -53,18 +50,14 @@ export default function NewEmployeeScreen({ navigation }: any) {
         phone,
         role,
         branchId,
-        employeeCode: employeeCode || undefined,
-        department: department || undefined,
-        position: position || undefined,
-        salary: salary ? parseFloat(salary) : undefined,
       };
       
-      logApiRequest('employees/create', payload);
-      await employeesApi.create(payload);
-      Alert.alert('Success', 'Employee created successfully');
+      logApiRequest('users/create', payload);
+      const { data } = await client.post('/users', payload);
+      Alert.alert('Success', 'User created successfully');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', handleApiError(error, 'Employee creation'));
+      Alert.alert('Error', handleApiError(error, 'User creation'));
     } finally {
       setLoading(false);
     }
@@ -140,43 +133,6 @@ export default function NewEmployeeScreen({ navigation }: any) {
             </Picker>
           </View>
 
-          <TextInput
-            label="Employee Code"
-            value={employeeCode}
-            onChangeText={setEmployeeCode}
-            mode="outlined"
-            placeholder="EMP-001"
-            style={styles.input}
-          />
-
-          <TextInput
-            label="Department"
-            value={department}
-            onChangeText={setDepartment}
-            mode="outlined"
-            placeholder="Sales, Operations, etc."
-            style={styles.input}
-          />
-
-          <TextInput
-            label="Position"
-            value={position}
-            onChangeText={setPosition}
-            mode="outlined"
-            placeholder="Sales Associate, Store Manager, etc."
-            style={styles.input}
-          />
-
-          <TextInput
-            label="Salary"
-            value={salary}
-            onChangeText={setSalary}
-            mode="outlined"
-            keyboardType="numeric"
-            placeholder="Monthly salary"
-            style={styles.input}
-          />
-
           <Button
             mode="contained"
             onPress={handleSubmit}
@@ -184,7 +140,7 @@ export default function NewEmployeeScreen({ navigation }: any) {
             disabled={loading}
             style={styles.button}
           >
-            Create Employee
+            Create User
           </Button>
         </Card.Content>
       </Card>
