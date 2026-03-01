@@ -19,14 +19,20 @@ export default function DashboardScreen({ navigation }: any) {
 
   const loadDashboard = async () => {
     try {
+      console.log('📊 Loading dashboard data...');
       const [statsData, trendsData] = await Promise.all([
         analyticsApi.getDashboard(),
         analyticsApi.getSalesTrends('daily').catch(() => null),
       ]);
+      console.log('✅ Dashboard stats received:', JSON.stringify(statsData, null, 2));
+      console.log('📈 Branches:', statsData?.totalBranches);
+      console.log('👥 Employees:', statsData?.totalEmployees);
+      console.log('👤 Customers:', statsData?.totalCustomers);
+      console.log('📦 Products:', statsData?.totalProducts);
       setStats(statsData);
       setTrends(trendsData);
     } catch (error) {
-      console.error('Dashboard error:', error);
+      console.error('❌ Dashboard error:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);

@@ -4,7 +4,8 @@ import { DashboardStats, StockTransaction, Report } from '../types';
 export const analyticsApi = {
   getDashboard: async (): Promise<DashboardStats> => {
     const { data } = await client.get('/analytics/dashboard');
-    return data;
+    // Backend returns data in summary object, extract it
+    return data.summary || data;
   },
 
   getSalesTrends: async (period: 'daily' | 'weekly' | 'monthly'): Promise<any> => {
