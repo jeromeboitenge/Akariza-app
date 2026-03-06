@@ -1,321 +1,331 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-  RefreshControl,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { purchaseOrdersApi } from '../api';
-import { LoadingSpinner, EmptyState, SearchBar } from '../components';
-import { useAuthStore } from '../store/authStore';
+import { View, StyleSheet, FlatList, RefreshControl, Alert } from 'react-native';
+import { 
+  Card, 
+  Title, 
+  Paragraph, 
+  FAB, 
+  Chip, 
+  Searchbar,
+  Button,
+  Portal,
+  Dialog,
+  Snackbar,
+  Divider,
+  ActivityIndicator
+} from 'react-native-paper';
+import { purchaseOrdersApi, suppliersApi, productsApi } from '../api';
+import { PurchaseOrder } from '../api/otherApi';
+import { Supplier, Product } from '../types';
 
-export default function PurchaseOrdersScreen({ navigation }: any) {
-  const [orders, setOrders] = useState([]);
-  const [filteredOrders, setFilteredOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+export default function PurchaseOrdersScreen() {
+  const [orders, setOrders] = useState<PurchaseOrder[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<PurchaseOrder[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const user = useAuthStore((state) => state.user);
+  const [selectedStatus, setSelectedStatus] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'CONVERTED'>('ALL');
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder | null>(null);
+  const [snackbar, setSnackbar] = useState({ visible: false, message: '' });
 
   useEffect(() => {
-    loadOrders();
+    loadData();
   }, []);
 
   useEffect(() => {
     filterOrders();
-  }, [searchQuery, orders]);
+  }, [searchQuery, selectedStatus, orders]);
 
-  const loadOrders = async () => {
+  const loadData = async () => {
     try {
-      const data = await purchaseOrdersApi.getAll();
-      setOrders(data);
-      setFilteredOrders(data);
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.message || 'Failed to load purchase orders');
+      setLoading(true);
+      const [ordersData, suppliersData, productsData] = await Promise.all([
+        purchaseOrdersApi.getAll(),
+        suppliersApi.getAll(),
+        productsApi.getAll()
+      ]);
+      setOrders(ordersData);
+      setSuppliers(suppliersData);
+      setProducts(productsData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+      showSnackbar('Failed to load data');
     } finally {
       setLoading(false);
-      setRefreshing(false);
     }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadData();
+    setRefreshing(false);
   };
 
   const filterOrders = () => {
-    if (!searchQuery.trim()) {
-      setFilteredOrders(orders);
-      return;
+    let filtered = orders;
+
+    if (selectedStatus !== 'ALL') {
+      filtered = filtered.filter(order => order.status === selectedStatus);
     }
 
-    const filtered = orders.filter((order: any) =>
-      order.supplier?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.orderNumber?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    if (searchQuery) {
+      filtered = filtered.filter(order =>
+        order.orderNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.supplier?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
     setFilteredOrders(filtered);
   };
 
-  const handleApprove = async (orderId: string) => {
+  const handleApprove = async (id: string) => {
+    try {
+      await purchaseOrdersApi.approve(id);
+      showSnackbar('Purchase order approved');
+      loadData();
+      setShowDetailsDialog(false);
+    } catch (error) {
+      console.error('Error approving order:', error);
+      showSnackbar('Failed to approve purchase order');
+    }
+  };
+
+  const handleReject = async (id: string) => {
     Alert.alert(
-      'Approve Order',
-      'Are you sure you want to approve this purchase order?',
+      'Reject Purchase Order',
+      'Are you sure you want to reject this purchase order?',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Approve',
+          text: 'Reject',
+          style: 'destructive',
           onPress: async () => {
             try {
-              await purchaseOrdersApi.approve(orderId);
-              Alert.alert('Success', 'Purchase order approved');
-              loadOrders();
-            } catch (error: any) {
-              Alert.alert('Error', error.response?.data?.message || 'Failed to approve order');
+              await purchaseOrdersApi.reject(id);
+              showSnackbar('Purchase order rejected');
+              loadData();
+              setShowDetailsDialog(false);
+            } catch (error) {
+              console.error('Error rejecting order:', error);
+              showSnackbar('Failed to reject purchase order');
             }
-          },
-        },
+          }
+        }
       ]
     );
   };
 
-  const handleConvert = async (orderId: string) => {
+  const handleConvert = async (id: string) => {
     Alert.alert(
       'Convert to Purchase',
-      'Convert this purchase order to an actual purchase?',
+      'This will create a purchase from this order. Continue?',
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Convert',
           onPress: async () => {
             try {
-              await purchaseOrdersApi.convert(orderId);
-              Alert.alert('Success', 'Purchase order converted to purchase');
-              loadOrders();
-            } catch (error: any) {
-              Alert.alert('Error', error.response?.data?.message || 'Failed to convert order');
+              await purchaseOrdersApi.convert(id);
+              showSnackbar('Converted to purchase successfully');
+              loadData();
+              setShowDetailsDialog(false);
+            } catch (error) {
+              console.error('Error converting order:', error);
+              showSnackbar('Failed to convert purchase order');
             }
-          },
-        },
+          }
+        }
       ]
     );
   };
 
+  const showSnackbar = (message: string) => {
+    setSnackbar({ visible: true, message });
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING':
-        return '#FFA726';
-      case 'APPROVED':
-        return '#66BB6A';
-      case 'REJECTED':
-        return '#EF5350';
-      case 'CONVERTED':
-        return '#5C6BF2';
-      default:
-        return '#757575';
+      case 'PENDING': return '#FF9800';
+      case 'APPROVED': return '#4CAF50';
+      case 'REJECTED': return '#F44336';
+      case 'CONVERTED': return '#2196F3';
+      default: return '#757575';
     }
   };
 
-  const renderOrder = ({ item }: any) => (
-    <TouchableOpacity
-      style={styles.orderCard}
-      onPress={() => navigation.navigate('PurchaseOrderDetail', { orderId: item.id })}
-    >
-      <View style={styles.orderHeader}>
+  const renderOrder = ({ item }: { item: PurchaseOrder }) => (
+    <Card style={styles.card} onPress={() => {
+      setSelectedOrder(item);
+      setShowDetailsDialog(true);
+    }}>
+      <Card.Content>
+        <View style={styles.cardHeader}>
+          <Title style={styles.orderNumber}>{item.orderNumber}</Title>
+          <Chip 
+            mode="flat" 
+            style={[styles.statusChip, { backgroundColor: getStatusColor(item.status) }]}
+            textStyle={styles.statusText}
+          >
+            {item.status}
+          </Chip>
+        </View>
+        
+        <Paragraph style={styles.supplier}>
+          Supplier: {item.supplier?.name || 'Unknown'}
+        </Paragraph>
+        
         <View style={styles.orderInfo}>
-          <Text style={styles.orderNumber}>{item.orderNumber || `PO-${item.id.slice(0, 8)}`}</Text>
-          <Text style={styles.supplierName}>{item.supplier?.name || 'Unknown Supplier'}</Text>
-        </View>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-          <Text style={styles.statusText}>{item.status}</Text>
-        </View>
-      </View>
-
-      <View style={styles.orderDetails}>
-        <View style={styles.detailRow}>
-          <Ionicons name="calendar-outline" size={16} color="#666" />
-          <Text style={styles.detailText}>
-            {new Date(item.createdAt).toLocaleDateString()}
-          </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Ionicons name="cube-outline" size={16} color="#666" />
-          <Text style={styles.detailText}>
+          <Paragraph style={styles.amount}>
+            Total: ${item.totalAmount?.toFixed(2) || '0.00'}
+          </Paragraph>
+          <Paragraph style={styles.items}>
             {item.items?.length || 0} items
-          </Text>
+          </Paragraph>
         </View>
-        <View style={styles.detailRow}>
-          <Ionicons name="cash-outline" size={16} color="#666" />
-          <Text style={styles.detailText}>
-            RWF {item.totalAmount?.toLocaleString() || '0'}
-          </Text>
-        </View>
-      </View>
 
-      {item.status === 'PENDING' && (user?.role === 'BOSS' || user?.role === 'MANAGER') && (
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.approveButton]}
-            onPress={() => handleApprove(item.id)}
-          >
-            <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
-            <Text style={styles.actionButtonText}>Approve</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+        {item.requestedByUser && (
+          <Paragraph style={styles.requestedBy}>
+            Requested by: {item.requestedByUser.fullName}
+          </Paragraph>
+        )}
 
-      {item.status === 'APPROVED' && (user?.role === 'BOSS' || user?.role === 'MANAGER') && (
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.convertButton]}
-            onPress={() => handleConvert(item.id)}
-          >
-            <Ionicons name="swap-horizontal" size={20} color="#FFFFFF" />
-            <Text style={styles.actionButtonText}>Convert to Purchase</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </TouchableOpacity>
+        <Paragraph style={styles.date}>
+          {new Date(item.createdAt).toLocaleDateString()}
+        </Paragraph>
+      </Card.Content>
+    </Card>
   );
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-      <SearchBar
-        value={searchQuery}
+      <Searchbar
+        placeholder="Search orders..."
         onChangeText={setSearchQuery}
-        placeholder="Search purchase orders..."
+        value={searchQuery}
+        style={styles.searchbar}
       />
+
+      <View style={styles.filters}>
+        {(['ALL', 'PENDING', 'APPROVED', 'REJECTED', 'CONVERTED'] as const).map(status => (
+          <Chip
+            key={status}
+            selected={selectedStatus === status}
+            onPress={() => setSelectedStatus(status)}
+            style={styles.filterChip}
+          >
+            {status}
+          </Chip>
+        ))}
+      </View>
 
       <FlatList
         data={filteredOrders}
         renderItem={renderOrder}
-        keyExtractor={(item: any) => item.id}
-        contentContainerStyle={styles.listContent}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.list}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => {
-            setRefreshing(true);
-            loadOrders();
-          }} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListEmptyComponent={
-          <EmptyState
-            icon="document-text-outline"
-            title="No Purchase Orders"
-            message="Purchase orders will appear here"
-          />
+          <View style={styles.empty}>
+            <Paragraph>No purchase orders found</Paragraph>
+          </View>
         }
       />
 
-      <TouchableOpacity
+      <FAB
+        icon="plus"
         style={styles.fab}
-        onPress={() => navigation.navigate('NewPurchaseOrder')}
+        onPress={() => showSnackbar('Create purchase order feature coming soon')}
+      />
+
+      {/* Details Dialog */}
+      <Portal>
+        <Dialog visible={showDetailsDialog} onDismiss={() => setShowDetailsDialog(false)}>
+          <Dialog.Title>{selectedOrder?.orderNumber}</Dialog.Title>
+          <Dialog.ScrollArea>
+            <View style={styles.dialogContent}>
+              <Paragraph>Supplier: {selectedOrder?.supplier?.name}</Paragraph>
+              <Paragraph>Status: {selectedOrder?.status}</Paragraph>
+              <Paragraph>Total: ${selectedOrder?.totalAmount?.toFixed(2)}</Paragraph>
+              
+              <Divider style={styles.divider} />
+              
+              <Title style={styles.itemsTitle}>Items:</Title>
+              {selectedOrder?.items?.map((item, index) => (
+                <View key={index} style={styles.item}>
+                  <Paragraph>{item.product?.name || 'Unknown Product'}</Paragraph>
+                  <Paragraph>Qty: {item.quantity} × ${item.estimatedCost}</Paragraph>
+                </View>
+              ))}
+
+              {selectedOrder?.notes && (
+                <>
+                  <Divider style={styles.divider} />
+                  <Paragraph>Notes: {selectedOrder.notes}</Paragraph>
+                </>
+              )}
+            </View>
+          </Dialog.ScrollArea>
+          <Dialog.Actions>
+            {selectedOrder?.status === 'PENDING' && (
+              <>
+                <Button onPress={() => handleReject(selectedOrder.id)}>Reject</Button>
+                <Button onPress={() => handleApprove(selectedOrder.id)}>Approve</Button>
+              </>
+            )}
+            {selectedOrder?.status === 'APPROVED' && (
+              <Button onPress={() => handleConvert(selectedOrder.id)}>Convert to Purchase</Button>
+            )}
+            <Button onPress={() => setShowDetailsDialog(false)}>Close</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      <Snackbar
+        visible={snackbar.visible}
+        onDismiss={() => setSnackbar({ visible: false, message: '' })}
+        duration={3000}
       >
-        <Ionicons name="add" size={24} color="#FFFFFF" />
-      </TouchableOpacity>
+        {snackbar.message}
+      </Snackbar>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F7FA',
-  },
-  listContent: {
-    padding: 16,
-  },
-  orderCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-  },
-  orderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  orderInfo: {
-    flex: 1,
-  },
-  orderNumber: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1A1A1A',
-    marginBottom: 4,
-  },
-  supplierName: {
-    fontSize: 14,
-    color: '#666',
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  statusText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  orderDetails: {
-    gap: 8,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  detailText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
-  },
-  actionButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    borderRadius: 8,
-    gap: 6,
-  },
-  approveButton: {
-    backgroundColor: '#66BB6A',
-  },
-  convertButton: {
-    backgroundColor: '#5C6BF2',
-  },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  fab: {
-    position: 'absolute',
-    right: 16,
-    bottom: 16,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#5C6BF2',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  searchbar: { margin: 16 },
+  filters: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 8, flexWrap: 'wrap' },
+  filterChip: { marginRight: 8, marginBottom: 8 },
+  list: { padding: 16 },
+  card: { marginBottom: 16, elevation: 2 },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  orderNumber: { fontSize: 18, fontWeight: 'bold' },
+  statusChip: { },
+  statusText: { color: '#fff', fontSize: 12 },
+  supplier: { fontSize: 14, color: '#666', marginBottom: 8 },
+  orderInfo: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
+  amount: { fontSize: 16, fontWeight: 'bold', color: '#4CAF50' },
+  items: { fontSize: 14, color: '#666' },
+  requestedBy: { fontSize: 12, color: '#999', marginBottom: 4 },
+  date: { fontSize: 12, color: '#999' },
+  empty: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
+  fab: { position: 'absolute', right: 16, bottom: 16 },
+  dialogContent: { padding: 16 },
+  divider: { marginVertical: 16 },
+  itemsTitle: { fontSize: 16, marginBottom: 8 },
+  item: { marginBottom: 8, paddingLeft: 8 },
 });

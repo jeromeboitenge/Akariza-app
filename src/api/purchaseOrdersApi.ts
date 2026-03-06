@@ -1,5 +1,4 @@
 import client from './client';
-import { Promotion } from '../types';
 
 export interface PurchaseOrder {
   id: string;
@@ -46,36 +45,28 @@ export interface PurchaseOrderItem {
   notes?: string;
 }
 
-export const promotionsApi = {
-  getAll: async (): Promise<Promotion[]> => {
-    const { data } = await client.get('/promotions');
-    return data;
-  },
+export interface CreatePurchaseOrderDto {
+  supplierId: string;
+  items: {
+    productId: string;
+    quantity: number;
+    estimatedCost: number;
+    notes?: string;
+  }[];
+  notes?: string;
+}
 
-  getActive: async (): Promise<Promotion[]> => {
-    const { data } = await client.get('/promotions/active');
-    return data;
-  },
-
-  getById: async (id: string): Promise<Promotion> => {
-    const { data } = await client.get(`/promotions/${id}`);
-    return data;
-  },
-
-  create: async (promotion: Partial<Promotion>): Promise<Promotion> => {
-    const { data } = await client.post('/promotions', promotion);
-    return data;
-  },
-
-  update: async (id: string, promotion: Partial<Promotion>): Promise<Promotion> => {
-    const { data } = await client.patch(`/promotions/${id}`, promotion);
-    return data;
-  },
-
-  delete: async (id: string): Promise<void> => {
-    await client.delete(`/promotions/${id}`);
-  },
-};
+export interface UpdatePurchaseOrderDto {
+  supplierId?: string;
+  items?: {
+    productId: string;
+    quantity: number;
+    estimatedCost: number;
+    notes?: string;
+  }[];
+  notes?: string;
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+}
 
 export const purchaseOrdersApi = {
   /**
@@ -97,34 +88,15 @@ export const purchaseOrdersApi = {
   /**
    * Create new purchase order
    */
-  create: async (purchaseOrder: {
-    supplierId: string;
-    items: {
-      productId: string;
-      quantity: number;
-      estimatedCost: number;
-      notes?: string;
-    }[];
-    notes?: string;
-  }): Promise<PurchaseOrder> => {
-    const { data} = await client.post('/purchase-orders', purchaseOrder);
+  create: async (purchaseOrder: CreatePurchaseOrderDto): Promise<PurchaseOrder> => {
+    const { data } = await client.post('/purchase-orders', purchaseOrder);
     return data;
   },
 
   /**
    * Update purchase order
    */
-  update: async (id: string, purchaseOrder: {
-    supplierId?: string;
-    items?: {
-      productId: string;
-      quantity: number;
-      estimatedCost: number;
-      notes?: string;
-    }[];
-    notes?: string;
-    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
-  }): Promise<PurchaseOrder> => {
+  update: async (id: string, purchaseOrder: UpdatePurchaseOrderDto): Promise<PurchaseOrder> => {
     const { data } = await client.patch(`/purchase-orders/${id}`, purchaseOrder);
     return data;
   },
@@ -147,6 +119,7 @@ export const purchaseOrdersApi = {
 
   /**
    * Convert purchase order to purchase
+   * This creates an actual purchase from the approved purchase order
    */
   convert: async (id: string, conversionData?: {
     actualCosts?: { productId: string; actualCost: number }[];
@@ -159,7 +132,7 @@ export const purchaseOrdersApi = {
   },
 
   /**
-   * Delete purchase order
+   * Delete purchase order (only if PENDING)
    */
   delete: async (id: string): Promise<void> => {
     await client.delete(`/purchase-orders/${id}`);
@@ -174,7 +147,7 @@ export const purchaseOrdersApi = {
   },
 
   /**
-   * Get my purchase orders
+   * Get my purchase orders (created by current user)
    */
   getMyOrders: async (): Promise<PurchaseOrder[]> => {
     const { data } = await client.get('/purchase-orders/my-orders');
