@@ -20,4 +20,19 @@ export const authApi = {
     const { data } = await client.post('/auth/refresh', { refreshToken });
     return data;
   },
+
+  forgotPassword: async (data: { email: string }) => {
+    const response = await client.post('/auth/forgot-password', data);
+    return response.data;
+  },
+
+  verifyResetOTP: async (data: { email: string; otpCode: string }) => {
+    const response = await client.post('/auth/verify-reset-otp', data);
+    return response.data;
+  },
+
+  resetPassword: async (data: { email: string; otpCode: string; newPassword: string }) => {
+    const response = await client.post('/auth/reset-password', data);
+    return response.data;
+  },
 };

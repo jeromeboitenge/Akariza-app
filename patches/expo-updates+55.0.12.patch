@@ -1,0 +1,23 @@
+diff --git a/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt b/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
+index df17124..8ad081a 100644
+--- a/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
++++ b/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
+@@ -55,6 +55,10 @@ class UpdatesPackage : Package {
+ 
+   override fun createReactActivityHandlers(activityContext: Context): List<ReactActivityHandler> {
+     val handler = object : ReactActivityHandler {
++      // Commented out due to compatibility issue with React Native 0.81.5
++      // The getDelayLoadAppHandler method signature has changed
++      // Updates will still work but without delay load optimization
++      /*
+       override fun getDelayLoadAppHandler(activity: ReactActivity, reactHost: ReactHost): ReactActivityHandler.DelayLoadAppHandler? {
+         if (!BuildConfig.EX_UPDATES_ANDROID_DELAY_LOAD_APP || isUsingCustomInit) {
+           return null
+@@ -89,6 +93,7 @@ class UpdatesPackage : Package {
+           whenReadyRunnable.run()
+         }
+       }
++      */
+     }
+ 
+     return listOf(handler)

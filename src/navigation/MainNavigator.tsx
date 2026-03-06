@@ -18,6 +18,7 @@ import NewSaleScreen from '../screens/NewSaleScreen';
 import SaleDetailScreen from '../screens/SaleDetailScreen';
 import PurchasesScreen from '../screens/PurchasesScreen';
 import NewPurchaseScreen from '../screens/NewPurchaseScreen';
+import PurchaseOrdersScreen from '../screens/PurchaseOrdersScreen';
 import SuppliersScreen from '../screens/SuppliersScreen';
 import NewSupplierScreen from '../screens/NewSupplierScreen';
 import BranchesScreen from '../screens/BranchesScreen';
@@ -36,8 +37,13 @@ import NotificationsScreen from '../screens/NotificationsScreen';
 import MessagesScreen from '../screens/MessagesScreen';
 import ComposeMessageScreen from '../screens/ComposeMessageScreen';
 import ChatScreen from '../screens/ChatScreen';
+import OrganizationChatScreen from '../screens/OrganizationChatScreen';
 import ReportsScreen from '../screens/ReportsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import StockManagementScreen from '../screens/StockManagementScreen';
+import OTPVerificationScreen from '../screens/OTPVerificationScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -100,6 +106,7 @@ export default function MainNavigator() {
         <Stack.Screen name="SaleDetail" component={SaleDetailScreen} options={{ title: 'Sale Details' }} />
         <Stack.Screen name="Purchases" component={PurchasesScreen} options={{ title: 'Purchases' }} />
         <Stack.Screen name="NewPurchase" component={NewPurchaseScreen} options={{ title: 'New Purchase' }} />
+        <Stack.Screen name="PurchaseOrders" component={PurchaseOrdersScreen} options={{ title: 'Purchase Orders' }} />
         <Stack.Screen name="Suppliers" component={SuppliersScreen} options={{ title: 'Suppliers' }} />
         <Stack.Screen name="NewSupplier" component={NewSupplierScreen} options={{ title: 'New Supplier' }} />
         <Stack.Screen name="Branches" component={BranchesScreen} options={{ title: 'Branches' }} />
@@ -118,7 +125,12 @@ export default function MainNavigator() {
         <Stack.Screen name="Messages" component={MessagesScreen} options={{ title: 'Messages' }} />
         <Stack.Screen name="ComposeMessage" component={ComposeMessageScreen} options={{ title: 'New Message' }} />
         <Stack.Screen name="Chat" component={ChatScreen} options={({ route }: any) => ({ title: route.params?.userName || 'Chat' })} />
+        <Stack.Screen name="OrganizationChat" component={OrganizationChatScreen} options={{ title: 'Organization Chat' }} />
         <Stack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports & Analytics' }} />
+        <Stack.Screen name="StockManagement" component={StockManagementScreen} options={{ title: 'Stock Management' }} />
+        <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} options={{ title: 'Verify OTP' }} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: 'Reset Password' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
