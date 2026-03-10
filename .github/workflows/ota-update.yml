@@ -30,4 +30,4 @@ jobs:
         run: npm ci
 
       - name: Publish OTA Update
-        run: eas update --auto --non-interactive
+        run: eas update --channel production --non-interactive
