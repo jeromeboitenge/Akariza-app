@@ -25,4 +25,33 @@ export const employeesApi = {
   delete: async (id: string): Promise<void> => {
     await client.delete(`/employees/${id}`);
   },
+
+  // Attendance endpoints
+  recordAttendance: async (id: string, attendance: { date: string; status: 'PRESENT' | 'ABSENT' | 'LATE' }): Promise<any> => {
+    const { data } = await client.post(`/employees/${id}/attendance`, attendance);
+    return data;
+  },
+
+  getAttendance: async (id: string, startDate?: string, endDate?: string): Promise<any[]> => {
+    const { data } = await client.get(`/employees/${id}/attendance`, {
+      params: { startDate, endDate },
+    });
+    return data;
+  },
+
+  // Targets endpoints
+  setTarget: async (id: string, target: { month: string; targetAmount: number }): Promise<any> => {
+    const { data } = await client.post(`/employees/${id}/targets`, target);
+    return data;
+  },
+
+  getTargets: async (id: string): Promise<any[]> => {
+    const { data } = await client.get(`/employees/${id}/targets`);
+    return data;
+  },
+
+  updateTargetProgress: async (id: string, progress: { month: string; achievedAmount: number }): Promise<any> => {
+    const { data } = await client.patch(`/employees/${id}/targets`, progress);
+    return data;
+  },
 };
