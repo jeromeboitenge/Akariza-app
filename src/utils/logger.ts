@@ -1,6 +1,6 @@
 /**
  * Comprehensive logging utility for debugging and monitoring
- * OTA Update Test - Debug eas project info
+ * OTA Update Test - Node.js 22 and latest actions
  */
 
 enum LogLevel {
