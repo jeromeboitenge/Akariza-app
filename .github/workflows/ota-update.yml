@@ -8,7 +8,7 @@ on:
       - 'app.json'
 
 jobs:
-  publish-update:
+  update:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,14 +20,14 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Publish OTA Update
-        run: eas update --branch production --auto --skip-dependency-check
+        run: eas update --auto --non-interactive
