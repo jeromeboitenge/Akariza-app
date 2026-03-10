@@ -18,8 +18,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Publish OTA Update
-        run: npx eas-cli@latest update --branch production --auto --skip-dependency-check
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas update --branch production --auto --skip-dependency-check
