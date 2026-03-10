@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, RefreshControl, Dimensions, TouchableOpacity } from 'react-native';
-import { Card, Title, Paragraph, ActivityIndicator, Avatar, Surface, Text, IconButton } from 'react-native-paper';
+import { View, ScrollView, StyleSheet, RefreshControl, Dimensions, TouchableOpacity, Alert } from 'react-native';
+import { Card, Title, Paragraph, ActivityIndicator, Avatar, Surface, Text, IconButton, Snackbar } from 'react-native-paper';
 import { LineChart } from 'react-native-chart-kit';
 import { analyticsApi } from '../api';
 import { DashboardStats } from '../types';
 import { useAuthStore } from '../store/authStore';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
+import * as Updates from 'expo-updates';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -15,6 +16,10 @@ export default function DashboardScreen({ navigation }: any) {
   const [trends, setTrends] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const user = useAuthStore((state) => state.user);
 
   const loadDashboard = async () => {
@@ -39,13 +44,48 @@ export default function DashboardScreen({ navigation }: any) {
     }
   };
 
+  const checkForUpdates = async () => {
+    try {
+      setCheckingUpdate(true);
+      console.log('🔄 Checking for OTA updates...');
+      const update = await Updates.checkForUpdateAsync();
+      
+      if (update.isAvailable) {
+        console.log('✅ Update available! Downloading...');
+        setUpdateAvailable(true);
+        await Updates.fetchUpdateAsync();
+        console.log('✅ Update downloaded! Reloading app...');
+        setSnackbarMessage('Update downloaded! Restarting app...');
+        setSnackbarVisible(true);
+        
+        // Reload the app after a short delay
+        setTimeout(() => {
+          Updates.reloadAsync();
+        }, 1500);
+      } else {
+        console.log('✅ App is up to date');
+        setSnackbarMessage('You\'re running the latest version!');
+        setSnackbarVisible(true);
+      }
+    } catch (error) {
+      console.error('❌ Update check failed:', error);
+      setSnackbarMessage('Failed to check for updates');
+      setSnackbarVisible(true);
+    } finally {
+      setCheckingUpdate(false);
+    }
+  };
+
   useEffect(() => {
     loadDashboard();
+    // Check for updates when dashboard loads
+    checkForUpdates();
   }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
     loadDashboard();
+    checkForUpdates();
   };
 
   if (loading) {
@@ -577,6 +617,7 @@ export default function DashboardScreen({ navigation }: any) {
   );
 
   return (
+    <>
     <ScrollView
       style={styles.container}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#5C6BF2']} />}
@@ -592,12 +633,24 @@ export default function DashboardScreen({ navigation }: any) {
               <Text style={styles.roleText}>{user?.role}</Text>
             </Surface>
           </View>
-          <Avatar.Text 
-            size={56} 
-            label={user?.fullName?.charAt(0) || 'A'} 
-            style={styles.avatar}
-            labelStyle={styles.avatarLabel}
-          />
+          <View style={styles.headerActions}>
+            <TouchableOpacity 
+              onPress={checkForUpdates} 
+              disabled={checkingUpdate}
+              style={styles.updateButton}
+            >
+              <Avatar.Icon 
+                size={56} 
+                icon={checkingUpdate ? 'loading' : 'cloud-download'} 
+                style={styles.avatar}
+              />
+            </TouchableOpacity>
+            <Avatar.Text 
+              size={56} 
+              label={user?.fullName?.charAt(0) || 'A'} 
+              style={styles.avatar}
+            />
+          </View>
         </View>
       </LinearGradient>
 
@@ -623,6 +676,15 @@ export default function DashboardScreen({ navigation }: any) {
 
       <View style={styles.footer} />
     </ScrollView>
+    <Snackbar
+      visible={snackbarVisible}
+      onDismiss={() => setSnackbarVisible(false)}
+      duration={3000}
+      style={styles.snackbar}
+    >
+      {snackbarMessage}
+    </Snackbar>
+    </>
   );
 }
 
@@ -721,4 +783,8 @@ const styles = StyleSheet.create({
 
   updateBannerContent: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   updateBannerText: { flex: 1 },
+  
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  updateButton: { opacity: 0.8 },
+  snackbar: { backgroundColor: '#323232', marginBottom: 16 },
 });
