@@ -1,6 +1,6 @@
 /**
  * Comprehensive logging utility for debugging and monitoring
- * OTA Update Test - Triggering workflow
+ * OTA Update Test - Triggering workflow v2
  */
 
 enum LogLevel {
