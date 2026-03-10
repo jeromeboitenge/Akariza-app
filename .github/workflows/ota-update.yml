@@ -6,8 +6,6 @@ on:
     paths:
       - 'src/**'
       - 'app.json'
-      - 'package.json'
-      - '.github/workflows/ota-update.yml'
 
 jobs:
   publish-update:
@@ -21,21 +19,7 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Install EAS CLI
-        run: npm install -g eas-cli
-
       - name: Publish OTA Update
-        run: eas update --branch production --auto
+        run: npx eas-cli@latest update --branch production --auto --skip-dependency-check
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-      - name: Notify Success
-        if: success()
-        run: echo "✅ OTA Update published successfully! Users will receive it on next app open."
-
-      - name: Notify Failure
-        if: failure()
-        run: echo "❌ OTA Update failed. Check logs above."
