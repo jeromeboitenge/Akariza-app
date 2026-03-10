@@ -1,6 +1,6 @@
 /**
  * Comprehensive logging utility for debugging and monitoring
- * OTA Update Test - Triggering workflow v7 with debug logging
+ * OTA Update Test - Using expo-cli publish
  */
 
 enum LogLevel {
