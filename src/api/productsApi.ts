@@ -30,4 +30,23 @@ export const productsApi = {
     const { data } = await client.get('/products/low-stock');
     return data;
   },
+
+  // Get products by type
+  getByType: async (type: 'REGULAR' | 'FAST_MOVING'): Promise<Product[]> => {
+    const { data } = await client.get(`/products/type/${type}`);
+    return data;
+  },
+
+  // Search products
+  search: async (query: string): Promise<Product[]> => {
+    const { data } = await client.get('/products/search', { params: { q: query } });
+    return data;
+  },
+
+  // Get product stock levels
+  getStockLevels: async (id: string): Promise<any> => {
+    const { data } = await client.get(`/products/${id}/stock`);
+    return data;
+  },
 };
+

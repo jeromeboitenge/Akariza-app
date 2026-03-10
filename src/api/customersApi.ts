@@ -30,4 +30,33 @@ export const customersApi = {
     const { data } = await client.get(`/customers/${id}/purchases`);
     return data;
   },
+
+  // Loyalty program
+  addLoyaltyPoints: async (id: string, points: number, reason?: string): Promise<any> => {
+    const { data } = await client.post(`/customers/${id}/loyalty/add`, { points, reason });
+    return data;
+  },
+
+  redeemLoyaltyPoints: async (id: string, points: number): Promise<any> => {
+    const { data } = await client.post(`/customers/${id}/loyalty/redeem`, { points });
+    return data;
+  },
+
+  getLoyaltyBalance: async (id: string): Promise<any> => {
+    const { data } = await client.get(`/customers/${id}/loyalty`);
+    return data;
+  },
+
+  // Customer transactions
+  getTransactions: async (id: string, startDate?: string, endDate?: string): Promise<any[]> => {
+    const { data } = await client.get(`/customers/${id}/transactions`, {
+      params: { startDate, endDate },
+    });
+    return data;
+  },
+
+  addTransaction: async (id: string, transaction: any): Promise<any> => {
+    const { data } = await client.post(`/customers/${id}/transactions`, transaction);
+    return data;
+  },
 };
