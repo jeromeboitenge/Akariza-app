@@ -1,0 +1,41 @@
+name: Publish OTA Update
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/**'
+      - 'app.json'
+      - 'package.json'
+      - '.github/workflows/ota-update.yml'
+
+jobs:
+  publish-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      - name: Publish OTA Update
+        run: eas update --branch production --auto
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Notify Success
+        if: success()
+        run: echo "✅ OTA Update published successfully! Users will receive it on next app open."
+
+      - name: Notify Failure
+        if: failure()
+        run: echo "❌ OTA Update failed. Check logs above."
