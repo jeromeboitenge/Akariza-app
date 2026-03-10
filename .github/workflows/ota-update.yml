@@ -19,12 +19,14 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: npm
+          eas-cache: false
+          patch-watchers: false
 
       - name: Publish OTA Update
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: |
-          echo "Publishing OTA update..."
-          npx expo-cli@latest publish --release-channel production 2>&1 || echo "Publish completed"
+        run: eas update --auto --non-interactive
