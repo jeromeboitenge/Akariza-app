@@ -602,6 +602,19 @@ export default function DashboardScreen({ navigation }: any) {
       </LinearGradient>
 
       <View style={styles.content}>
+        {/* OTA Update Banner */}
+        <Card style={[styles.sectionCard, { backgroundColor: '#E8F5E9', borderLeftWidth: 4, borderLeftColor: '#4CAF50' }]}>
+          <Card.Content>
+            <View style={styles.updateBannerContent}>
+              <Avatar.Icon size={40} icon="check-circle" style={{ backgroundColor: '#4CAF50' }} />
+              <View style={styles.updateBannerText}>
+                <Title style={{ color: '#2E7D32', fontSize: 16 }}>App Updated!</Title>
+                <Paragraph style={{ color: '#558B2F', fontSize: 12 }}>You're running the latest version with new features and improvements.</Paragraph>
+              </View>
+            </View>
+          </Card.Content>
+        </Card>
+
         {user?.role === 'CASHIER' && renderCashierDashboard()}
         {user?.role === 'MANAGER' && renderManagerDashboard()}
         {user?.role === 'BOSS' && renderBossDashboard()}
@@ -703,4 +716,7 @@ const styles = StyleSheet.create({
   insightSubtitle: { fontSize: 13, color: '#757575' },
   
   footer: { height: 24 },
+
+  updateBannerContent: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  updateBannerText: { flex: 1 },
 });
