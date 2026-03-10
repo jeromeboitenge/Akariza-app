@@ -1,11 +1,7 @@
-name: Publish OTA Update
+name: Publish OTA Update (Manual)
 
 on:
-  push:
-    branches: [main, master]
-    paths:
-      - 'src/**'
-      - 'app.json'
+  workflow_dispatch
 
 jobs:
   update:
