@@ -1,6 +1,6 @@
 /**
  * Comprehensive logging utility for debugging and monitoring
- * OTA Update Test - Using classic Expo publish
+ * OTA Update Test - Automatic on push with eas update
  */
 
 enum LogLevel {
