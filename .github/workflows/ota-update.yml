@@ -19,14 +19,8 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-          packager: npm
-          eas-cache: false
-          patch-watchers: false
-
       - name: Publish OTA Update
-        run: eas update --channel production --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          npx -y eas-cli@latest update --channel production --non-interactive
