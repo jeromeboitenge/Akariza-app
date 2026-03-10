@@ -26,5 +26,11 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
 
+      - name: Check EAS Status
+        run: |
+          eas --version
+          echo "Checking project..."
+          eas project info || echo "Project info not available"
+
       - name: Publish OTA Update
-        run: eas update --auto --non-interactive 2>&1 || true
+        run: eas update --auto --non-interactive
