@@ -655,6 +655,8 @@ const styles = StyleSheet.create({
   sectionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#5C6BF2', marginLeft: 12 },
   
+  flex: { flex: 1 },
+  
   metricsGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },
   statBox: { width: '50%', padding: 6 },
   statGradient: { padding: 16, borderRadius: 12, alignItems: 'center', elevation: 2 },

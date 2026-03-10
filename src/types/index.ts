@@ -276,6 +276,18 @@ export interface DashboardStats {
   totalCustomers: number;
   pendingTasks: number;
   unreadMessages: number;
+  totalBranches?: number;
+  totalEmployees?: number;
+  totalRevenue?: number;
+  totalSales?: number;
+  totalPurchases?: number;
+  totalExpenses?: number;
+  topProduct?: {
+    id: string;
+    name: string;
+    soldCount: number;
+    revenue: number;
+  };
 }
 
 export interface StockTransaction {
