@@ -35,35 +35,70 @@ class ApiClient {
           originalRequest._retry = true;
           try {
             const refreshToken = await AsyncStorage.getItem('refreshToken');
+            if (!refreshToken) {
+              throw new Error('No refresh token available');
+            }
+            
             const { data } = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
-            await AsyncStorage.setItem('accessToken', data.accessToken);
-            originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-            return this.client(originalRequest);
+            
+            if (data.accessToken) {
+              await AsyncStorage.setItem('accessToken', data.accessToken);
+              if (data.refreshToken) {
+                await AsyncStorage.setItem('refreshToken', data.refreshToken);
+              }
+              originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+              return this.client(originalRequest);
+            }
           } catch (refreshError) {
+            // Clear all auth data and redirect to login
             await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
+            console.log('🔒 Session expired. Please login again.');
             return Promise.reject(refreshError);
           }
         }
         
-        // Add user-friendly error messages
+        // Enhanced error handling with user-friendly messages
         if (error.response) {
           const status = error.response.status;
           const data = error.response.data;
           
-          // Enhance error message based on status code
-          if (status === 400) {
-            console.log('❌ Bad Request:', data.message || 'Invalid data provided');
-          } else if (status === 403) {
-            console.log('❌ Forbidden:', 'You do not have permission to perform this action');
-          } else if (status === 404) {
-            console.log('❌ Not Found:', data.message || 'Resource not found');
-          } else if (status === 409) {
-            console.log('❌ Conflict:', data.message || 'Resource already exists');
-          } else if (status >= 500) {
-            console.log('❌ Server Error:', 'Server error. Please try again later.');
+          let errorMessage = data?.message || 'An error occurred';
+          
+          switch (status) {
+            case 400:
+              console.log('❌ Bad Request:', errorMessage);
+              break;
+            case 403:
+              console.log('❌ Forbidden:', 'You do not have permission to perform this action');
+              errorMessage = 'You do not have permission to perform this action';
+              break;
+            case 404:
+              console.log('❌ Not Found:', errorMessage);
+              break;
+            case 409:
+              console.log('❌ Conflict:', errorMessage);
+              break;
+            case 422:
+              console.log('❌ Validation Error:', errorMessage);
+              break;
+            case 500:
+            case 502:
+            case 503:
+              console.log('❌ Server Error:', 'Server error. Please try again later.');
+              errorMessage = 'Server error. Please try again later.';
+              break;
+            default:
+              console.log('❌ Error:', errorMessage);
           }
+          
+          // Attach user-friendly message to error
+          error.userMessage = errorMessage;
         } else if (error.request) {
           console.log('❌ Network Error:', 'No response from server. Check your connection.');
+          error.userMessage = 'No response from server. Check your internet connection.';
+        } else {
+          console.log('❌ Error:', error.message);
+          error.userMessage = error.message || 'An unexpected error occurred';
         }
         
         return Promise.reject(error);

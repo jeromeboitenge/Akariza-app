@@ -1,17 +1,11 @@
 // API Configuration
-// Change this based on where you're running the app:
+// Production backend URL
+export const API_URL = 'https://akariza-backend.onrender.com/api/v1';
 
-// 1. For development on same machine (Expo web)
-// export const API_URL = 'http://localhost:5000/api/v1';
-
-// 2. For Android emulator
-// export const API_URL = 'http://10.0.2.2:5000/api/v1';
-
-// 3. For physical device on same network (RECOMMENDED FOR TESTING)
-export const API_URL = 'http://172.31.150.43:5000/api/v1';
-
-// 4. For production (deployed backend)
-// export const API_URL = 'https://akariza-backend.onrender.com/api/v1';
+// For local development, uncomment one of these:
+// export const API_URL = 'http://localhost:5000/api/v1'; // Same machine
+// export const API_URL = 'http://10.0.2.2:5000/api/v1'; // Android emulator
+// export const API_URL = 'http://172.31.150.43:5000/api/v1'; // Physical device on network
 
 export const SYNC_INTERVAL = 300000; // 5 minutes
 export const MAX_OFFLINE_RECORDS = 1000;
