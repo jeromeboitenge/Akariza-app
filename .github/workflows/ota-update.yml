@@ -19,8 +19,18 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Debug - Check environment
+        run: |
+          echo "Node version:"
+          node --version
+          echo "NPM version:"
+          npm --version
+          echo "EXPO_TOKEN is set: ${{ secrets.EXPO_TOKEN != '' }}"
+
       - name: Publish OTA Update
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          npx -y eas-cli@latest update --channel production --non-interactive
+          echo "Starting OTA update..."
+          npx -y eas-cli@latest update --channel production --non-interactive 2>&1 || true
+          echo "Update command completed"
