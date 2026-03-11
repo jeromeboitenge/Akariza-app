@@ -10,6 +10,8 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    # Only run if EXPO_TOKEN is configured
+    if: ${{ secrets.EXPO_TOKEN != '' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -25,6 +27,9 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Publish OTA Update
         run: eas update --auto --non-interactive
