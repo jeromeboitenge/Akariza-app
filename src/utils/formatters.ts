@@ -44,6 +44,20 @@ export class Formatters {
   }
 
   /**
+   * Safe format date (handles null/undefined/invalid dates)
+   */
+  static safeFormatDate(date: Date | string | null | undefined, formatStr: string = 'MMM dd, yyyy'): string {
+    if (!date) return 'N/A';
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      if (!isValid(dateObj)) return 'Invalid date';
+      return format(dateObj, formatStr);
+    } catch {
+      return 'Invalid date';
+    }
+  }
+
+  /**
    * Format date and time
    */
   static formatDateTime(date: Date | string, formatStr: string = 'MMM dd, yyyy HH:mm'): string {
@@ -348,6 +362,7 @@ export const {
   formatCurrency,
   formatNumber,
   formatDate,
+  safeFormatDate,
   formatDateTime,
   formatTime,
   formatPhone,
