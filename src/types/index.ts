@@ -45,7 +45,12 @@ export interface Sale {
   tax: number;
   finalAmount: number;
   paymentMethod: string;
-  paymentStatus: string;
+  paymentStatus: 'PAID' | 'PARTIAL' | 'UNPAID';
+  amountPaid?: number;
+  cashAmount?: number;
+  mobileMoneyAmount?: number;
+  changeAmount?: number;
+  debtAmount?: number;
   customerName?: string;
   customerId?: string;
   items: SaleItem[];

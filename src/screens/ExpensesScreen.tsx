@@ -5,13 +5,15 @@ import { expensesApi } from '../api';
 import { Expense } from '../types';
 import { safeFormatDate } from '../utils/formatters';
 import { useAuthStore } from '../store/authStore';
+import { hasPermission } from '../utils/permissions';
 
 export default function ExpensesScreen({ navigation }: any) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const user = useAuthStore((state) => state.user);
-  const canManage = user?.role === 'BOSS' || user?.role === 'MANAGER';
+  const canCreate = hasPermission(user, 'CREATE_EXPENSES');
+  const canDelete = hasPermission(user, 'DELETE_EXPENSES');
 
   const loadExpenses = async () => {
     try {
@@ -103,7 +105,7 @@ export default function ExpensesScreen({ navigation }: any) {
         }
       />
 
-      {canManage && (
+      {canCreate && (
         <FAB icon="plus" style={styles.fab} onPress={() => navigation.navigate('NewExpense')} color="#FFFFFF" />
       )}
     </View>

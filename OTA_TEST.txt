@@ -1,0 +1,2 @@
+OTA Update Test - Testing workflow execution
+This file is used to trigger the OTA update workflow.

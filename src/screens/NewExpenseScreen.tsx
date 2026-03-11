@@ -21,6 +21,7 @@ export default function NewExpenseScreen({ navigation }: any) {
 
     setLoading(true);
     try {
+      // Don't send customCategory field - backend doesn't support it
       await expensesApi.create({
         amount: parseFloat(amount),
         description,
@@ -31,7 +32,7 @@ export default function NewExpenseScreen({ navigation }: any) {
       Alert.alert('Success', 'Expense recorded successfully');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to record expense');
+      Alert.alert('Error', error.userMessage || error.message || 'Failed to record expense');
     } finally {
       setLoading(false);
     }

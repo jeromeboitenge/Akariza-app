@@ -12,7 +12,7 @@ interface CartItem {
   price: number;
 }
 
-export default function NewSaleScreen({ navigation }: any) {
+function NewSaleScreen({ navigation }: any) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [quantity, setQuantity] = useState('1');
@@ -20,6 +20,10 @@ export default function NewSaleScreen({ navigation }: any) {
   const [paymentMethod, setPaymentMethod] = useState('CASH');
   const [selectedCustomer, setSelectedCustomer] = useState<string>('');
   const [customerName, setCustomerName] = useState('');
+  const [amountPaid, setAmountPaid] = useState('');
+  const [cashAmount, setCashAmount] = useState('');
+  const [mobileMoneyAmount, setMobileMoneyAmount] = useState('');
+  const [useSplitPayment, setUseSplitPayment] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { products, customers, setCustomers, addSale } = useDataStore();
@@ -73,26 +77,78 @@ export default function NewSaleScreen({ navigation }: any) {
     return cart.reduce((sum, item) => sum + item.quantity * item.price, 0);
   };
 
+  const calculatePaymentDetails = () => {
+    const total = calculateTotal();
+    let paid = 0;
+
+    if (useSplitPayment) {
+      paid = (parseFloat(cashAmount) || 0) + (parseFloat(mobileMoneyAmount) || 0);
+    } else {
+      paid = parseFloat(amountPaid) || 0;
+    }
+
+    const change = paid > total ? paid - total : 0;
+    const debt = paid < total ? total - paid : 0;
+    const status: 'PAID' | 'PARTIAL' | 'UNPAID' =
+      paid >= total ? 'PAID' : paid > 0 ? 'PARTIAL' : 'UNPAID';
+
+    return { total, paid, change, debt, status };
+  };
+
   const handleSubmit = async () => {
     if (cart.length === 0) {
       setError('Cart is empty');
       return;
     }
 
+    const { total, paid, change, debt, status } = calculatePaymentDetails();
+
+    // Require customer selection for credit sales
+    if (debt > 0 && !selectedCustomer) {
+      setError('Please select a customer for credit sales');
+      return;
+    }
+
     setLoading(true);
     try {
-      const sale = await salesApi.create({
+      const saleData: any = {
         items: cart.map((item) => ({
           productId: item.product.id,
           quantity: item.quantity,
           sellingPrice: item.price,
         })),
-        paymentMethod,
+        paymentMethod: useSplitPayment ? 'SPLIT' : paymentMethod,
+        paymentStatus: status,
+        amountPaid: paid,
         customerId: selectedCustomer || undefined,
         customerName: customerName || undefined,
-      });
+      };
+
+      if (useSplitPayment) {
+        saleData.cashAmount = parseFloat(cashAmount) || 0;
+        saleData.mobileMoneyAmount = parseFloat(mobileMoneyAmount) || 0;
+      }
+
+      if (change > 0) {
+        saleData.changeAmount = change;
+      }
+
+      if (debt > 0) {
+        saleData.debtAmount = debt;
+      }
+
+      const sale = await salesApi.create(saleData);
       addSale(sale);
-      Alert.alert('Success', 'Sale completed successfully', [
+
+      let message = 'Sale completed successfully';
+      if (change > 0) {
+        message += `\nChange: $${change.toFixed(2)}`;
+      }
+      if (debt > 0) {
+        message += `\nDebt recorded: $${debt.toFixed(2)}`;
+      }
+
+      Alert.alert('Success', message, [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } catch (err: any) {
@@ -101,6 +157,8 @@ export default function NewSaleScreen({ navigation }: any) {
       setLoading(false);
     }
   };
+
+  const { total, paid, change, debt, status } = calculatePaymentDetails();
 
   return (
     <ScrollView style={styles.container}>
@@ -162,26 +220,14 @@ export default function NewSaleScreen({ navigation }: any) {
               </View>
             ))}
             <Divider style={styles.divider} />
-            <Title>Total: ${calculateTotal().toFixed(2)}</Title>
+            <Title>Total: ${total.toFixed(2)}</Title>
           </Card.Content>
         </Card>
       )}
 
       <Card style={styles.card}>
         <Card.Content>
-          <Paragraph>Payment Method</Paragraph>
-          <Picker
-            selectedValue={paymentMethod}
-            onValueChange={setPaymentMethod}
-            style={styles.picker}
-          >
-            <Picker.Item label="Cash" value="CASH" />
-            <Picker.Item label="Card" value="CARD" />
-            <Picker.Item label="Mobile Money" value="MOBILE_MONEY" />
-            <Picker.Item label="Bank Transfer" value="BANK_TRANSFER" />
-          </Picker>
-
-          <Paragraph style={styles.marginTop}>Customer (optional)</Paragraph>
+          <Paragraph>Customer (required for credit)</Paragraph>
           <Picker
             selectedValue={selectedCustomer}
             onValueChange={setSelectedCustomer}
@@ -201,6 +247,103 @@ export default function NewSaleScreen({ navigation }: any) {
               mode="outlined"
               style={styles.input}
             />
+          )}
+        </Card.Content>
+      </Card>
+
+      <Card style={styles.card}>
+        <Card.Content>
+          <View style={styles.row}>
+            <Paragraph>Split Payment</Paragraph>
+            <Chip
+              selected={useSplitPayment}
+              onPress={() => setUseSplitPayment(!useSplitPayment)}
+            >
+              {useSplitPayment ? 'Yes' : 'No'}
+            </Chip>
+          </View>
+
+          {useSplitPayment ? (
+            <>
+              <TextInput
+                label="Cash Amount"
+                value={cashAmount}
+                onChangeText={setCashAmount}
+                mode="outlined"
+                keyboardType="decimal-pad"
+                style={styles.input}
+                left={<TextInput.Icon icon="cash" />}
+              />
+              <TextInput
+                label="Mobile Money Amount"
+                value={mobileMoneyAmount}
+                onChangeText={setMobileMoneyAmount}
+                mode="outlined"
+                keyboardType="decimal-pad"
+                style={styles.input}
+                left={<TextInput.Icon icon="cellphone" />}
+              />
+            </>
+          ) : (
+            <>
+              <Paragraph style={styles.marginTop}>Payment Method</Paragraph>
+              <Picker
+                selectedValue={paymentMethod}
+                onValueChange={setPaymentMethod}
+                style={styles.picker}
+              >
+                <Picker.Item label="Cash" value="CASH" />
+                <Picker.Item label="Card" value="CARD" />
+                <Picker.Item label="Mobile Money" value="MOBILE_MONEY" />
+                <Picker.Item label="Bank Transfer" value="BANK_TRANSFER" />
+              </Picker>
+
+              <TextInput
+                label="Amount Paid"
+                value={amountPaid}
+                onChangeText={setAmountPaid}
+                mode="outlined"
+                keyboardType="decimal-pad"
+                style={styles.input}
+                left={<TextInput.Icon icon="currency-usd" />}
+              />
+            </>
+          )}
+
+          {paid > 0 && (
+            <View style={styles.paymentSummary}>
+              <Divider style={styles.divider} />
+              <View style={styles.summaryRow}>
+                <Paragraph>Total:</Paragraph>
+                <Paragraph style={styles.bold}>${total.toFixed(2)}</Paragraph>
+              </View>
+              <View style={styles.summaryRow}>
+                <Paragraph>Paid:</Paragraph>
+                <Paragraph style={styles.bold}>${paid.toFixed(2)}</Paragraph>
+              </View>
+              {change > 0 && (
+                <View style={[styles.summaryRow, styles.changeRow]}>
+                  <Paragraph style={styles.changeText}>Change:</Paragraph>
+                  <Paragraph style={[styles.bold, styles.changeText]}>${change.toFixed(2)}</Paragraph>
+                </View>
+              )}
+              {debt > 0 && (
+                <View style={[styles.summaryRow, styles.debtRow]}>
+                  <Paragraph style={styles.debtText}>Debt:</Paragraph>
+                  <Paragraph style={[styles.bold, styles.debtText]}>${debt.toFixed(2)}</Paragraph>
+                </View>
+              )}
+              <Chip
+                style={[
+                  styles.statusChip,
+                  status === 'PAID' && styles.paidChip,
+                  status === 'PARTIAL' && styles.partialChip,
+                  status === 'UNPAID' && styles.unpaidChip,
+                ]}
+              >
+                {status}
+              </Chip>
+            </View>
           )}
         </Card.Content>
       </Card>
@@ -238,4 +381,15 @@ const styles = StyleSheet.create({
   divider: { marginVertical: 12 },
   marginTop: { marginTop: 16 },
   button: { marginVertical: 24, paddingVertical: 6 },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  paymentSummary: { marginTop: 16 },
+  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 4 },
+  changeRow: { backgroundColor: '#d4edda', padding: 8, borderRadius: 4, marginTop: 8 },
+  changeText: { color: '#155724', fontWeight: 'bold' },
+  debtRow: { backgroundColor: '#fff3cd', padding: 8, borderRadius: 4, marginTop: 8 },
+  debtText: { color: '#856404', fontWeight: 'bold' },
+  statusChip: { marginTop: 12, alignSelf: 'flex-start' },
+  paidChip: { backgroundColor: '#4CAF50' },
+  partialChip: { backgroundColor: '#FF9800' },
+  unpaidChip: { backgroundColor: '#F44336' },
 });
