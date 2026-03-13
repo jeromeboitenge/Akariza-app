@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, RefreshControl, TouchableOpacity } from 're
 import { Card, Title, Paragraph, FAB, Chip, ActivityIndicator, Avatar, Divider } from 'react-native-paper';
 import { expensesApi } from '../api';
 import { Expense } from '../types';
-import { safeFormatDate } from '../utils/formatters';
+import { safeFormatDate, formatCurrency } from '../utils/formatters';
 import { useAuthStore } from '../store/authStore';
 import { hasPermission } from '../utils/permissions';
 
@@ -58,7 +58,7 @@ export default function ExpensesScreen({ navigation }: any) {
               style={[styles.avatar, { backgroundColor: getCategoryColor(item.category) }]} 
             />
             <View style={styles.headerContent}>
-              <Title style={styles.amount}>${item.amount.toFixed(2)}</Title>
+              <Title style={styles.amount}>{formatCurrency(item.amount, 'RWF')}</Title>
               <Paragraph style={styles.date}>{formattedDate}</Paragraph>
             </View>
             <Chip style={[styles.categoryChip, { backgroundColor: `${getCategoryColor(item.category)}20` }]} textStyle={{ color: getCategoryColor(item.category) }}>
@@ -95,7 +95,7 @@ export default function ExpensesScreen({ navigation }: any) {
       <Card style={styles.summaryCard}>
         <Card.Content>
           <Paragraph style={styles.summaryLabel}>Total Expenses</Paragraph>
-          <Title style={styles.summaryValue}>${totalExpenses.toFixed(2)}</Title>
+          <Title style={styles.summaryValue}>{formatCurrency(totalExpenses, 'RWF')}</Title>
           <Chip icon="receipt" style={styles.countChip}>
             {expenses.length} Transactions
           </Chip>
