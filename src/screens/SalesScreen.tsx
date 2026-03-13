@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { formatCurrency } from '../utils/formatters';
 import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { Card, Title, Paragraph, Chip, ActivityIndicator, Searchbar, Avatar, Surface, Text } from 'react-native-paper';
 import { salesApi } from '../api';
@@ -73,7 +74,7 @@ export default function SalesScreen({ navigation }: any) {
             )}
           </View>
           <View style={styles.cardRight}>
-            <Title style={styles.amount}>${item.finalAmount.toFixed(2)}</Title>
+            <Title style={styles.amount}>{formatCurrency(item.finalAmount, 'RWF')}</Title>
             <Chip 
               icon="credit-card" 
               style={styles.paymentChip}
@@ -112,7 +113,7 @@ export default function SalesScreen({ navigation }: any) {
       <LinearGradient colors={['#5C6BF2', '#4A5AD6']} style={styles.header}>
         <View style={styles.statsRow}>
           <Surface style={styles.statCard}>
-            <Text style={styles.statValue}>${todayRevenue.toFixed(0)}</Text>
+            <Text style={styles.statValue}>{formatCurrency(todayRevenue, 'RWF')}</Text>
             <Text style={styles.statLabel}>Today</Text>
           </Surface>
           <Surface style={styles.statCard}>
@@ -120,7 +121,7 @@ export default function SalesScreen({ navigation }: any) {
             <Text style={styles.statLabel}>Sales</Text>
           </Surface>
           <Surface style={styles.statCard}>
-            <Text style={styles.statValue}>${totalRevenue.toFixed(0)}</Text>
+            <Text style={styles.statValue}>{formatCurrency(totalRevenue, 'RWF')}</Text>
             <Text style={styles.statLabel}>Total</Text>
           </Surface>
         </View>
