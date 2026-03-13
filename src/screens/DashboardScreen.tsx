@@ -25,10 +25,26 @@ export default function DashboardScreen({ navigation }: any) {
   const loadDashboard = async () => {
     try {
       console.log('📊 Loading dashboard data...');
+      console.log('🔗 API URL:', 'https://akariza-backend.onrender.com/api/v1');
+      console.log('👤 User:', user?.email, 'Role:', user?.role);
+      
       const [statsData, trendsData] = await Promise.all([
-        analyticsApi.getDashboard(),
-        analyticsApi.getSalesTrends('daily').catch(() => null),
+        analyticsApi.getDashboard().catch((error) => {
+          console.error('❌ Dashboard API error:', error);
+          console.error('❌ Error details:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            data: error.response?.data
+          });
+          throw error;
+        }),
+        analyticsApi.getSalesTrends('daily').catch((error) => {
+          console.warn('⚠️ Sales trends API error (non-critical):', error.message);
+          return null;
+        }),
       ]);
+      
       console.log('✅ Dashboard stats received:', JSON.stringify(statsData, null, 2));
       console.log('📈 Branches:', statsData?.totalBranches);
       console.log('👥 Employees:', statsData?.totalEmployees);
@@ -36,8 +52,24 @@ export default function DashboardScreen({ navigation }: any) {
       console.log('📦 Products:', statsData?.totalProducts);
       setStats(statsData);
       setTrends(trendsData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Dashboard error:', error);
+      console.error('❌ Full error object:', JSON.stringify(error, null, 2));
+      
+      // Provide user-friendly error message
+      let errorMessage = 'Failed to load dashboard data';
+      if (error.message?.includes('Network Error')) {
+        errorMessage = 'Network connection failed. Please check your internet connection.';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Authentication failed. Please login again.';
+      } else if (error.response?.status === 403) {
+        errorMessage = 'Access denied. You may not have permission to view analytics.';
+      } else if (error.response?.status >= 500) {
+        errorMessage = 'Server error. Please try again later.';
+      }
+      
+      setSnackbarMessage(errorMessage);
+      setSnackbarVisible(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
