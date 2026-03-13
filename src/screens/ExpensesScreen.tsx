@@ -65,7 +65,6 @@ export default function ExpensesScreen({ navigation }: any) {
               {item.category}
             </Chip>
           </View>
-        </View>
 
         <Divider style={styles.divider} />
 
