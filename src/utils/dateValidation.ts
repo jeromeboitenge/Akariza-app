@@ -53,7 +53,7 @@ export class DateValidation {
   }
 
   /**
-   * Sanitize and format date for API submission
+   * Sanitize and format date for API submission (YYYY-MM-DD format)
    */
   static formatForAPI(date: Date | string): string {
     if (!this.isValidDate(date)) {
@@ -61,7 +61,8 @@ export class DateValidation {
     }
     
     const dateObj = typeof date === 'string' ? parseISO(date) : date;
-    return dateObj.toISOString();
+    // Send in YYYY-MM-DD format as expected by backend
+    return format(dateObj, 'yyyy-MM-dd');
   }
 
   /**

@@ -1,4 +1,4 @@
-import { format, parse, formatDistanceToNow, isValid } from 'date-fns';
+import { format, parse, formatDistanceToNow, isValid, parseISO } from 'date-fns';
 
 /**
  * Comprehensive data formatting utilities
@@ -36,7 +36,7 @@ export class Formatters {
    */
   static formatDate(date: Date | string, formatStr: string = 'MMM dd, yyyy'): string {
     try {
-      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      const dateObj = typeof date === 'string' ? parseISO(date) : date;
       return isValid(dateObj) ? format(dateObj, formatStr) : 'Invalid date';
     } catch {
       return 'Invalid date';
@@ -49,7 +49,7 @@ export class Formatters {
   static safeFormatDate(date: Date | string | null | undefined, formatStr: string = 'MMM dd, yyyy'): string {
     if (!date) return 'N/A';
     try {
-      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      const dateObj = typeof date === 'string' ? parseISO(date) : date;
       if (!isValid(dateObj)) return 'Invalid date';
       return format(dateObj, formatStr);
     } catch {
@@ -76,7 +76,7 @@ export class Formatters {
    */
   static formatRelativeTime(date: Date | string): string {
     try {
-      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      const dateObj = typeof date === 'string' ? parseISO(date) : date;
       return isValid(dateObj) ? formatDistanceToNow(dateObj, { addSuffix: true }) : 'Invalid date';
     } catch {
       return 'Invalid date';
