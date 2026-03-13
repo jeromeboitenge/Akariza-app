@@ -29,9 +29,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const data = await authApi.login(email, password);
+      console.log('🔍 Full login response data:', JSON.stringify(data, null, 2));
       
       // If no OTP is required and we have user data, complete the login
       if (!data.requiresOtp && (data as any).user && (data as any).accessToken) {
+        console.log('✅ Direct login successful with user data');
         const authData = data as any as AuthResponse;
         await AsyncStorage.setItem('accessToken', authData.accessToken);
         await AsyncStorage.setItem('refreshToken', authData.refreshToken);
@@ -47,12 +49,52 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
       
       // If OTP is required, set pending email
-      if (data.requiresOtp) {
+      if (data.requiresOtp === true) {
+        console.log('🔑 OTP required, setting pending email');
         set({ pendingEmail: email, isLoading: false });
         return { requiresOtp: true };
       }
       
-      // If no OTP required but no user data, there's an issue with the backend response
+      // If no OTP required (undefined or false), try to get user profile
+      if (data.requiresOtp === undefined || data.requiresOtp === false) {
+        console.log('⚠️ No OTP required but no user data in response. Fetching user profile...');
+        console.log('🔍 Response keys:', Object.keys(data));
+        
+        try {
+          console.log('📡 Attempting to fetch user profile...');
+          const profileData = await authApi.getProfile();
+          console.log('👤 Profile data received:', JSON.stringify(profileData, null, 2));
+          
+          if (profileData.user) {
+            // Use tokens from profile response if available, otherwise we might already have them
+            const accessToken = profileData.accessToken || (data as any).accessToken;
+            const refreshToken = profileData.refreshToken || (data as any).refreshToken;
+            
+            if (accessToken) {
+              await AsyncStorage.setItem('accessToken', accessToken);
+            }
+            if (refreshToken) {
+              await AsyncStorage.setItem('refreshToken', refreshToken);
+            }
+            await AsyncStorage.setItem('user', JSON.stringify(profileData.user));
+            
+            set({ 
+              user: profileData.user, 
+              accessToken: accessToken, 
+              refreshToken: refreshToken,
+              pendingEmail: null,
+              isLoading: false 
+            });
+            console.log('✅ Login completed with profile data');
+            return { requiresOtp: false };
+          }
+        } catch (profileError: any) {
+          console.error('❌ Failed to fetch user profile:', profileError);
+          set({ error: 'Login successful but failed to load user profile', isLoading: false });
+          throw profileError;
+        }
+      }
+      
       set({ pendingEmail: email, isLoading: false });
       return { requiresOtp: data.requiresOtp || false };
     } catch (error: any) {

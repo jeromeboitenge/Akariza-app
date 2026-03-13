@@ -7,6 +7,11 @@ export const authApi = {
     return data;
   },
 
+  getProfile: async (): Promise<{ user: any; accessToken?: string; refreshToken?: string }> => {
+    const { data } = await client.get('/auth/profile');
+    return data;
+  },
+
   verifyOtp: async (email: string, otpCode: string): Promise<AuthResponse> => {
     const { data } = await client.post('/auth/verify-otp', { email, otpCode });
     return data;
