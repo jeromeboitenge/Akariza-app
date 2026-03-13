@@ -48,5 +48,16 @@ export const productsApi = {
     const { data } = await client.get(`/products/${id}/stock`);
     return data;
   },
+
+  // Adjust product stock
+  adjustStock: async (id: string, adjustment: {
+    newStock: number;
+    adjustmentType: 'increase' | 'decrease' | 'set';
+    quantity: number;
+    reason?: string;
+  }): Promise<Product> => {
+    const { data } = await client.post(`/products/${id}/adjust-stock`, adjustment);
+    return data;
+  },
 };
 

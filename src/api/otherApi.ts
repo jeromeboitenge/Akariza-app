@@ -99,10 +99,11 @@ export const purchaseOrdersApi = {
    */
   create: async (purchaseOrder: {
     supplierId: string;
+    expectedDate?: string;
     items: {
       productId: string;
       quantity: number;
-      estimatedCost: number;
+      unitPrice: number;
       notes?: string;
     }[];
     notes?: string;
@@ -116,16 +117,25 @@ export const purchaseOrdersApi = {
    */
   update: async (id: string, purchaseOrder: {
     supplierId?: string;
+    expectedDate?: string;
     items?: {
       productId: string;
       quantity: number;
-      estimatedCost: number;
+      unitPrice: number;
       notes?: string;
     }[];
     notes?: string;
-    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+    status?: 'PENDING' | 'APPROVED' | 'ORDERED' | 'RECEIVED' | 'COMPLETED' | 'CANCELLED';
   }): Promise<PurchaseOrder> => {
     const { data } = await client.patch(`/purchase-orders/${id}`, purchaseOrder);
+    return data;
+  },
+
+  /**
+   * Update purchase order status
+   */
+  updateStatus: async (id: string, status: 'PENDING' | 'APPROVED' | 'ORDERED' | 'RECEIVED' | 'COMPLETED' | 'CANCELLED'): Promise<PurchaseOrder> => {
+    const { data } = await client.patch(`/purchase-orders/${id}/status`, { status });
     return data;
   },
 
@@ -168,7 +178,7 @@ export const purchaseOrdersApi = {
   /**
    * Get purchase orders by status
    */
-  getByStatus: async (status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CONVERTED'): Promise<PurchaseOrder[]> => {
+  getByStatus: async (status: 'PENDING' | 'APPROVED' | 'ORDERED' | 'RECEIVED' | 'COMPLETED' | 'CANCELLED'): Promise<PurchaseOrder[]> => {
     const { data } = await client.get('/purchase-orders', { params: { status } });
     return data;
   },
