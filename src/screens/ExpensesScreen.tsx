@@ -66,18 +66,19 @@ export default function ExpensesScreen({ navigation }: any) {
             </Chip>
           </View>
 
-        <Divider style={styles.divider} />
+          <Divider style={styles.divider} />
 
-        <Paragraph style={styles.description}>{item.description}</Paragraph>
+          <Paragraph style={styles.description}>{item.description}</Paragraph>
 
-        {item.paymentMethod && (
-          <Chip icon="credit-card" style={styles.paymentChip}>
-            {item.paymentMethod}
-          </Chip>
-        )}
-      </Card.Content>
-    </Card>
-  );
+          {item.paymentMethod && (
+            <Chip icon="credit-card" style={styles.paymentChip}>
+              {item.paymentMethod}
+            </Chip>
+          )}
+        </Card.Content>
+      </Card>
+    );
+  };
 
   const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
 
