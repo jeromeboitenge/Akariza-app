@@ -131,12 +131,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   logout: async () => {
     try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
+      // Only call logout API if we have tokens
+      const { refreshToken } = get();
+      if (refreshToken) {
+        await authApi.logout();
+      } else {
+        console.log('🔓 No refresh token available, skipping API logout call');
+      }
+    } catch (error: any) {
+      // Don't fail logout if API call fails - just log the error
+      console.error('🔓 Logout API error (continuing with local logout):', error.message || error);
     } finally {
-      await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
-      set({ user: null, accessToken: null, refreshToken: null, pendingEmail: null });
+      // Always clear local storage and state regardless of API call result
+      try {
+        await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
+        console.log('🔓 Local logout completed successfully');
+      } catch (storageError) {
+        console.error('🔓 Error clearing storage during logout:', storageError);
+      }
+      set({ user: null, accessToken: null, refreshToken: null, pendingEmail: null, error: null });
     }
   },
 

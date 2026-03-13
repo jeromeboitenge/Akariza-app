@@ -1,4 +1,5 @@
 import client from './client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthResponse } from '../types';
 
 export const authApi = {
@@ -18,7 +19,14 @@ export const authApi = {
   },
 
   logout: async (): Promise<void> => {
-    await client.post('/auth/logout');
+    // Get refresh token from storage to send with logout request
+    const refreshToken = await AsyncStorage.getItem('refreshToken');
+    if (refreshToken) {
+      await client.post('/auth/logout', { refreshToken });
+    } else {
+      // If no refresh token, just make a simple logout call
+      await client.post('/auth/logout');
+    }
   },
 
   refresh: async (refreshToken: string): Promise<{ accessToken: string }> => {
