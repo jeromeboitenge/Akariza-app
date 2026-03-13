@@ -60,7 +60,7 @@ export default function CustomerManagementScreen({ navigation }: any) {
     // Search filter
     if (searchQuery) {
       filtered = filtered.filter(customer =>
-        customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         customer.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         customer.phone?.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -77,13 +77,14 @@ export default function CustomerManagementScreen({ navigation }: any) {
   const getCustomerTypeColor = (type: string) => {
     switch (type) {
       case 'VIP': return colors.primary;
-      case 'PREMIUM': return colors.secondary;
+      case 'PREMIUM': return colors.info;
       case 'REGULAR': return colors.textSecondary;
       default: return colors.textSecondary;
     }
   };
 
   const getInitials = (name: string) => {
+    if (!name) return 'N/A';
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 

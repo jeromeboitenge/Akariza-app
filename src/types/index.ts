@@ -117,6 +117,8 @@ export interface Customer {
   loyaltyPoints: number;
   creditLimit: number;
   currentDebt: number;
+  totalSpent?: number;
+  lastPurchase?: string;
   notes?: string;
   isActive: boolean;
 }
