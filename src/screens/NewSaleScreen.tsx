@@ -393,3 +393,4 @@ const styles = StyleSheet.create({
   partialChip: { backgroundColor: '#FF9800' },
   unpaidChip: { backgroundColor: '#F44336' },
 });
+export default NewSaleScreen;
