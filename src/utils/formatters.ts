@@ -5,9 +5,12 @@ import { format, parse, formatDistanceToNow, isValid, parseISO } from 'date-fns'
  */
 export class Formatters {
   /**
-   * Format currency
+   * Format currency (RWF)
    */
-  static formatCurrency(amount: number, currency: string = 'USD'): string {
+  static formatCurrency(amount: number, currency: string = 'RWF'): string {
+    if (currency === 'RWF') {
+      return `${amount.toLocaleString()} RWF`;
+    }
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency,
