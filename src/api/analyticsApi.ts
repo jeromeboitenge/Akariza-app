@@ -3,9 +3,47 @@ import { DashboardStats, StockTransaction, Report } from '../types';
 
 export const analyticsApi = {
   getDashboard: async (): Promise<DashboardStats> => {
-    const { data } = await client.get('/analytics/dashboard');
-    // Backend returns data in summary object, extract it
-    return data.summary || data;
+    try {
+      const { data } = await client.get('/analytics/dashboard');
+      // Backend returns data in summary object, extract it
+      return data.summary || data;
+    } catch (error: any) {
+      console.warn('Analytics dashboard failed, trying fallback endpoints:', error.message);
+      
+      // Fallback: Use basic endpoints to build dashboard data
+      try {
+        const [salesData, expensesData, productsData] = await Promise.all([
+          client.get('/sales').catch(() => ({ data: [] })),
+          client.get('/expenses').catch(() => ({ data: [] })),
+          client.get('/products').catch(() => ({ data: [] })),
+        ]);
+        
+        const sales = Array.isArray(salesData.data) ? salesData.data : [];
+        const expenses = Array.isArray(expensesData.data) ? expensesData.data : [];
+        const products = Array.isArray(productsData.data) ? productsData.data : [];
+        
+        // Calculate basic stats
+        const today = new Date().toISOString().split('T')[0];
+        const todaySales = sales.filter((s: any) => s.createdAt?.startsWith(today));
+        const todayRevenue = todaySales.reduce((sum: number, s: any) => sum + (s.finalAmount || 0), 0);
+        const todayProfit = todaySales.reduce((sum: number, s: any) => sum + ((s.finalAmount || 0) - (s.totalCost || 0)), 0);
+        const lowStockProducts = products.filter((p: any) => p.currentStock <= (p.minStockLevel || 0));
+        
+        return {
+          todaySales: todayRevenue,
+          todayProfit: todayProfit,
+          todayTransactions: todaySales.length,
+          lowStockCount: lowStockProducts.length,
+          totalProducts: products.length,
+          totalCustomers: 0, // Will be 0 in fallback
+          pendingTasks: 0,
+          unreadMessages: 0,
+        };
+      } catch (fallbackError) {
+        console.error('Fallback dashboard also failed:', fallbackError);
+        throw error; // Throw original error
+      }
+    }
   },
 
   getSalesTrends: async (period: 'daily' | 'weekly' | 'monthly'): Promise<any> => {
