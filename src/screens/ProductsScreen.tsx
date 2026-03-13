@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { formatCurrency } from '../utils/formatters';
 import { View, FlatList, StyleSheet, RefreshControl, TouchableOpacity } from 'react-native';
 import { Card, Title, Paragraph, FAB, Searchbar, Chip, ActivityIndicator, Avatar, Divider } from 'react-native-paper';
 import { productsApi } from '../api';
@@ -78,7 +79,7 @@ export default function ProductsScreen({ navigation }: any) {
             <View style={styles.priceRow}>
               <View style={styles.priceItem}>
                 <Paragraph style={styles.priceLabel}>Selling Price</Paragraph>
-                <Title style={styles.sellingPrice}>${item.sellingPrice.toFixed(2)}</Title>
+                <Title style={styles.sellingPrice}>{formatCurrency(item.sellingPrice, 'RWF')}</Title>
               </View>
               <View style={styles.priceItem}>
                 <Paragraph style={styles.priceLabel}>Profit Margin</Paragraph>
