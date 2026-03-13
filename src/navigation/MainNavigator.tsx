@@ -44,6 +44,11 @@ import StockManagementScreen from '../screens/StockManagementScreen';
 import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
+// Advanced Screens
+import AdvancedAnalyticsScreen from '../screens/AdvancedAnalyticsScreen';
+import InventoryManagementScreen from '../screens/InventoryManagementScreen';
+import CustomerManagementScreen from '../screens/CustomerManagementScreen';
+import PurchaseOrderManagementScreen from '../screens/PurchaseOrderManagementScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -131,6 +136,11 @@ export default function MainNavigator() {
         <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} options={{ title: 'Verify OTP' }} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: 'Reset Password' }} />
+        {/* Advanced Screens */}
+        <Stack.Screen name="AdvancedAnalytics" component={AdvancedAnalyticsScreen} options={{ title: 'Advanced Analytics' }} />
+        <Stack.Screen name="InventoryManagement" component={InventoryManagementScreen} options={{ title: 'Inventory Management' }} />
+        <Stack.Screen name="CustomerManagement" component={CustomerManagementScreen} options={{ title: 'Customer Management' }} />
+        <Stack.Screen name="PurchaseOrderManagement" component={PurchaseOrderManagementScreen} options={{ title: 'Purchase Order Management' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

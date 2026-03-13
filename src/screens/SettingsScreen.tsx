@@ -141,6 +141,45 @@ export default function SettingsScreen({ navigation }: any) {
         </Card>
       )}
 
+      {/* Advanced Features */}
+      {canManage && (
+        <Card style={styles.card}>
+          <Card.Content>
+            <Title style={styles.sectionTitle}>Advanced Features</Title>
+            <Divider style={styles.divider} />
+            
+            <MenuItem
+              icon="chart-line"
+              title="Advanced Analytics"
+              subtitle="Comprehensive business intelligence"
+              onPress={() => navigation.navigate('AdvancedAnalytics')}
+              color="#9C27B0"
+            />
+            <MenuItem
+              icon="warehouse"
+              title="Inventory Management"
+              subtitle="Advanced stock control & adjustments"
+              onPress={() => navigation.navigate('InventoryManagement')}
+              color="#FF5722"
+            />
+            <MenuItem
+              icon="account-heart"
+              title="Customer Management"
+              subtitle="CRM & customer relationship tools"
+              onPress={() => navigation.navigate('CustomerManagement')}
+              color="#00BCD4"
+            />
+            <MenuItem
+              icon="file-document-multiple"
+              title="Purchase Order Management"
+              subtitle="Advanced procurement workflow"
+              onPress={() => navigation.navigate('PurchaseOrderManagement')}
+              color="#795548"
+            />
+          </Card.Content>
+        </Card>
+      )}
+
       {/* Marketing & Operations */}
       <Card style={styles.card}>
         <Card.Content>
