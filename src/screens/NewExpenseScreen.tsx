@@ -4,6 +4,7 @@ import { TextInput, Button, Card, Title, Chip } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { expensesApi } from '../api';
 import { safeFormatDate } from '../utils/formatters';
+import { DateValidation } from '../utils/dateValidation';
 
 export default function NewExpenseScreen({ navigation }: any) {
   const [amount, setAmount] = useState('');
@@ -23,15 +24,29 @@ export default function NewExpenseScreen({ navigation }: any) {
       return;
     }
 
+    // Validate amount
+    const amountNum = parseFloat(amount);
+    if (isNaN(amountNum) || amountNum <= 0) {
+      Alert.alert('Error', 'Please enter a valid amount');
+      return;
+    }
+
+    // Validate date
+    const dateValidation = DateValidation.validateExpenseDate(date);
+    if (!dateValidation.isValid) {
+      Alert.alert('Error', dateValidation.error || 'Invalid date');
+      return;
+    }
+
     setLoading(true);
     try {
       // Ensure date is properly formatted as ISO string
       await expensesApi.create({
-        amount: parseFloat(amount),
-        description,
+        amount: amountNum,
+        description: description.trim(),
         category,
         paymentMethod,
-        date: date.toISOString(),
+        date: DateValidation.formatForAPI(date),
       });
       Alert.alert('Success', 'Expense recorded successfully');
       navigation.goBack();
