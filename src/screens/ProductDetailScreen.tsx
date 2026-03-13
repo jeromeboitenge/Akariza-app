@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCurrency } from '../utils/formatters';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Card, Title, Paragraph, Chip, Button } from 'react-native-paper';
 
@@ -21,16 +22,16 @@ export default function ProductDetailScreen({ route, navigation }: any) {
           <Title>Pricing</Title>
           <View style={styles.row}>
             <Paragraph>Cost Price:</Paragraph>
-            <Paragraph style={styles.bold}>${product.costPrice.toFixed(2)}</Paragraph>
+            <Paragraph style={styles.bold}>{formatCurrency(product.costPrice, 'RWF')}</Paragraph>
           </View>
           <View style={styles.row}>
             <Paragraph>Selling Price:</Paragraph>
-            <Paragraph style={styles.bold}>${product.sellingPrice.toFixed(2)}</Paragraph>
+            <Paragraph style={styles.bold}>{formatCurrency(product.sellingPrice, 'RWF')}</Paragraph>
           </View>
           <View style={styles.row}>
             <Paragraph>Profit Margin:</Paragraph>
             <Paragraph style={styles.profit}>
-              ${(product.sellingPrice - product.costPrice).toFixed(2)}
+              {formatCurrency(product.sellingPrice - product.costPrice, 'RWF')}
             </Paragraph>
           </View>
         </Card.Content>
