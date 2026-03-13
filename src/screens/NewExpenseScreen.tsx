@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, ScrollView, StyleSheet, Alert, Platform } from 'react-native';
 import { TextInput, Button, Card, Title, Chip } from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { expensesApi } from '../api';
+import { safeFormatDate } from '../utils/formatters';
 
 export default function NewExpenseScreen({ navigation }: any) {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('OTHER');
   const [paymentMethod, setPaymentMethod] = useState('CASH');
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const categories = ['RENT', 'UTILITIES', 'SALARIES', 'SUPPLIES', 'MARKETING', 'OTHER'];
@@ -21,20 +25,28 @@ export default function NewExpenseScreen({ navigation }: any) {
 
     setLoading(true);
     try {
-      // Don't send customCategory field - backend doesn't support it
+      // Ensure date is properly formatted as ISO string
       await expensesApi.create({
         amount: parseFloat(amount),
         description,
         category,
         paymentMethod,
-        date: new Date().toISOString(),
+        date: date.toISOString(),
       });
       Alert.alert('Success', 'Expense recorded successfully');
       navigation.goBack();
     } catch (error: any) {
+      console.error('Create expense error:', error);
       Alert.alert('Error', error.userMessage || error.message || 'Failed to record expense');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setDate(selectedDate);
     }
   };
 
@@ -63,6 +75,25 @@ export default function NewExpenseScreen({ navigation }: any) {
             numberOfLines={3}
             style={styles.input}
           />
+
+          <TextInput
+            label="Date"
+            value={safeFormatDate(date, 'MMM dd, yyyy')}
+            mode="outlined"
+            style={styles.input}
+            right={<TextInput.Icon icon="calendar" onPress={() => setShowDatePicker(true)} />}
+            editable={false}
+          />
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default"
+              onChange={onDateChange}
+              maximumDate={new Date()}
+            />
+          )}
 
           <Title style={styles.sectionTitle}>Category</Title>
           <View style={styles.chipContainer}>

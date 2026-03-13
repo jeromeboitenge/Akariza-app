@@ -197,6 +197,8 @@ export interface Expense {
   date: string;
   paymentMethod?: string;
   receiptUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Promotion {

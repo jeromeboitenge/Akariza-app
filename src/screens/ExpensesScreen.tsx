@@ -43,22 +43,28 @@ export default function ExpensesScreen({ navigation }: any) {
     return colors[category] || '#5C6BF2';
   };
 
-  const renderExpense = ({ item }: { item: Expense }) => (
-    <Card style={styles.card}>
-      <Card.Content>
-        <View style={styles.cardHeader}>
-          <Avatar.Icon 
-            size={48} 
-            icon="cash-minus" 
-            style={[styles.avatar, { backgroundColor: getCategoryColor(item.category) }]} 
-          />
-          <View style={styles.headerContent}>
-            <Title style={styles.amount}>${item.amount.toFixed(2)}</Title>
-            <Paragraph style={styles.date}>{safeFormatDate(item.date, 'MMM dd, yyyy')}</Paragraph>
+  const renderExpense = ({ item }: { item: Expense }) => {
+    // Handle missing or invalid dates
+    const expenseDate = item.date || item.createdAt || new Date().toISOString();
+    const formattedDate = safeFormatDate(expenseDate, 'MMM dd, yyyy');
+    
+    return (
+      <Card style={styles.card}>
+        <Card.Content>
+          <View style={styles.cardHeader}>
+            <Avatar.Icon 
+              size={48} 
+              icon="cash-minus" 
+              style={[styles.avatar, { backgroundColor: getCategoryColor(item.category) }]} 
+            />
+            <View style={styles.headerContent}>
+              <Title style={styles.amount}>${item.amount.toFixed(2)}</Title>
+              <Paragraph style={styles.date}>{formattedDate}</Paragraph>
+            </View>
+            <Chip style={[styles.categoryChip, { backgroundColor: `${getCategoryColor(item.category)}20` }]} textStyle={{ color: getCategoryColor(item.category) }}>
+              {item.category}
+            </Chip>
           </View>
-          <Chip style={[styles.categoryChip, { backgroundColor: `${getCategoryColor(item.category)}20` }]} textStyle={{ color: getCategoryColor(item.category) }}>
-            {item.category}
-          </Chip>
         </View>
 
         <Divider style={styles.divider} />
