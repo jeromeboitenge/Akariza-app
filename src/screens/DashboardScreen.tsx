@@ -48,6 +48,15 @@ export default function DashboardScreen({ navigation }: any) {
     try {
       setCheckingUpdate(true);
       console.log('🔄 Checking for OTA updates...');
+      
+      // Check if running in Expo Go (development mode)
+      if (__DEV__ || Updates.isEmbeddedLaunch) {
+        console.log('⚠️ Update checks not supported in Expo Go/development mode');
+        setSnackbarMessage('Update checks not available in development mode');
+        setSnackbarVisible(true);
+        return;
+      }
+      
       const update = await Updates.checkForUpdateAsync();
       
       if (update.isAvailable) {
@@ -69,7 +78,13 @@ export default function DashboardScreen({ navigation }: any) {
       }
     } catch (error) {
       console.error('❌ Update check failed:', error);
-      setSnackbarMessage('Failed to check for updates');
+      // Don't show error message for Expo Go limitation
+      if (error.message && error.message.includes('not supported in Expo Go')) {
+        console.log('⚠️ Update checks not supported in Expo Go');
+        setSnackbarMessage('Update checks not available in development mode');
+      } else {
+        setSnackbarMessage('Failed to check for updates');
+      }
       setSnackbarVisible(true);
     } finally {
       setCheckingUpdate(false);

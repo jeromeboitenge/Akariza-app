@@ -8,9 +8,16 @@ export class UpdateService {
    */
   static async checkForUpdates(silent: boolean = false): Promise<boolean> {
     try {
-      // Skip in development mode
-      if (__DEV__) {
-        console.log('Update check skipped in development mode');
+      // Skip in development mode or Expo Go
+      if (__DEV__ || Updates.isEmbeddedLaunch) {
+        console.log('Update check skipped in development mode or Expo Go');
+        if (!silent) {
+          Alert.alert(
+            'Updates Not Available',
+            'Update checks are not supported in development mode or Expo Go.',
+            [{ text: 'OK' }]
+          );
+        }
         return false;
       }
 
@@ -50,6 +57,20 @@ export class UpdateService {
       }
     } catch (error) {
       console.error('Error checking for updates:', error);
+      
+      // Handle Expo Go specific error
+      if (error.message && error.message.includes('not supported in Expo Go')) {
+        console.log('Update checks not supported in Expo Go');
+        if (!silent) {
+          Alert.alert(
+            'Updates Not Available',
+            'Update checks are not supported in Expo Go. Use a production build to test updates.',
+            [{ text: 'OK' }]
+          );
+        }
+        return false;
+      }
+      
       if (!silent) {
         Alert.alert(
           'Update Check Failed',
