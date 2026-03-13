@@ -44,9 +44,17 @@ export default function ExpensesScreen({ navigation }: any) {
   };
 
   const renderExpense = ({ item }: { item: Expense }) => {
-    // Handle missing or invalid dates
+    // Debug: Log the actual date value
+    console.log('Expense item:', item);
+    console.log('Date field:', item.date);
+    console.log('CreatedAt field:', item.createdAt);
+    
+    // Handle missing or invalid dates - try multiple fields
     const expenseDate = item.date || item.createdAt || new Date().toISOString();
+    console.log('Using date:', expenseDate);
+    
     const formattedDate = safeFormatDate(expenseDate, 'MMM dd, yyyy');
+    console.log('Formatted date:', formattedDate);
     
     return (
       <Card style={styles.card}>
