@@ -39,9 +39,30 @@ export class Formatters {
    */
   static formatDate(date: Date | string, formatStr: string = 'MMM dd, yyyy'): string {
     try {
-      const dateObj = typeof date === 'string' ? parseISO(date) : date;
+      let dateObj: Date;
+      
+      if (typeof date === 'string') {
+        // Try multiple parsing approaches
+        if (date.includes('T') || date.includes('Z')) {
+          // ISO string format
+          dateObj = parseISO(date);
+        } else if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          // YYYY-MM-DD format
+          dateObj = parseISO(date);
+        } else if (date.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)) {
+          // SQL datetime format: YYYY-MM-DD HH:mm:ss
+          dateObj = parseISO(date.replace(' ', 'T'));
+        } else {
+          // Fallback to native Date constructor
+          dateObj = new Date(date);
+        }
+      } else {
+        dateObj = date;
+      }
+      
       return isValid(dateObj) ? format(dateObj, formatStr) : 'Invalid date';
-    } catch {
+    } catch (error) {
+      console.error('Date formatting error:', error, 'Input:', date);
       return 'Invalid date';
     }
   }
@@ -51,11 +72,37 @@ export class Formatters {
    */
   static safeFormatDate(date: Date | string | null | undefined, formatStr: string = 'MMM dd, yyyy'): string {
     if (!date) return 'N/A';
+    
     try {
-      const dateObj = typeof date === 'string' ? parseISO(date) : date;
-      if (!isValid(dateObj)) return 'Invalid date';
+      let dateObj: Date;
+      
+      if (typeof date === 'string') {
+        // Try multiple parsing approaches
+        if (date.includes('T') || date.includes('Z')) {
+          // ISO string format
+          dateObj = parseISO(date);
+        } else if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          // YYYY-MM-DD format
+          dateObj = parseISO(date);
+        } else if (date.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)) {
+          // SQL datetime format: YYYY-MM-DD HH:mm:ss
+          dateObj = parseISO(date.replace(' ', 'T'));
+        } else {
+          // Fallback to native Date constructor
+          dateObj = new Date(date);
+        }
+      } else {
+        dateObj = date;
+      }
+      
+      if (!isValid(dateObj)) {
+        console.warn('Invalid date after parsing:', date, 'Result:', dateObj);
+        return 'Invalid date';
+      }
+      
       return format(dateObj, formatStr);
-    } catch {
+    } catch (error) {
+      console.error('Date formatting error:', error, 'Input:', date);
       return 'Invalid date';
     }
   }
