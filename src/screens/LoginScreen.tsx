@@ -12,36 +12,49 @@ export default function LoginScreen({ navigation }: any) {
   const { login, verifyOtp, isLoading, error, clearError } = useAuthStore();
 
   const handleLogin = async () => {
+    console.log('🔐 Login attempt started');
+    console.log('📧 Email:', email);
+    console.log('🌐 API URL:', 'https://akariza-backend.onrender.com/api/v1');
+    
     if (!email || !password) {
-      setError('Please enter both email and password');
+      console.log('❌ Validation failed: Missing email or password');
+      useAuthStore.setState({ error: 'Please enter both email and password' });
       return;
     }
     
     if (!email.includes('@')) {
-      setError('Please enter a valid email address');
+      console.log('❌ Validation failed: Invalid email format');
+      useAuthStore.setState({ error: 'Please enter a valid email address' });
       return;
     }
     
     try {
+      console.log('📡 Sending login request...');
       const result = await login(email, password);
+      console.log('✅ Login response:', result);
+      
       if (result.requiresOtp) {
+        console.log('🔑 OTP required, showing OTP input');
         setShowOtpInput(true);
+      } else {
+        console.log('✅ Login successful, no OTP required');
       }
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || err.message || 'Login failed';
-      setError(errorMsg);
       console.error('❌ Login error:', errorMsg);
+      console.error('❌ Full error:', err);
+      // Error is already set in the auth store
     }
   };
 
   const handleVerifyOtp = async () => {
     if (!otpCode) {
-      setError('Please enter the OTP code');
+      useAuthStore.setState({ error: 'Please enter the OTP code' });
       return;
     }
     
     if (otpCode.length !== 6) {
-      setError('OTP code must be 6 digits');
+      useAuthStore.setState({ error: 'OTP code must be 6 digits' });
       return;
     }
     
@@ -49,8 +62,8 @@ export default function LoginScreen({ navigation }: any) {
       await verifyOtp(otpCode);
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || err.message || 'Invalid OTP code';
-      setError(errorMsg);
       console.error('❌ OTP verification error:', errorMsg);
+      // Error is already set in the auth store
     }
   };
 
