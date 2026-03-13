@@ -141,12 +141,6 @@ export default function LoginScreen({ navigation }: any) {
                 >
                   Create New Account
                 </Button>
-
-                <Paragraph style={styles.hint}>
-                  Demo Accounts:{'\n'}
-                  ADMIN: jeromeboitenge@gmail.com / Jerome@2026{'\n'}
-                  BOSS: boitenge311@gmail.com / Boitenge@2026
-                </Paragraph>
               </>
             ) : (
               <>
@@ -216,7 +210,6 @@ const styles = StyleSheet.create({
   forgotButton: { marginTop: 8 },
   signupButton: { marginTop: 16, borderRadius: 8, borderColor: '#5C6BF2', borderWidth: 2 },
   signupButtonLabel: { color: '#5C6BF2' },
-  hint: { marginTop: 24, textAlign: 'center', color: '#757575', fontSize: 13 },
   otpInfo: { marginBottom: 24, textAlign: 'center', color: '#424242', fontSize: 15 },
   backButton: { marginTop: 16 },
 });
