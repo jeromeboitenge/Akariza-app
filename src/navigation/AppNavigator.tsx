@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAuthStore } from '../store/authStore';
@@ -13,8 +13,13 @@ import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
-  const { user } = useAuthStore();
+  const { user, loadUser } = useAuthStore();
   const isAdmin = user?.role === 'SYSTEM_ADMIN';
+
+  // Load user from storage on app start
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
 
   // Show auth screens if not logged in
   if (!user) {

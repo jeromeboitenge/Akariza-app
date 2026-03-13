@@ -2,7 +2,7 @@ import client from './client';
 import { AuthResponse } from '../types';
 
 export const authApi = {
-  login: async (email: string, password: string): Promise<{ message: string; requiresOtp: boolean }> => {
+  login: async (email: string, password: string): Promise<{ message?: string; requiresOtp?: boolean } | AuthResponse> => {
     const { data } = await client.post('/auth/login', { email, password });
     return data;
   },

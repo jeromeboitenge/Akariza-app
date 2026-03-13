@@ -33,11 +33,18 @@ export default function LoginScreen({ navigation }: any) {
       const result = await login(email, password);
       console.log('✅ Login response:', result);
       
-      if (result.requiresOtp) {
+      if (result.requiresOtp === true) {
         console.log('🔑 OTP required, showing OTP input');
         setShowOtpInput(true);
       } else {
         console.log('✅ Login successful, no OTP required');
+        // Login successful - the auth store should handle navigation
+        // Check if user is set in auth store
+        const authState = useAuthStore.getState();
+        console.log('👤 Auth state after login:', { 
+          hasUser: !!authState.user, 
+          hasToken: !!authState.accessToken 
+        });
       }
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || err.message || 'Login failed';

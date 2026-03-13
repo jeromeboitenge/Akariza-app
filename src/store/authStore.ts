@@ -29,8 +29,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const data = await authApi.login(email, password);
+      
+      // If no OTP is required and we have user data, complete the login
+      if (!data.requiresOtp && (data as any).user && (data as any).accessToken) {
+        const authData = data as any as AuthResponse;
+        await AsyncStorage.setItem('accessToken', authData.accessToken);
+        await AsyncStorage.setItem('refreshToken', authData.refreshToken);
+        await AsyncStorage.setItem('user', JSON.stringify(authData.user));
+        set({ 
+          user: authData.user, 
+          accessToken: authData.accessToken, 
+          refreshToken: authData.refreshToken,
+          pendingEmail: null,
+          isLoading: false 
+        });
+        return { requiresOtp: false };
+      }
+      
+      // If OTP is required, set pending email
+      if (data.requiresOtp) {
+        set({ pendingEmail: email, isLoading: false });
+        return { requiresOtp: true };
+      }
+      
+      // If no OTP required but no user data, there's an issue with the backend response
       set({ pendingEmail: email, isLoading: false });
-      return { requiresOtp: data.requiresOtp };
+      return { requiresOtp: data.requiresOtp || false };
     } catch (error: any) {
       set({ error: error.response?.data?.message || 'Login failed', isLoading: false });
       throw error;
