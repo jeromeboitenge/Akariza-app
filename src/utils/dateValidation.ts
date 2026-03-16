@@ -148,4 +148,55 @@ export class DateValidation {
       return '';
     }
   }
+
+  /**
+   * Format date for display - Enhanced for Prisma DateTime fields
+   */
+  static formatForDisplay(date: Date | string | null | undefined): string {
+    if (!date) return '-';
+    
+    // Handle empty objects that come from backend serialization issues
+    if (typeof date === 'object' && !(date instanceof Date)) {
+      if (Object.keys(date).length === 0) {
+        // For now, return a placeholder until backend is fixed
+        return 'Date pending';
+      }
+    }
+    
+    try {
+      let dateObj: Date;
+      
+      if (typeof date === 'string') {
+        // Handle various date string formats
+        if (date.includes('T') || date.includes('Z')) {
+          // ISO string format (2026-03-13T11:24:25.432Z) - Common from Prisma
+          dateObj = new Date(date);
+        } else if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          // YYYY-MM-DD format
+          dateObj = parseISO(date);
+        } else if (date.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)) {
+          // YYYY-MM-DD HH:mm:ss format (SQL datetime)
+          dateObj = new Date(date.replace(' ', 'T'));
+        } else {
+          // Fallback to Date constructor for other formats
+          dateObj = new Date(date);
+        }
+      } else if (date instanceof Date) {
+        dateObj = date;
+      } else {
+        // Handle other object types - return placeholder for now
+        return 'Date pending';
+      }
+      
+      // Check if the date is valid
+      if (isNaN(dateObj.getTime()) || !isValid(dateObj)) {
+        return 'Date pending';
+      }
+      
+      return format(dateObj, 'MMM dd, yyyy');
+    } catch (error) {
+      // Return placeholder instead of error for better UX
+      return 'Date pending';
+    }
+  }
 }
