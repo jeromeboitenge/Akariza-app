@@ -79,7 +79,14 @@ export default function ProductDetailScreen({ route, navigation }: any) {
         </Card.Content>
       </Card>
 
-      <Button mode="contained" onPress={() => navigation.goBack()} style={styles.button}>
+      <Button mode="contained" onPress={() => navigation.navigate('ProductCostHistory', { 
+        productId: product.id, 
+        productName: product.name 
+      })} style={styles.button}>
+        View Cost History
+      </Button>
+
+      <Button mode="outlined" onPress={() => navigation.goBack()} style={styles.button}>
         Back to Products
       </Button>
     </ScrollView>

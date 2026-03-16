@@ -59,5 +59,17 @@ export const productsApi = {
     const { data } = await client.post(`/products/${id}/adjust-stock`, adjustment);
     return data;
   },
+
+  // Get product cost history
+  getCostHistory: async (id: string): Promise<any[]> => {
+    const { data } = await client.get(`/products/${id}/cost-history`);
+    return data;
+  },
+
+  // Get product cost statistics
+  getCostStatistics: async (id: string): Promise<any> => {
+    const { data } = await client.get(`/products/${id}/cost-statistics`);
+    return data;
+  },
 };
 

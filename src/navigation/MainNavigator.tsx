@@ -49,6 +49,7 @@ import AdvancedAnalyticsScreen from '../screens/AdvancedAnalyticsScreen';
 import InventoryManagementScreen from '../screens/InventoryManagementScreen';
 import CustomerManagementScreen from '../screens/CustomerManagementScreen';
 import PurchaseOrderManagementScreen from '../screens/PurchaseOrderManagementScreen';
+import ProductCostHistoryScreen from '../screens/ProductCostHistoryScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -141,6 +142,7 @@ export default function MainNavigator() {
         <Stack.Screen name="InventoryManagement" component={InventoryManagementScreen} options={{ title: 'Inventory Management' }} />
         <Stack.Screen name="CustomerManagement" component={CustomerManagementScreen} options={{ title: 'Customer Management' }} />
         <Stack.Screen name="PurchaseOrderManagement" component={PurchaseOrderManagementScreen} options={{ title: 'Purchase Order Management' }} />
+        <Stack.Screen name="ProductCostHistory" component={ProductCostHistoryScreen} options={{ title: 'Cost Management' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
