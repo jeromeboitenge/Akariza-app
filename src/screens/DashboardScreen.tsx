@@ -10,10 +10,6 @@ import { colors } from '../theme/colors';
 import * as Updates from 'expo-updates';
 
 export default function DashboardScreen({ navigation }: any) {
-  // Debug: Log every render to identify continuous re-renders
-  const renderTime = new Date().toISOString();
-  console.log('🔄 DashboardScreen render at:', renderTime);
-  
   // Memoize screen width to prevent re-calculations
   const screenWidth = useMemo(() => Dimensions.get('window').width, []);
   
@@ -25,6 +21,7 @@ export default function DashboardScreen({ navigation }: any) {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [lastErrorMessage, setLastErrorMessage] = useState(''); // Track last error to prevent duplicates
   
   // Use more stable selectors to prevent unnecessary re-renders
   const userEmail = useAuthStore((state) => state.user?.email);
@@ -35,26 +32,10 @@ export default function DashboardScreen({ navigation }: any) {
   const loadDashboard = async () => {
     try {
       console.log('📊 Loading dashboard data...');
-      console.log('🔗 API URL:', 'https://akariza-backend.onrender.com/api/v1');
-      console.log('👤 User:', user?.email, 'Role:', user?.role);
-      
-      // Add debugging to check if user is stable
-      console.log('🔍 User object stability check:', {
-        hasUser: !!user,
-        userId: user?.id,
-        userEmail: user?.email,
-        userRole: user?.role
-      });
       
       const [statsData, trendsData] = await Promise.all([
         analyticsApi.getDashboard().catch((error) => {
-          console.error('❌ Dashboard API error:', error);
-          console.error('❌ Error details:', {
-            message: error.message,
-            status: error.response?.status,
-            statusText: error.response?.statusText,
-            data: error.response?.data
-          });
+          console.error('❌ Dashboard API error:', error.message);
           throw error;
         }),
         analyticsApi.getSalesTrends('daily').catch((error) => {
@@ -63,16 +44,11 @@ export default function DashboardScreen({ navigation }: any) {
         }),
       ]);
       
-      console.log('✅ Dashboard stats received:', JSON.stringify(statsData, null, 2));
-      console.log('📈 Branches:', statsData?.totalBranches);
-      console.log('👥 Employees:', statsData?.totalEmployees);
-      console.log('👤 Customers:', statsData?.totalCustomers);
-      console.log('📦 Products:', statsData?.totalProducts);
+      console.log('✅ Dashboard loaded successfully');
       setStats(statsData);
       setTrends(trendsData);
     } catch (error: any) {
-      console.error('❌ Dashboard error:', error);
-      console.error('❌ Full error object:', JSON.stringify(error, null, 2));
+      console.error('❌ Dashboard error:', error.message);
       
       // Provide user-friendly error message
       let errorMessage = 'Failed to load dashboard data';
@@ -86,8 +62,20 @@ export default function DashboardScreen({ navigation }: any) {
         errorMessage = 'Server error. Please try again later.';
       }
       
-      setSnackbarMessage(errorMessage);
-      setSnackbarVisible(true);
+      // Only show Snackbar if it's a different error message to prevent spam
+      if (errorMessage !== lastErrorMessage) {
+        setLastErrorMessage(errorMessage);
+        setSnackbarMessage(errorMessage);
+        setSnackbarVisible(true);
+        
+        // Auto-dismiss after 5 seconds to prevent persistent popups
+        setTimeout(() => {
+          setSnackbarVisible(false);
+          setLastErrorMessage('');
+        }, 5000);
+      } else {
+        console.log('⚠️ Duplicate error message, not showing Snackbar again');
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -752,7 +740,10 @@ export default function DashboardScreen({ navigation }: any) {
     </ScrollView>
     <Snackbar
       visible={snackbarVisible}
-      onDismiss={() => setSnackbarVisible(false)}
+      onDismiss={() => {
+        setSnackbarVisible(false);
+        setLastErrorMessage(''); // Clear last error when dismissed
+      }}
       duration={3000}
       style={styles.snackbar}
     >
