@@ -70,8 +70,14 @@ export default function NewPurchaseScreen({ navigation }: any) {
   };
 
   const handleSubmit = async () => {
-    if (items.length === 0 || !selectedSupplier) {
-      setError('Please add items and select supplier');
+    // Enhanced validation with specific error messages
+    if (!selectedSupplier) {
+      setError('Please select a supplier. Supplier is required for all purchases.');
+      return;
+    }
+    
+    if (items.length === 0) {
+      setError('Please add at least one item to the purchase.');
       return;
     }
 
@@ -105,17 +111,22 @@ export default function NewPurchaseScreen({ navigation }: any) {
 
       <Card style={styles.card}>
         <Card.Content>
-          <Paragraph>Supplier *</Paragraph>
+          <Paragraph style={styles.requiredLabel}>Supplier *</Paragraph>
           <Picker
             selectedValue={selectedSupplier}
             onValueChange={setSelectedSupplier}
-            style={styles.picker}
+            style={[styles.picker, !selectedSupplier && styles.requiredField]}
           >
             <Picker.Item label="Select supplier..." value="" />
             {suppliers.filter(s => s.isActive).map((s) => (
               <Picker.Item key={s.id} label={s.name} value={s.id} />
             ))}
           </Picker>
+          {!selectedSupplier && (
+            <Paragraph style={styles.requiredText}>
+              Supplier selection is mandatory for all purchases
+            </Paragraph>
+          )}
         </Card.Content>
       </Card>
 
@@ -240,6 +251,9 @@ const styles = StyleSheet.create({
   card: { marginBottom: 16, elevation: 2 },
   input: { marginBottom: 12 },
   picker: { marginVertical: 8 },
+  requiredField: { borderColor: '#F44336', borderWidth: 1 },
+  requiredLabel: { fontWeight: 'bold', color: '#F44336' },
+  requiredText: { fontSize: 12, color: '#F44336', marginTop: 4, fontStyle: 'italic' },
   item: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
   flex: { flex: 1 },
   bold: { fontWeight: 'bold' },
