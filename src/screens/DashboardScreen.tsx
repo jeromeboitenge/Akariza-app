@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, RefreshControl, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { Card, Title, Paragraph, ActivityIndicator, Avatar, Surface, Text, IconButton, Snackbar } from 'react-native-paper';
 import { LineChart } from 'react-native-chart-kit';
@@ -9,11 +9,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import * as Updates from 'expo-updates';
 
-const screenWidth = Dimensions.get('window').width;
-
 export default function DashboardScreen({ navigation }: any) {
   // Debug: Log every render to identify continuous re-renders
-  console.log('🔄 DashboardScreen render at:', new Date().toISOString());
+  const renderTime = new Date().toISOString();
+  console.log('🔄 DashboardScreen render at:', renderTime);
+  
+  // Memoize screen width to prevent re-calculations
+  const screenWidth = useMemo(() => Dimensions.get('window').width, []);
   
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [trends, setTrends] = useState<any>(null);
@@ -23,6 +25,11 @@ export default function DashboardScreen({ navigation }: any) {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  
+  // Use more stable selectors to prevent unnecessary re-renders
+  const userEmail = useAuthStore((state) => state.user?.email);
+  const userRole = useAuthStore((state) => state.user?.role);
+  const userFullName = useAuthStore((state) => state.user?.fullName);
   const user = useAuthStore((state) => state.user);
 
   const loadDashboard = async () => {
@@ -139,12 +146,15 @@ export default function DashboardScreen({ navigation }: any) {
 
   // Separate useEffect for update check to avoid interference
   useEffect(() => {
-    // Delay update check to avoid interfering with dashboard loading
-    const updateCheckTimer = setTimeout(() => {
-      checkForUpdates();
-    }, 2000); // Check for updates 2 seconds after component mounts
+    // Only check for updates in production builds, not in development
+    if (!__DEV__ && !Updates.isEmbeddedLaunch) {
+      // Delay update check to avoid interfering with dashboard loading
+      const updateCheckTimer = setTimeout(() => {
+        checkForUpdates();
+      }, 5000); // Check for updates 5 seconds after component mounts
 
-    return () => clearTimeout(updateCheckTimer);
+      return () => clearTimeout(updateCheckTimer);
+    }
   }, []);
 
   const onRefresh = () => {
