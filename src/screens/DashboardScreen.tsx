@@ -12,6 +12,9 @@ import * as Updates from 'expo-updates';
 const screenWidth = Dimensions.get('window').width;
 
 export default function DashboardScreen({ navigation }: any) {
+  // Debug: Log every render to identify continuous re-renders
+  console.log('🔄 DashboardScreen render at:', new Date().toISOString());
+  
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [trends, setTrends] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -27,6 +30,14 @@ export default function DashboardScreen({ navigation }: any) {
       console.log('📊 Loading dashboard data...');
       console.log('🔗 API URL:', 'https://akariza-backend.onrender.com/api/v1');
       console.log('👤 User:', user?.email, 'Role:', user?.role);
+      
+      // Add debugging to check if user is stable
+      console.log('🔍 User object stability check:', {
+        hasUser: !!user,
+        userId: user?.id,
+        userEmail: user?.email,
+        userRole: user?.role
+      });
       
       const [statsData, trendsData] = await Promise.all([
         analyticsApi.getDashboard().catch((error) => {
@@ -77,6 +88,12 @@ export default function DashboardScreen({ navigation }: any) {
   };
 
   const checkForUpdates = async () => {
+    // Prevent multiple simultaneous update checks
+    if (checkingUpdate) {
+      console.log('⚠️ Update check already in progress, skipping...');
+      return;
+    }
+
     try {
       setCheckingUpdate(true);
       console.log('🔄 Checking for OTA updates...');
@@ -84,9 +101,7 @@ export default function DashboardScreen({ navigation }: any) {
       // Check if running in Expo Go (development mode)
       if (__DEV__ || Updates.isEmbeddedLaunch) {
         console.log('⚠️ Update checks not supported in Expo Go/development mode');
-        setSnackbarMessage('Update checks not available in development mode');
-        setSnackbarVisible(true);
-        return;
+        return; // Don't show message in dev mode
       }
       
       const update = await Updates.checkForUpdateAsync();
@@ -105,19 +120,14 @@ export default function DashboardScreen({ navigation }: any) {
         }, 1500);
       } else {
         console.log('✅ App is up to date');
-        setSnackbarMessage('You\'re running the latest version!');
-        setSnackbarVisible(true);
+        // Don't show "up to date" message to avoid noise
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Update check failed:', error);
-      // Don't show error message for Expo Go limitation
+      // Don't show error messages for update checks to avoid user confusion
       if (error.message && error.message.includes('not supported in Expo Go')) {
         console.log('⚠️ Update checks not supported in Expo Go');
-        setSnackbarMessage('Update checks not available in development mode');
-      } else {
-        setSnackbarMessage('Failed to check for updates');
       }
-      setSnackbarVisible(true);
     } finally {
       setCheckingUpdate(false);
     }
@@ -125,14 +135,21 @@ export default function DashboardScreen({ navigation }: any) {
 
   useEffect(() => {
     loadDashboard();
-    // Check for updates when dashboard loads
-    checkForUpdates();
-  }, []); // Empty dependency array to run only once
+  }, []); // Only load dashboard data once
+
+  // Separate useEffect for update check to avoid interference
+  useEffect(() => {
+    // Delay update check to avoid interfering with dashboard loading
+    const updateCheckTimer = setTimeout(() => {
+      checkForUpdates();
+    }, 2000); // Check for updates 2 seconds after component mounts
+
+    return () => clearTimeout(updateCheckTimer);
+  }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
-    loadDashboard();
-    checkForUpdates();
+    loadDashboard(); // Only reload dashboard data, not updates
   };
 
   if (loading) {
