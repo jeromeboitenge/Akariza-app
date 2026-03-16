@@ -77,9 +77,9 @@ export class Formatters {
       let dateObj: Date;
       
       if (typeof date === 'string') {
-        // Try multiple parsing approaches
+        // Enhanced parsing for various date formats
         if (date.includes('T') || date.includes('Z')) {
-          // ISO string format
+          // ISO string format (2026-03-13T11:24:25.432Z)
           dateObj = parseISO(date);
         } else if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
           // YYYY-MM-DD format
@@ -87,6 +87,14 @@ export class Formatters {
         } else if (date.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)) {
           // SQL datetime format: YYYY-MM-DD HH:mm:ss
           dateObj = parseISO(date.replace(' ', 'T'));
+        } else if (date.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+          // MM/DD/YYYY format
+          const [month, day, year] = date.split('/');
+          dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        } else if (date.match(/^\d{2}-\d{2}-\d{4}$/)) {
+          // DD-MM-YYYY format
+          const [day, month, year] = date.split('-');
+          dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
         } else {
           // Fallback to native Date constructor
           dateObj = new Date(date);
@@ -96,13 +104,23 @@ export class Formatters {
       }
       
       if (!isValid(dateObj)) {
-        console.warn('Invalid date after parsing:', date, 'Result:', dateObj);
+        console.warn('🗓️ Invalid date after parsing:', {
+          input: date,
+          inputType: typeof date,
+          result: dateObj,
+          isValid: isValid(dateObj)
+        });
         return 'Invalid date';
       }
       
       return format(dateObj, formatStr);
     } catch (error) {
-      console.error('Date formatting error:', error, 'Input:', date);
+      console.error('🗓️ Date formatting error:', {
+        error: error.message,
+        input: date,
+        inputType: typeof date,
+        formatStr
+      });
       return 'Invalid date';
     }
   }

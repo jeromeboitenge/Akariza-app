@@ -18,6 +18,18 @@ export default function ExpensesScreen({ navigation }: any) {
   const loadExpenses = async () => {
     try {
       const data = await expensesApi.getAll();
+      
+      // Debug: Log the actual API response structure
+      console.log('📊 Expenses API Response:', JSON.stringify(data, null, 2));
+      if (data && data.length > 0) {
+        console.log('📊 First expense object:', JSON.stringify(data[0], null, 2));
+        console.log('📊 Date fields in first expense:', {
+          date: data[0].date,
+          createdAt: data[0].createdAt,
+          updatedAt: data[0].updatedAt
+        });
+      }
+      
       setExpenses(data);
     } catch (error) {
       console.error('Load expenses error:', error);
@@ -44,32 +56,62 @@ export default function ExpensesScreen({ navigation }: any) {
   };
 
   const renderExpense = ({ item }: { item: Expense }) => {
-    // Enhanced date handling with multiple fallbacks
+    // Enhanced date handling with comprehensive fallbacks
     let displayDate = 'N/A';
     
     try {
-      // Try different date fields and formats
-      const dateValue = item.date || item.createdAt || item.updatedAt;
+      // Try different date fields in order of preference
+      const possibleDates = [
+        item.date,
+        item.createdAt,
+        item.updatedAt
+      ].filter(Boolean); // Remove null/undefined values
       
-      if (dateValue) {
+      console.log('🗓️ Processing expense date:', {
+        expenseId: item.id,
+        possibleDates,
+        dateField: item.date,
+        createdAtField: item.createdAt
+      });
+      
+      if (possibleDates.length > 0) {
+        const dateValue = possibleDates[0]; // Use the first available date
+        
         // Use the enhanced safeFormatDate function
         displayDate = safeFormatDate(dateValue, 'MMM dd, yyyy');
         
-        // If still invalid, try alternative parsing
-        if (displayDate === 'Invalid date') {
-          // Try parsing as ISO string first
-          const isoDate = new Date(dateValue);
-          if (!isNaN(isoDate.getTime())) {
-            displayDate = isoDate.toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: '2-digit'
-            });
+        // If still invalid, try manual parsing approaches
+        if (displayDate === 'Invalid date' && dateValue) {
+          console.log('🗓️ Trying manual date parsing for:', dateValue);
+          
+          // Try parsing as timestamp (if it's a number-like string)
+          if (typeof dateValue === 'string' && /^\d+$/.test(dateValue)) {
+            const timestamp = parseInt(dateValue);
+            const timestampDate = new Date(timestamp);
+            if (!isNaN(timestampDate.getTime())) {
+              displayDate = timestampDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit'
+              });
+            }
+          } else {
+            // Try native Date parsing as last resort
+            const nativeDate = new Date(dateValue);
+            if (!isNaN(nativeDate.getTime())) {
+              displayDate = nativeDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit'
+              });
+            }
           }
         }
       }
+      
+      console.log('🗓️ Final display date:', displayDate);
     } catch (error) {
-      console.error('Date parsing error for expense:', item.id, error);
+      console.error('🗓️ Date parsing error for expense:', item.id, error);
       displayDate = 'Date error';
     }
     
