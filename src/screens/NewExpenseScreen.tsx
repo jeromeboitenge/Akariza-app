@@ -72,13 +72,13 @@ export default function NewExpenseScreen({ navigation }: any) {
           <Title style={styles.title}>Record Expense</Title>
 
           <TextInput
-            label="Amount *"
+            label="Amount (RWF) *"
             value={amount}
             onChangeText={setAmount}
             mode="outlined"
             keyboardType="decimal-pad"
             style={styles.input}
-            left={<TextInput.Icon icon="currency-usd" />}
+            left={<TextInput.Icon icon="cash" />}
           />
 
           <TextInput

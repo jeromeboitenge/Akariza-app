@@ -305,7 +305,7 @@ function NewSaleScreen({ navigation }: any) {
                 mode="outlined"
                 keyboardType="decimal-pad"
                 style={styles.input}
-                left={<TextInput.Icon icon="currency-usd" />}
+                left={<TextInput.Icon icon="cash" />}
               />
             </>
           )}

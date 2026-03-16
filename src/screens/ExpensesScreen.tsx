@@ -44,17 +44,34 @@ export default function ExpensesScreen({ navigation }: any) {
   };
 
   const renderExpense = ({ item }: { item: Expense }) => {
-    // Debug: Log the actual date value
-    console.log('Expense item:', item);
-    console.log('Date field:', item.date);
-    console.log('CreatedAt field:', item.createdAt);
+    // Enhanced date handling with multiple fallbacks
+    let displayDate = 'N/A';
     
-    // Handle missing or invalid dates - try multiple fields
-    const expenseDate = item.date || item.createdAt || new Date().toISOString();
-    console.log('Using date:', expenseDate);
-    
-    const formattedDate = safeFormatDate(expenseDate, 'MMM dd, yyyy');
-    console.log('Formatted date:', formattedDate);
+    try {
+      // Try different date fields and formats
+      const dateValue = item.date || item.createdAt || item.updatedAt;
+      
+      if (dateValue) {
+        // Use the enhanced safeFormatDate function
+        displayDate = safeFormatDate(dateValue, 'MMM dd, yyyy');
+        
+        // If still invalid, try alternative parsing
+        if (displayDate === 'Invalid date') {
+          // Try parsing as ISO string first
+          const isoDate = new Date(dateValue);
+          if (!isNaN(isoDate.getTime())) {
+            displayDate = isoDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: '2-digit'
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Date parsing error for expense:', item.id, error);
+      displayDate = 'Date error';
+    }
     
     return (
       <Card style={styles.card}>
@@ -67,7 +84,7 @@ export default function ExpensesScreen({ navigation }: any) {
             />
             <View style={styles.headerContent}>
               <Title style={styles.amount}>{formatCurrency(item.amount, 'RWF')}</Title>
-              <Paragraph style={styles.date}>{formattedDate}</Paragraph>
+              <Paragraph style={styles.date}>{displayDate}</Paragraph>
             </View>
             <Chip style={[styles.categoryChip, { backgroundColor: `${getCategoryColor(item.category)}20` }]} textStyle={{ color: getCategoryColor(item.category) }}>
               {item.category}

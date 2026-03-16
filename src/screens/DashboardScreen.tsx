@@ -127,7 +127,7 @@ export default function DashboardScreen({ navigation }: any) {
     loadDashboard();
     // Check for updates when dashboard loads
     checkForUpdates();
-  }, []);
+  }, []); // Empty dependency array to run only once
 
   const onRefresh = () => {
     setRefreshing(true);
